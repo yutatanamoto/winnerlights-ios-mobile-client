@@ -24,12 +24,6 @@ class ViewController: UITabBarController {
         let thirdViewController = NavigationController(rootViewController: SettingViewController())
         thirdViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "slider.horizontal.3"), tag: 2)
         
-        let forthViewController = NavigationController(rootViewController: SeekBarViewController())
-        forthViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "pencil"), tag: 3)
-        
-        let fifthViewController = NavigationController(rootViewController: CircularProgressViewController())
-        fifthViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "pencil"), tag: 4)
-        
-        self.viewControllers = [firstViewController, secondViewController, thirdViewController, forthViewController, fifthViewController]
+        self.viewControllers = [firstViewController, secondViewController, thirdViewController]
     }
 }
