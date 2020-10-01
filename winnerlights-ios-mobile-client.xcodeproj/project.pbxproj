@@ -21,6 +21,8 @@
 		657463F1251B16B00021A60D /* ExerciseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657463F0251B16B00021A60D /* ExerciseCollectionViewCell.swift */; };
 		657463F6251B1D160021A60D /* ExerciseDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657463F5251B1D160021A60D /* ExerciseDetailViewController.swift */; };
 		657463FB251B342E0021A60D /* ExerciseExecutionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657463FA251B342E0021A60D /* ExerciseExecutionViewController.swift */; };
+		65C10FEC2524857100F9DA96 /* SeekBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C10FEB2524857100F9DA96 /* SeekBarViewController.swift */; };
+		65C10FF12524865900F9DA96 /* CircularProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C10FF02524865900F9DA96 /* CircularProgressViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		657463F0251B16B00021A60D /* ExerciseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCollectionViewCell.swift; sourceTree = "<group>"; };
 		657463F5251B1D160021A60D /* ExerciseDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseDetailViewController.swift; sourceTree = "<group>"; };
 		657463FA251B342E0021A60D /* ExerciseExecutionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseExecutionViewController.swift; sourceTree = "<group>"; };
+		65C10FEB2524857100F9DA96 /* SeekBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekBarViewController.swift; sourceTree = "<group>"; };
+		65C10FF02524865900F9DA96 /* CircularProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +154,8 @@
 				657463F0251B16B00021A60D /* ExerciseCollectionViewCell.swift */,
 				657463F5251B1D160021A60D /* ExerciseDetailViewController.swift */,
 				657463FA251B342E0021A60D /* ExerciseExecutionViewController.swift */,
+				65C10FEB2524857100F9DA96 /* SeekBarViewController.swift */,
+				65C10FF02524865900F9DA96 /* CircularProgressViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -283,6 +289,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65C10FF12524865900F9DA96 /* CircularProgressViewController.swift in Sources */,
+				65C10FEC2524857100F9DA96 /* SeekBarViewController.swift in Sources */,
 				657463E7251B15B70021A60D /* BLEMeshNetworkViewController.swift in Sources */,
 				657463DF251B14B90021A60D /* AvairableExercisesViewController.swift in Sources */,
 				6574638D251AE6E10021A60D /* AppDelegate.swift in Sources */,
