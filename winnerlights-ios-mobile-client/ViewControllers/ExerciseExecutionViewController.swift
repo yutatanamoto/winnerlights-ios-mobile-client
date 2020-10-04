@@ -15,6 +15,18 @@ class ExerciseExecutionViewController: UIViewController {
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
     
+    fileprivate lazy var currentStateDisplayCard: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = cornerRadius
+        view.layer.shadowOpacity = shadowOpacity
+        view.layer.shadowRadius = cornerRadius
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = shadowOffset
+        return view
+    }()
+    
     fileprivate lazy var startAndPauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -58,6 +70,7 @@ class ExerciseExecutionViewController: UIViewController {
         super.viewDidLoad()
         self.title = "Exercise Execution"
         view.backgroundColor = .white
+        view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
         view.addSubview(nextButton)
@@ -65,6 +78,10 @@ class ExerciseExecutionViewController: UIViewController {
     }
     
     func setupConstraints() {
+        currentStateDisplayCard.bottomAnchor.constraint(equalTo: startAndPauseButton.topAnchor, constant: -marginWidth).isActive = true
+        currentStateDisplayCard.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
+        currentStateDisplayCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
+        currentStateDisplayCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
         backButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
