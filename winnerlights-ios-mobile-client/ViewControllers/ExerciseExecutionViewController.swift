@@ -14,6 +14,8 @@ class ExerciseExecutionViewController: UIViewController {
     let marginWidth: CGFloat = 16
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
+    var currentTime: Float = 0
+    var timer: Timer!
     
     fileprivate lazy var currentStateDisplayCard: UIView = {
         let view = UIView()
@@ -58,6 +60,8 @@ class ExerciseExecutionViewController: UIViewController {
         view.layer.shadowRadius = 6
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOffset = shadowOffset
+        view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+        view.setProgress(currentTime, animated: true)
         return view
     }()
     
@@ -112,6 +116,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(backButton)
         view.addSubview(nextButton)
         setupConstraints()
+        timer = Timer.scheduledTimer(timeInterval: 0.01,target:self,selector:#selector(self.timerUpdate), userInfo: nil, repeats: true)
     }
     
     func setupConstraints() {
@@ -145,5 +150,14 @@ class ExerciseExecutionViewController: UIViewController {
         nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
         nextButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
         nextButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+    }
+    
+    @objc func timerUpdate() {
+        currentTime = currentTime + 0.001
+        if currentTime <= 1 {
+            progressView.setProgress(currentTime, animated: true)
+        }else{
+            currentTime = 0
+        }
     }
 }
