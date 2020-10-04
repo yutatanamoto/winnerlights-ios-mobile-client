@@ -49,6 +49,18 @@ class ExerciseExecutionViewController: UIViewController {
         return view
     }()
     
+    fileprivate lazy var progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 6
+        view.layer.shadowOpacity = shadowOpacity
+        view.layer.shadowRadius = 6
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = shadowOffset
+        return view
+    }()
+    
     fileprivate lazy var startAndPauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -94,6 +106,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.backgroundColor = .white
         currentStateDisplayCard.addSubview(exerciseTitle)
         currentStateDisplayCard.addSubview(pitch)
+        currentStateDisplayCard.addSubview(progressView)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
@@ -113,7 +126,11 @@ class ExerciseExecutionViewController: UIViewController {
         pitch.topAnchor.constraint(equalTo: exerciseTitle.bottomAnchor, constant: marginWidth).isActive = true
         pitch.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         pitch.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
-        pitch.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
+        pitch.bottomAnchor.constraint(equalTo: progressView.topAnchor, constant: -marginWidth).isActive = true
+        progressView.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: marginWidth).isActive = true
+        progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
         backButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
