@@ -40,6 +40,19 @@ class ExerciseExecutionViewController: UIViewController {
         button.setTitle("Back", for: .normal)
         return button
     }()
+    
+    fileprivate lazy var nextButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("Next", for: .normal)
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +60,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
+        view.addSubview(nextButton)
         setupConstraints()
     }
     
@@ -57,8 +71,13 @@ class ExerciseExecutionViewController: UIViewController {
         backButton.heightAnchor.constraint(equalToConstant: startAndPauseButtonHeight).isActive = true
         backButton.widthAnchor.constraint(equalToConstant: (view.frame.width-4*marginWidth)/3).isActive = true
         startAndPauseButton.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: marginWidth).isActive = true
-        startAndPauseButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
+        startAndPauseButton.trailingAnchor.constraint(equalTo: nextButton.leadingAnchor, constant: -marginWidth).isActive = true
         startAndPauseButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
         startAndPauseButton.heightAnchor.constraint(equalToConstant: startAndPauseButtonHeight).isActive = true
+        nextButton.leadingAnchor.constraint(equalTo: startAndPauseButton.trailingAnchor, constant: marginWidth).isActive = true
+        nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
+        nextButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
+        nextButton.heightAnchor.constraint(equalToConstant: startAndPauseButtonHeight).isActive = true
+        nextButton.widthAnchor.constraint(equalToConstant: (view.frame.width-4*marginWidth)/3).isActive = true
     }
 }
