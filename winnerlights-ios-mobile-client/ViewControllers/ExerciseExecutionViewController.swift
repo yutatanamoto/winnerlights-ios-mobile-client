@@ -16,6 +16,7 @@ class ExerciseExecutionViewController: UIViewController {
     let buttonHeight: CGFloat = 60
     var currentTime: Float = 0
     var timer: Timer!
+    var isExerciseRunning: Bool = false
     
     fileprivate lazy var currentStateDisplayCard: UIView = {
         let view = UIView()
@@ -74,7 +75,8 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("StartAndPause", for: .normal)
+        button.setTitle("Start", for: .normal)
+        button.addTarget(self, action: #selector(startAndPauseExercise), for: .touchUpInside)
         return button
     }()
     
@@ -153,11 +155,24 @@ class ExerciseExecutionViewController: UIViewController {
     }
     
     @objc func timerUpdate() {
-        currentTime = currentTime + 0.001
-        if currentTime <= 1 {
-            progressView.setProgress(currentTime, animated: true)
+        if isExerciseRunning{
+            if currentTime <= 1 {
+                currentTime = currentTime + 0.001
+                progressView.setProgress(currentTime, animated: true)
+            }else{
+                currentTime = 0
+                progressView.setProgress(currentTime, animated: false)
+            }
+        }
+    }
+    
+    @objc func startAndPauseExercise() {
+        if !isExerciseRunning {
+            startAndPauseButton.setTitle("Pause", for: .normal)
+            isExerciseRunning = true
         }else{
-            currentTime = 0
+            startAndPauseButton.setTitle("Start", for: .normal)
+            isExerciseRunning = false
         }
     }
 }
