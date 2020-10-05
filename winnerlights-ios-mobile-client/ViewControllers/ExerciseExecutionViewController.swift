@@ -34,7 +34,7 @@ class ExerciseExecutionViewController: UIViewController {
     let buttonHeight: CGFloat = 60
     var currentTime: Float = 0.0
     var timer: Timer!
-    var timerInterval: Float = 0.1
+    var timerInterval: Float = 0.0001
     var isExerciseRunning: Bool = false
     
     fileprivate lazy var currentStateDisplayCard: UIView = {
@@ -136,7 +136,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(backButton)
         view.addSubview(nextButton)
         setupConstraints()
-        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.timerUpdate), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateProgress), userInfo: nil, repeats: true)
     }
     
     func setupConstraints() {
@@ -172,7 +172,7 @@ class ExerciseExecutionViewController: UIViewController {
         nextButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
     }
     
-    @objc func timerUpdate() {
+    @objc func updateProgress() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             if currentTime <= totalDuration {
