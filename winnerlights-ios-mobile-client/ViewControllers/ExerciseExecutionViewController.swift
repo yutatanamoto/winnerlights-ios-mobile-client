@@ -61,7 +61,6 @@ class ExerciseExecutionViewController: UIViewController {
         view.layer.shadowRadius = 6
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOffset = shadowOffset
-        view.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         view.setProgress(currentTime, animated: true)
         return view
     }()
