@@ -32,8 +32,9 @@ class ExerciseExecutionViewController: UIViewController {
     let marginWidth: CGFloat = 16
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
-    var currentTime: Float = 0
+    var currentTime: Float = 0.0
     var timer: Timer!
+    var timerInterval: Float = 0.1
     var isExerciseRunning: Bool = false
     
     fileprivate lazy var currentStateDisplayCard: UIView = {
@@ -135,7 +136,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(backButton)
         view.addSubview(nextButton)
         setupConstraints()
-        timer = Timer.scheduledTimer(timeInterval: 0.01,target:self,selector:#selector(self.timerUpdate), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.timerUpdate), userInfo: nil, repeats: true)
     }
     
     func setupConstraints() {
@@ -173,12 +174,13 @@ class ExerciseExecutionViewController: UIViewController {
     
     @objc func timerUpdate() {
         if isExerciseRunning{
-            if currentTime <= 1 {
-                currentTime = currentTime + 0.001
-                progressView.setProgress(currentTime, animated: true)
+            let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+            if currentTime <= totalDuration {
+                currentTime = currentTime + timerInterval
+                progressView.setProgress(currentTime/totalDuration, animated: true)
             }else{
-                currentTime = 0
-                progressView.setProgress(currentTime, animated: false)
+                currentTime = 0.0
+                progressView.setProgress(currentTime/totalDuration, animated: false)
             }
         }
     }
