@@ -17,7 +17,16 @@ struct Exercise {
 }
 
 class ExerciseExecutionViewController: UIViewController {
-    
+    var exercise: Exercise = Exercise(
+        title: "Basic",
+        description: "Basic exercise. There are 2 goals and 4 players on each team.",
+        phases: [
+            Phase(duration: 10),
+            Phase(duration: 20),
+            Phase(duration: 15),
+            Phase(duration: 30)
+        ]
+    )
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
     let marginWidth: CGFloat = 16
@@ -42,7 +51,7 @@ class ExerciseExecutionViewController: UIViewController {
     fileprivate lazy var exerciseTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Exercise Title"
+        label.text = exercise.title
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
