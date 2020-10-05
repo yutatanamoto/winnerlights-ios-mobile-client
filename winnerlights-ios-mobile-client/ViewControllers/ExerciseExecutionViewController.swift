@@ -7,6 +7,15 @@
 
 import UIKit
 
+struct Phase {
+    var duration: Float
+}
+struct Exercise {
+    var title: String
+    var description: String
+    var phases: [Phase]
+}
+
 class ExerciseExecutionViewController: UIViewController {
     
     let cornerRadius: CGFloat = 20
