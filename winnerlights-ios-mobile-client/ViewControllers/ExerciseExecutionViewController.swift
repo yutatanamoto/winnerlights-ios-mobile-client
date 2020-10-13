@@ -35,13 +35,12 @@ class ExerciseExecutionViewController: UIViewController {
     var currentPhaseIndex: Int!
     var currentTime: Float = 0.0 {
         didSet {
-            currentPhaseIndex = -1
             for phaseIndex in 0 ..< exercise.phases.count {
                 let duration = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
                     summension + phase.duration
                 }
                 if (duration < currentTime) {
-                    currentPhaseIndex += 1
+                    currentPhaseIndex = phaseIndex
                 }
             }
             let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0) { (summension, phase) -> Float in
