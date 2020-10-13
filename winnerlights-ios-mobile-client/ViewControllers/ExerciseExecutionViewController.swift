@@ -50,6 +50,8 @@ class ExerciseExecutionViewController: UIViewController {
             circularProgressView.progressAnimation(
                 currentPahseTime: currentTime-totalDurationTilLastPhase,
                 currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
+            let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+            progressView.setProgress(currentTime/totalDuration, animated: true)
         }
     }
     var timer: Timer!
@@ -213,10 +215,8 @@ class ExerciseExecutionViewController: UIViewController {
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             if currentTime < totalDuration {
                 currentTime = currentTime + timerInterval
-                progressView.setProgress(currentTime/totalDuration, animated: true)
             }else{
                 currentTime = 0.0
-                progressView.setProgress(currentTime/totalDuration, animated: false)
             }
         }
     }
