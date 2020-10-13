@@ -163,7 +163,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(backButton)
         view.addSubview(nextButton)
         setupConstraints()
-        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateProgress), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -209,7 +209,7 @@ class ExerciseExecutionViewController: UIViewController {
         nextButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
     }
     
-    @objc func updateProgress() {
+    @objc func updateCurrentTime() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             if currentTime + timerInterval < totalDuration {
