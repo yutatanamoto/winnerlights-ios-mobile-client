@@ -52,6 +52,8 @@ class ExerciseExecutionViewController: UIViewController {
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+            currentTimeLabel.text = String(format:"%.0f", currentTime)
+            currentRemainingTimeLabel.text = String(format:"%.0f", totalDuration - currentTime)
         }
     }
     var timer: Timer!
@@ -97,6 +99,25 @@ class ExerciseExecutionViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate lazy var currentTimeLabel: UILabel = {
+        let label = UILabel()
+        label.text = String(format:"%.0f", 0)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate lazy var currentRemainingTimeLabel: UILabel = {
+        let label = UILabel()
+        let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+        label.text = String(format:"%.0f", totalDuration)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -168,6 +189,8 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(pitch)
         currentStateDisplayCard.addSubview(phaseCountLabel)
         currentStateDisplayCard.addSubview(progressView)
+        currentStateDisplayCard.addSubview(currentTimeLabel)
+        currentStateDisplayCard.addSubview(currentRemainingTimeLabel)
         currentStateDisplayCard.addSubview(circularProgressView)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
@@ -202,8 +225,17 @@ class ExerciseExecutionViewController: UIViewController {
         progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: marginWidth).isActive = true
         progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
-        progressView.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
-        circularProgressView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: marginWidth).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -8).isActive = true
+        
+        currentTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
+        currentTimeLabel.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        currentTimeLabel.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
+        
+        currentRemainingTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
+        currentRemainingTimeLabel.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        currentRemainingTimeLabel.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
+        
+        circularProgressView.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth).isActive = true
         circularProgressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         circularProgressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
