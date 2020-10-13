@@ -32,7 +32,7 @@ class ExerciseExecutionViewController: UIViewController {
     let marginWidth: CGFloat = 16
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
-    var currentPhaseIndex: Int!
+    var currentPhaseIndex: Int = 0
     var currentTime: Float = 0.0 {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
@@ -51,6 +51,7 @@ class ExerciseExecutionViewController: UIViewController {
                 currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
+            phaseCountLabel.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
         }
     }
     var timer: Timer!
@@ -89,6 +90,15 @@ class ExerciseExecutionViewController: UIViewController {
         view.layer.borderWidth = 1
         view.layer.shadowOffset = shadowOffset
         return view
+    }()
+    
+    fileprivate lazy var phaseCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        return label
     }()
     
     fileprivate lazy var progressView: UIProgressView = {
@@ -156,6 +166,7 @@ class ExerciseExecutionViewController: UIViewController {
         view.backgroundColor = .white
         currentStateDisplayCard.addSubview(exerciseTitle)
         currentStateDisplayCard.addSubview(pitch)
+        currentStateDisplayCard.addSubview(phaseCountLabel)
         currentStateDisplayCard.addSubview(progressView)
         currentStateDisplayCard.addSubview(circularProgressView)
         view.addSubview(currentStateDisplayCard)
@@ -183,8 +194,12 @@ class ExerciseExecutionViewController: UIViewController {
         pitch.topAnchor.constraint(equalTo: exerciseTitle.bottomAnchor, constant: marginWidth).isActive = true
         pitch.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         pitch.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
-        pitch.bottomAnchor.constraint(equalTo: progressView.topAnchor, constant: -marginWidth).isActive = true
-        progressView.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: marginWidth).isActive = true
+        pitch.bottomAnchor.constraint(equalTo: phaseCountLabel.topAnchor, constant: -marginWidth).isActive = true
+        phaseCountLabel.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: marginWidth).isActive = true
+        phaseCountLabel.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        phaseCountLabel.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        phaseCountLabel.bottomAnchor.constraint(equalTo: progressView.topAnchor, constant: -marginWidth).isActive = true
+        progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: marginWidth).isActive = true
         progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         progressView.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
