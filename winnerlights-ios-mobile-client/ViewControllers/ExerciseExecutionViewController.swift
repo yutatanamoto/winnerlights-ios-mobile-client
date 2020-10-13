@@ -32,9 +32,28 @@ class ExerciseExecutionViewController: UIViewController {
     let marginWidth: CGFloat = 16
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
-    var currentTime: Float = 0.0
+    var currentPhaseIndex: Int!
+    var currentTime: Float = 0.0 {
+        didSet {
+            currentPhaseIndex = -1
+            for phaseIndex in 0 ..< exercise.phases.count {
+                let duration = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
+                    summension + phase.duration
+                }
+                if (duration < currentTime) {
+                    currentPhaseIndex += 1
+                }
+            }
+            let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0) { (summension, phase) -> Float in
+                summension + phase.duration
+            }
+            circularProgressView.progressAnimation(
+                currentPahseTime: currentTime-totalDurationTilLastPhase,
+                currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
+        }
+    }
     var timer: Timer!
-    var timerInterval: Float = 0.0001
+    var timerInterval: Float = 0.1
     var isExerciseRunning: Bool = false
     
     fileprivate lazy var currentStateDisplayCard: UIView = {
@@ -81,6 +100,12 @@ class ExerciseExecutionViewController: UIViewController {
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOffset = shadowOffset
         view.setProgress(currentTime, animated: true)
+        return view
+    }()
+    
+    fileprivate lazy var circularProgressView: CircularProgressView = {
+        let view = CircularProgressView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
@@ -131,12 +156,18 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(exerciseTitle)
         currentStateDisplayCard.addSubview(pitch)
         currentStateDisplayCard.addSubview(progressView)
+        currentStateDisplayCard.addSubview(circularProgressView)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
         view.addSubview(nextButton)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateProgress), userInfo: nil, repeats: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        circularProgressView.createCircularPath()
     }
     
     func setupConstraints() {
@@ -155,7 +186,12 @@ class ExerciseExecutionViewController: UIViewController {
         progressView.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: marginWidth).isActive = true
         progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
-        progressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
+        circularProgressView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: marginWidth).isActive = true
+        circularProgressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        circularProgressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
+        circularProgressView.heightAnchor.constraint(equalToConstant: 160).isActive = true
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
         backButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
@@ -175,7 +211,7 @@ class ExerciseExecutionViewController: UIViewController {
     @objc func updateProgress() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-            if currentTime <= totalDuration {
+            if currentTime < totalDuration {
                 currentTime = currentTime + timerInterval
                 progressView.setProgress(currentTime/totalDuration, animated: true)
             }else{
@@ -193,5 +229,52 @@ class ExerciseExecutionViewController: UIViewController {
             startAndPauseButton.setTitle("Start", for: .normal)
             isExerciseRunning = false
         }
+    }
+}
+
+
+class CircularProgressView: UIView {
+    private var circleLayer = CAShapeLayer()
+    private var progressLayer = CAShapeLayer()
+    var circularPath: UIBezierPath!
+    var progressLabel: UILabel!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    func createCircularPath() {
+        let initialProgress: CGFloat = 0.0
+        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
+        circleLayer.path = circularPath.cgPath
+        circleLayer.fillColor = UIColor.clear.cgColor
+        circleLayer.lineCap = .round
+        circleLayer.lineWidth = 16
+        circleLayer.strokeColor = UIColor.white.cgColor
+        progressLayer.path = circularPath.cgPath
+        progressLayer.fillColor = UIColor.clear.cgColor
+        progressLayer.lineCap = .round
+        progressLayer.lineWidth = 10.0
+        progressLayer.strokeEnd = initialProgress
+        progressLayer.strokeColor = UIColor.systemBlue.cgColor
+        layer.addSublayer(circleLayer)
+        layer.addSublayer(progressLayer)
+        layer.shadowOpacity = 0.2
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 4, height: 4)
+        progressLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
+        progressLabel.textAlignment = .center
+        progressLabel.text = "\(String(format:"%.1f", initialProgress)) sec."
+        self.addSubview(progressLabel)
+    }
+    
+    func progressAnimation(currentPahseTime: Float, currentPhaseProgress: Float) {
+        progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
+        let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
+        progressLabel.text = "\(formattedCurrentPahseTime)sec."
     }
 }
