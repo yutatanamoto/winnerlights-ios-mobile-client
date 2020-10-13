@@ -213,7 +213,7 @@ class ExerciseExecutionViewController: UIViewController {
     @objc func updateProgress() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-            if currentTime < totalDuration {
+            if currentTime + timerInterval < totalDuration {
                 currentTime = currentTime + timerInterval
             }else{
                 currentTime = 0.0
