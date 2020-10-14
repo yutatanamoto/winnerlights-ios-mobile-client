@@ -207,11 +207,6 @@ class ExerciseExecutionViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        circularProgressView.createCircularPath()
-    }
-    
     func setupConstraints() {
         currentStateDisplayCard.bottomAnchor.constraint(equalTo: startAndPauseButton.topAnchor, constant: -marginWidth).isActive = true
         currentStateDisplayCard.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
@@ -292,21 +287,33 @@ class ExerciseExecutionViewController: UIViewController {
 
 
 class CircularProgressView: UIView {
+    private let initialProgress: CGFloat = 0.0
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
-    var circularPath: UIBezierPath!
-    var progressLabel: UILabel!
+    private var circularPath: UIBezierPath!
+    
+    fileprivate lazy var progressLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.text = "\(String(format:"%.1f", 0)) sec."
+        label.textAlignment = .center
+        return label
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupView()
+        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        setupView()
+        setupConstraints()
     }
     
-    func createCircularPath() {
-        let initialProgress: CGFloat = 0.0
+    override func draw(_ rect: CGRect) {
         circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
@@ -324,16 +331,21 @@ class CircularProgressView: UIView {
         layer.shadowOpacity = 0.2
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 4, height: 4)
-        progressLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
-        progressLabel.textAlignment = .center
-        progressLabel.text = "\(String(format:"%.1f", initialProgress)) sec."
+    }
+    
+    func setupView() {
         self.addSubview(progressLabel)
+    }
+    
+    func setupConstraints() {
+        progressLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        progressLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
     
     func progressAnimation(currentPahseTime: Float, currentPhaseProgress: Float) {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
         let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
-        progressLabel.text = "\(formattedCurrentPahseTime)sec."
+        progressLabel.text = "\(formattedCurrentPahseTime) sec."
     }
 }
 
