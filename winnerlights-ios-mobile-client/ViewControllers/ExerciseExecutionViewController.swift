@@ -171,6 +171,7 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
         button.setTitle("Back", for: .normal)
+        button.addTarget(self, action: #selector(moveToPrevPhase), for: .touchUpInside)
         return button
     }()
     
@@ -184,6 +185,7 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
         button.setTitle("Next", for: .normal)
+        button.addTarget(self, action: #selector(moveToNextPhase), for: .touchUpInside)
         return button
     }()
 
@@ -281,6 +283,20 @@ class ExerciseExecutionViewController: UIViewController {
         }else{
             startAndPauseButton.setTitle("Start", for: .normal)
             isExerciseRunning = false
+        }
+    }
+    
+    @objc func moveToNextPhase() {
+        if currentPhaseIndex < 4 {
+            currentTime = exercise.phases[0 ..< currentPhaseIndex+1].reduce(0.0, {$0 + $1.duration})
+        }
+    }
+    
+    @objc func moveToPrevPhase() {
+        if currentPhaseIndex > 0 {
+            currentTime = exercise.phases[0 ..< currentPhaseIndex-1].reduce(0.0, {$0 + $1.duration})
+        } else {
+            currentTime = 0
         }
     }
 }
