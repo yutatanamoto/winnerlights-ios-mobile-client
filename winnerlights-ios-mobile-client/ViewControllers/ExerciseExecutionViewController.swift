@@ -386,12 +386,12 @@ class PartitionBarGroupView: UIView {
     
     override func draw(_ rect: CGRect) {
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-        for phaseIndex in 1 ..< exercise.phases.count {
-            let totalDurationTilLastPhase = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
-            let buff = Float(self.frame.size.width) * Float(totalDurationTilLastPhase) / Float(totalDuration)
+        for phaseIndex in 0 ..< exercise.phases.count-1 {
+            let totalDuration_ = exercise.phases[0 ... phaseIndex].reduce(0.0, {$0 + $1.duration})
+            let partitionBarX = Int(Float(self.frame.size.width) * Float(totalDuration_) /  Float(totalDuration))
             let line = UIBezierPath()
-            line.move(to: CGPoint(x: Int(buff), y: 0))
-            line.addLine(to:CGPoint(x: Int(buff), y: Int(self.frame.size.height)))
+            line.move(to: CGPoint(x: partitionBarX, y: 0))
+            line.addLine(to:CGPoint(x: partitionBarX, y: Int(self.frame.size.height)))
             line.close()
             UIColor.black.setStroke()
             line.lineWidth = 2.0
