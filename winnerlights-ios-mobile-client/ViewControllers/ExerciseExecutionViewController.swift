@@ -365,7 +365,7 @@ class PartitionBarGroupView: UIView {
             let line = UIBezierPath()
             print(Int(self.frame.minY), Int(self.frame.maxY))
             line.move(to: CGPoint(x: Int(buff), y: 0))
-            line.addLine(to:CGPoint(x: Int(buff), y: int(self.frame.size.height)))
+            line.addLine(to:CGPoint(x: Int(buff), y: Int(self.frame.size.height)))
             line.close()
             UIColor.black.setStroke()
             line.lineWidth = 2.0
