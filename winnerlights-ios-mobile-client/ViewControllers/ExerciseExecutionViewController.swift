@@ -304,13 +304,11 @@ class CircularProgressView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupView()
-        setupConstraints()
     }
     
     override func draw(_ rect: CGRect) {
@@ -335,6 +333,7 @@ class CircularProgressView: UIView {
     
     func setupView() {
         self.addSubview(progressLabel)
+        setupConstraints()
     }
     
     func setupConstraints() {
