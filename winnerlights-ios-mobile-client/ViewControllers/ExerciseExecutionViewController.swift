@@ -390,7 +390,6 @@ class PartitionBarGroupView: UIView {
             let totalDurationTilLastPhase = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
             let buff = Float(self.frame.size.width) * Float(totalDurationTilLastPhase) / Float(totalDuration)
             let line = UIBezierPath()
-            print(Int(self.frame.minY), Int(self.frame.maxY))
             line.move(to: CGPoint(x: Int(buff), y: 0))
             line.addLine(to:CGPoint(x: Int(buff), y: Int(self.frame.size.height)))
             line.close()
