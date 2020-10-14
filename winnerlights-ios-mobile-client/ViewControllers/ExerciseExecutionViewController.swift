@@ -135,6 +135,12 @@ class ExerciseExecutionViewController: UIViewController {
         return view
     }()
     
+    fileprivate lazy var partitionBarGroupView: PartitionBarGroupView = {
+        let view = PartitionBarGroupView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     fileprivate lazy var circularProgressView: CircularProgressView = {
         let view = CircularProgressView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -189,6 +195,7 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(pitch)
         currentStateDisplayCard.addSubview(phaseCountLabel)
         currentStateDisplayCard.addSubview(progressView)
+        currentStateDisplayCard.addSubview(partitionBarGroupView)
         currentStateDisplayCard.addSubview(currentTimeLabel)
         currentStateDisplayCard.addSubview(currentRemainingTimeLabel)
         currentStateDisplayCard.addSubview(circularProgressView)
@@ -226,6 +233,11 @@ class ExerciseExecutionViewController: UIViewController {
         progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -8).isActive = true
+        
+        partitionBarGroupView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
+        partitionBarGroupView.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
+        partitionBarGroupView.widthAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
+        partitionBarGroupView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         currentTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentTimeLabel.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
@@ -322,5 +334,42 @@ class CircularProgressView: UIView {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
         let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
         progressLabel.text = "\(formattedCurrentPahseTime)sec."
+    }
+}
+
+class PartitionBarGroupView: UIView {
+    var exercise: Exercise = Exercise(
+        title: "Basic",
+        description: "Basic exercise. There are 2 goals and 4 players on each team.",
+        phases: [
+            Phase(duration: 10),
+            Phase(duration: 20),
+            Phase(duration: 15),
+            Phase(duration: 30)
+        ]
+    )
+    override init(frame: CGRect) {
+        super.init(frame: frame);
+        self.backgroundColor = UIColor.clear;
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func draw(_ rect: CGRect) {
+        let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+        for phaseIndex in 1 ..< exercise.phases.count {
+            let totalDurationTilLastPhase = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
+            let buff = Float(self.frame.size.width) * Float(totalDurationTilLastPhase) / Float(totalDuration)
+            let line = UIBezierPath()
+            print(Int(self.frame.minY), Int(self.frame.maxY))
+            line.move(to: CGPoint(x: Int(buff), y: 0))
+            line.addLine(to:CGPoint(x: Int(buff), y: int(self.frame.size.height)))
+            line.close()
+            UIColor.black.setStroke()
+            line.lineWidth = 2.0
+            line.stroke()
+        }
     }
 }
