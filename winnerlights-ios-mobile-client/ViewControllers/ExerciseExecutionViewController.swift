@@ -362,7 +362,6 @@ class PartitionBarGroupView: UIView {
     )
     override init(frame: CGRect) {
         super.init(frame: frame);
-        self.backgroundColor = UIColor.clear;
     }
     
     required init?(coder aDecoder: NSCoder) {
