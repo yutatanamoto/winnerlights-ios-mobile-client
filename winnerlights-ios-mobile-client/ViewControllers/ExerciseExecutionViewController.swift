@@ -90,10 +90,10 @@ class ExerciseExecutionViewController: UIViewController {
     var currentTime: Float = 0.0 {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
-                let totalDuration_ = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
+                let partialTotalDuration = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
                     summension + phase.duration
                 }
-                if (totalDuration_ < currentTime) {
+                if (partialTotalDuration < currentTime) {
                     currentPhaseIndex = phaseIndex
                 }
             }
