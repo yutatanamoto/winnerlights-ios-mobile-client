@@ -90,10 +90,10 @@ class ExerciseExecutionViewController: UIViewController {
     var currentTime: Float = 0.0 {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
-                let duration = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
+                let totalDuration_ = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
                     summension + phase.duration
                 }
-                if (duration < currentTime) {
+                if (totalDuration_ < currentTime) {
                     currentPhaseIndex = phaseIndex
                 }
             }
@@ -190,7 +190,7 @@ class ExerciseExecutionViewController: UIViewController {
     }()
     
     fileprivate lazy var partitionBarGroupView: PartitionBarGroupView = {
-        let view = PartitionBarGroupView()
+        let view = PartitionBarGroupView(phases: exercise.phases)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -419,51 +419,17 @@ class CircularProgressView: UIView {
 }
 
 class PartitionBarGroupView: UIView {
-    var exercise: Exercise = Exercise(
-        title: "Basic",
-        description: "Basic exercise. There are 2 goals and 4 players on each team.",
-        phases: [
-            Phase(
-                duration: 10,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 20,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            ),
-            Phase(
-                duration: 15,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 30,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            )
-        ]
-    )
+    var phases: [Phase]!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
+    }
+    
+    init(phases: [Phase]) {
+        super.init(frame: .zero)
+        self.backgroundColor = .clear
+        self.phases = phases
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -471,9 +437,9 @@ class PartitionBarGroupView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-        for phaseIndex in 0 ..< exercise.phases.count-1 {
-            let totalDuration_ = exercise.phases[0 ... phaseIndex].reduce(0.0, {$0 + $1.duration})
+        let totalDuration: Float = phases.reduce(0.0, {$0 + $1.duration})
+        for phaseIndex in 0 ..< phases.count-1 {
+            let totalDuration_ = phases[0 ... phaseIndex].reduce(0.0, {$0 + $1.duration})
             let partitionBarX = Int(Float(self.frame.size.width) * Float(totalDuration_) /  Float(totalDuration))
             let line = UIBezierPath()
             line.move(to: CGPoint(x: partitionBarX, y: 0))
@@ -493,7 +459,7 @@ class PitchView: UIView {
         self.backgroundColor = .clear
     }
 
-    required init(phase: Phase) {
+    init(phase: Phase) {
         super.init(frame: .zero)
         self.phase = phase
     }
