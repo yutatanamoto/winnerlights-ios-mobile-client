@@ -96,7 +96,7 @@ class ExerciseExecutionViewController: UIViewController {
                 }
             }
             let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0.0, {$0 + $1.duration})
-            circularProgressView.progressAnimation(
+            circularProgressView.updateProgress(
                 currentPahseTime: currentTime-totalDurationTilLastPhase,
                 currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
@@ -407,7 +407,7 @@ class CircularProgressView: UIView {
         progressLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
     
-    func progressAnimation(currentPahseTime: Float, currentPhaseProgress: Float) {
+    func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
         let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
         progressLabel.text = "\(formattedCurrentPahseTime) sec."
