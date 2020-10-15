@@ -90,16 +90,12 @@ class ExerciseExecutionViewController: UIViewController {
     var currentTime: Float = 0.0 {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
-                let partialTotalDuration = exercise.phases[0 ..< phaseIndex].reduce(0) { (summension, phase) -> Float in
-                    summension + phase.duration
-                }
+                let partialTotalDuration = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
                 if (partialTotalDuration < currentTime) {
                     currentPhaseIndex = phaseIndex
                 }
             }
-            let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0) { (summension, phase) -> Float in
-                summension + phase.duration
-            }
+            let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0.0, {$0 + $1.duration})
             circularProgressView.progressAnimation(
                 currentPahseTime: currentTime-totalDurationTilLastPhase,
                 currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
