@@ -32,7 +32,13 @@ class ExerciseExecutionViewController: UIViewController {
     let marginWidth: CGFloat = 16
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
-    var currentPhaseIndex: Int = 0
+    var currentPhaseIndex: Int = 0 {
+        didSet {
+            if currentPhaseIndex != oldValue  {
+                pitch.setNeedsDisplay()
+            }
+        }
+    }
     var currentTime: Float = 0.0 {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
@@ -81,8 +87,8 @@ class ExerciseExecutionViewController: UIViewController {
         return label
     }()
     
-    fileprivate lazy var pitch: UIView = {
-        let view = UIView()
+    fileprivate lazy var pitch: PitchView = {
+        let view = PitchView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         view.layer.cornerRadius = 6
@@ -397,5 +403,46 @@ class PartitionBarGroupView: UIView {
             line.lineWidth = 2.0
             line.stroke()
         }
+    }
+}
+
+class PitchView: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .clear
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func draw(_ rect: CGRect) {
+        drawGoal(rect: CGRect(x: 0, y: 20, width: 10, height: 60))
+        drawGoal(rect: CGRect(x: 0, y: self.frame.height - 80, width: 10, height: 60))
+        drawGoal(rect: CGRect(x: self.frame.width - 10, y: 20, width: 10, height: 60))
+        drawGoal(rect: CGRect(x: self.frame.width - 10, y: self.frame.height - 80, width: 10, height: 60))
+        drawCenterVerticalLine()
+        drawCenterCircle()
+    }
+    
+    func drawGoal(rect: CGRect) {
+        let goalRect = UIBezierPath(rect: rect)
+        UIColor.systemPink.setFill()
+        goalRect.fill()
+    }
+    
+    func drawCenterVerticalLine() {
+        let line = UIBezierPath()
+        line.move(to: CGPoint(x: self.frame.width/2, y: 0))
+        line.addLine(to:CGPoint(x: self.frame.width/2, y: self.frame.height))
+        line.close()
+        UIColor.black.setStroke()
+        line.stroke()
+    }
+    
+    func drawCenterCircle() {
+        let centerCircle = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: 0.3 * self.frame.size.height / 2, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        UIColor.black.setStroke()
+        centerCircle.stroke()
     }
 }
