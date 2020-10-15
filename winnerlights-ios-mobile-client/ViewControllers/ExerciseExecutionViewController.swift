@@ -7,8 +7,23 @@
 
 import UIKit
 
+struct Goal {
+    let position: GoalPosition
+    let color: GoalColor
+}
+enum GoalPosition {
+    case upperLeft
+    case lowerLeft
+    case upperRight
+    case lowerRight
+}
+enum GoalColor {
+    case pink
+    case blue
+}
 struct Phase {
-    var duration: Float
+    let duration: Float
+    let goals: [Goal]
 }
 struct Exercise {
     var title: String
@@ -21,10 +36,42 @@ class ExerciseExecutionViewController: UIViewController {
         title: "Basic",
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
-            Phase(duration: 10),
-            Phase(duration: 20),
-            Phase(duration: 15),
-            Phase(duration: 30)
+            Phase(
+                duration: 10,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 20,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            ),
+            Phase(
+                duration: 15,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 30,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            )
         ]
     )
     let cornerRadius: CGFloat = 20
@@ -35,6 +82,7 @@ class ExerciseExecutionViewController: UIViewController {
     var currentPhaseIndex: Int = 0 {
         didSet {
             if currentPhaseIndex != oldValue  {
+                pitch.phase = exercise.phases[currentPhaseIndex]
                 pitch.setNeedsDisplay()
             }
         }
@@ -88,7 +136,7 @@ class ExerciseExecutionViewController: UIViewController {
     }()
     
     fileprivate lazy var pitch: PitchView = {
-        let view = PitchView()
+        let view = PitchView(phase: exercise.phases[currentPhaseIndex])
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
         view.layer.cornerRadius = 6
@@ -375,10 +423,42 @@ class PartitionBarGroupView: UIView {
         title: "Basic",
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
-            Phase(duration: 10),
-            Phase(duration: 20),
-            Phase(duration: 15),
-            Phase(duration: 30)
+            Phase(
+                duration: 10,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 20,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            ),
+            Phase(
+                duration: 15,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 30,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            )
         ]
     )
     override init(frame: CGRect) {
@@ -407,9 +487,15 @@ class PartitionBarGroupView: UIView {
 }
 
 class PitchView: UIView {
+    var phase: Phase!
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .clear
+    }
+
+    required init(phase: Phase) {
+        super.init(frame: .zero)
+        self.phase = phase
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -417,17 +503,33 @@ class PitchView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        drawGoal(rect: CGRect(x: 0, y: 20, width: 10, height: 60))
-        drawGoal(rect: CGRect(x: 0, y: self.frame.height - 80, width: 10, height: 60))
-        drawGoal(rect: CGRect(x: self.frame.width - 10, y: 20, width: 10, height: 60))
-        drawGoal(rect: CGRect(x: self.frame.width - 10, y: self.frame.height - 80, width: 10, height: 60))
+        let goalWidth: CGFloat = 0.02 * self.frame.width
+        let goalHeight: CGFloat = 0.2 * self.frame.height
+        let verticalMarginToNearestHorizontalLine: CGFloat = 0.1 * self.frame.width
+        for goal in phase.goals {
+            switch goal.color {
+                case .pink:
+                    UIColor.systemPink.setFill()
+                case .blue:
+                    UIColor.systemBlue.setFill()
+            }
+            switch goal.position {
+                case .upperLeft:
+                    drawGoal(rect: CGRect(x: 0, y: verticalMarginToNearestHorizontalLine, width: goalWidth, height: goalHeight))
+                case .lowerLeft:
+                    drawGoal(rect: CGRect(x: 0, y: self.frame.height - verticalMarginToNearestHorizontalLine - goalHeight, width: goalWidth, height: goalHeight))
+                case .upperRight:
+                    drawGoal(rect: CGRect(x: self.frame.width - goalWidth, y: verticalMarginToNearestHorizontalLine, width: goalWidth, height: goalHeight))
+                case .lowerRight:
+                    drawGoal(rect: CGRect(x: self.frame.width - goalWidth, y: self.frame.height - verticalMarginToNearestHorizontalLine - goalHeight, width: goalWidth, height: goalHeight))
+            }
+        }
         drawCenterVerticalLine()
         drawCenterCircle()
     }
     
     func drawGoal(rect: CGRect) {
         let goalRect = UIBezierPath(rect: rect)
-        UIColor.systemPink.setFill()
         goalRect.fill()
     }
     
