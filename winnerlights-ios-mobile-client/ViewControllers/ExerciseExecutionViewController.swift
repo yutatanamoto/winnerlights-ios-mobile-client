@@ -76,7 +76,7 @@ class ExerciseExecutionViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = exercise.title
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -98,7 +98,7 @@ class ExerciseExecutionViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -107,7 +107,7 @@ class ExerciseExecutionViewController: UIViewController {
         let label = UILabel()
         label.text = String(format:"%.0f", 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -117,7 +117,7 @@ class ExerciseExecutionViewController: UIViewController {
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
         label.text = String(format:"%.0f", totalDuration)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -311,7 +311,7 @@ class CircularProgressView: UIView {
     fileprivate lazy var progressLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.text = "\(String(format:"%.1f", 0)) sec."
         label.textAlignment = .center
         return label
