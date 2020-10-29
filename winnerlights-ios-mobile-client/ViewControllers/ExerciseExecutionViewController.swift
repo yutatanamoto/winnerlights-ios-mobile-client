@@ -101,7 +101,7 @@ class ExerciseExecutionViewController: UIViewController {
                 currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
-            phaseCountLabel.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+            phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
             currentTimeLabel.text = String(format:"%.0f", currentTime)
             currentRemainingTimeLabel.text = String(format:"%.0f", totalDuration - currentTime)
         }
@@ -147,8 +147,8 @@ class ExerciseExecutionViewController: UIViewController {
     fileprivate lazy var phaseCountLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -361,8 +361,8 @@ class CircularProgressView: UIView {
     fileprivate lazy var progressLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.text = "\(String(format:"%.1f", 0)) sec."
+        label.font = .systemFont(ofSize: 30, weight: .medium)
+        label.text = "\(String(format:"%.0f", 0))"
         label.textAlignment = .center
         return label
     }()
@@ -409,8 +409,8 @@ class CircularProgressView: UIView {
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
-        let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
-        progressLabel.text = "\(formattedCurrentPahseTime) sec."
+        let formattedCurrentPahseTime = String(format:"%.0f", currentPahseTime)
+        progressLabel.text = "\(formattedCurrentPahseTime)"
     }
 }
 
