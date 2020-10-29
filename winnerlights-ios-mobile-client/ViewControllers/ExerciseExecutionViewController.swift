@@ -95,10 +95,10 @@ class ExerciseExecutionViewController: UIViewController {
                     currentPhaseIndex = phaseIndex
                 }
             }
-            let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0.0, {$0 + $1.duration})
+            let totalDurationTilCurrentPhase = exercise.phases[0 ..< currentPhaseIndex+1].reduce(0.0, {$0 + $1.duration})
             circularProgressView.updateProgress(
-                currentPahseTime: currentTime-totalDurationTilLastPhase,
-                currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
+                currentPahseTime: totalDurationTilCurrentPhase - currentTime,
+                currentPhaseProgress: (totalDurationTilCurrentPhase - currentTime)/exercise.phases[currentPhaseIndex].duration)
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
@@ -378,7 +378,7 @@ class CircularProgressView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
+        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
