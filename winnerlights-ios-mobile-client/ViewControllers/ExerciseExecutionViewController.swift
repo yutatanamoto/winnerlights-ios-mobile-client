@@ -102,7 +102,7 @@ class ExerciseExecutionViewController: UIViewController {
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-            currentTimeLabel.text = String(format:"%.0f", currentTime)
+            currentTimeLabel.text = String(format:"%.0f", floor(currentTime))
             currentRemainingTimeLabel.text = String(format:"%.0f", totalDuration - currentTime)
         }
     }
@@ -409,6 +409,7 @@ class CircularProgressView: UIView {
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
+        let formattedCurrentPahseTime = String(format:"%.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
         let formattedCurrentPahseTimeMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
         let formattedCurrentPahseTimeSecond = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
         if  currentPahseTime > 60.0{
@@ -418,7 +419,7 @@ class CircularProgressView: UIView {
         progressLabel.text = "\(formattedCurrentPahseTimeSpecialMinute):00"
         }
         else {
-        progressLabel.text = "\(formattedCurrentPahseTimeSecond)"
+        progressLabel.text = "\(formattedCurrentPahseTime)"
         }
     }
 }
