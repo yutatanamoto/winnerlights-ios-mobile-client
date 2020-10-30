@@ -102,8 +102,7 @@ class ExerciseExecutionViewController: UIViewController {
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-            currentTimeLabel.text = String(format:"%.0f", floor(currentTime))
-            currentRemainingTimeLabel.text = String(format:"%.0f", totalDuration - currentTime)
+            currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
         }
     }
     var timer: Timer!
@@ -155,9 +154,9 @@ class ExerciseExecutionViewController: UIViewController {
     
     fileprivate lazy var currentTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = String(format:"%.0f", 0)
+        label.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -165,9 +164,9 @@ class ExerciseExecutionViewController: UIViewController {
     fileprivate lazy var currentRemainingTimeLabel: UILabel = {
         let label = UILabel()
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-        label.text = String(format:"%.0f", totalDuration)
+        label.text = String(format:"%.0f", (totalDuration/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(totalDuration.truncatingRemainder(dividingBy: 60.0)))
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -362,7 +361,7 @@ class CircularProgressView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 30, weight: .medium)
-        label.text = "\(String(format:"%.0f", 0))"
+        label.text = String(format:"%.0f", 0)
         label.textAlignment = .center
         return label
     }()
