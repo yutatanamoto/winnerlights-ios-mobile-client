@@ -91,7 +91,7 @@ class ExerciseExecutionViewController: UIViewController {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
                 let partialTotalDuration = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
-                if (partialTotalDuration < currentTime) {
+                if (partialTotalDuration <= currentTime) {
                     currentPhaseIndex = phaseIndex
                 }
             }
@@ -256,6 +256,10 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(nextButton)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
+        circularProgressView.updateProgress(
+            currentPahseTime: exercise.phases[0].duration,
+            currentPhaseProgress: 1.0
+        )
     }
     
     func setupConstraints() {
@@ -352,7 +356,7 @@ class ExerciseExecutionViewController: UIViewController {
 
 
 class CircularProgressView: UIView {
-    private let initialProgress: CGFloat = 0.0
+    private let initialProgress: CGFloat = 1.0
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
     private var circularPath: UIBezierPath!
