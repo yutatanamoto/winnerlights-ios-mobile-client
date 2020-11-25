@@ -37,7 +37,7 @@ class ExerciseExecutionViewController: UIViewController {
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(
-                duration: 65,
+                duration: 10,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -91,18 +91,19 @@ class ExerciseExecutionViewController: UIViewController {
         didSet {
             for phaseIndex in 0 ..< exercise.phases.count {
                 let partialTotalDuration = exercise.phases[0 ..< phaseIndex].reduce(0.0, {$0 + $1.duration})
-                if (partialTotalDuration <= currentTime) {
+                if (partialTotalDuration < currentTime) {
                     currentPhaseIndex = phaseIndex
                 }
             }
-            let totalDurationTilCurrentPhase = exercise.phases[0 ..< currentPhaseIndex+1].reduce(0.0, {$0 + $1.duration})
+            let totalDurationTilLastPhase = exercise.phases[0 ..< currentPhaseIndex].reduce(0.0, {$0 + $1.duration})
             circularProgressView.updateProgress(
-                currentPahseTime: totalDurationTilCurrentPhase - currentTime,
-                currentPhaseProgress: (totalDurationTilCurrentPhase - currentTime)/exercise.phases[currentPhaseIndex].duration)
+                currentPahseTime: currentTime-totalDurationTilLastPhase,
+                currentPhaseProgress: (currentTime-totalDurationTilLastPhase)/exercise.phases[currentPhaseIndex].duration)
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
             progressView.setProgress(currentTime/totalDuration, animated: true)
-            phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-            currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
+            phaseCountLabel.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+            currentTimeLabel.text = String(format:"%.0f", currentTime)
+            currentRemainingTimeLabel.text = String(format:"%.0f", totalDuration - currentTime)
         }
     }
     var timer: Timer!
@@ -146,17 +147,17 @@ class ExerciseExecutionViewController: UIViewController {
     fileprivate lazy var phaseCountLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
-        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.text = "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
     }()
     
     fileprivate lazy var currentTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
+        label.text = String(format:"%.0f", 0)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -164,9 +165,9 @@ class ExerciseExecutionViewController: UIViewController {
     fileprivate lazy var currentRemainingTimeLabel: UILabel = {
         let label = UILabel()
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-        label.text = String(format:"%.0f", (totalDuration/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(totalDuration.truncatingRemainder(dividingBy: 60.0)))
+        label.text = String(format:"%.0f", totalDuration)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         return label
     }()
@@ -256,10 +257,6 @@ class ExerciseExecutionViewController: UIViewController {
         view.addSubview(nextButton)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
-        circularProgressView.updateProgress(
-            currentPahseTime: exercise.phases[0].duration,
-            currentPhaseProgress: 1.0
-        )
     }
     
     func setupConstraints() {
@@ -283,7 +280,6 @@ class ExerciseExecutionViewController: UIViewController {
         progressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -8).isActive = true
-        progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         partitionBarGroupView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
         partitionBarGroupView.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
@@ -357,7 +353,7 @@ class ExerciseExecutionViewController: UIViewController {
 
 
 class CircularProgressView: UIView {
-    private let initialProgress: CGFloat = 1.0
+    private let initialProgress: CGFloat = 0.0
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
     private var circularPath: UIBezierPath!
@@ -365,8 +361,8 @@ class CircularProgressView: UIView {
     fileprivate lazy var progressLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 30, weight: .medium)
-        label.text = String(format:"%.0f", 0)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.text = "\(String(format:"%.1f", 0)) sec."
         label.textAlignment = .center
         return label
     }()
@@ -382,7 +378,7 @@ class CircularProgressView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
+        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
@@ -413,18 +409,8 @@ class CircularProgressView: UIView {
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
         progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
-        let formattedCurrentPahseTime = String(format:"%.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        let formattedCurrentPahseTimeMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
-        let formattedCurrentPahseTimeSecond = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        if  currentPahseTime > 60.0{
-        progressLabel.text = "\(formattedCurrentPahseTimeMinute):\(formattedCurrentPahseTimeSecond)"
-        } else if ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)) == 60.0 {
-        let formattedCurrentPahseTimeSpecialMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero)+1)
-        progressLabel.text = "\(formattedCurrentPahseTimeSpecialMinute):00"
-        }
-        else {
-        progressLabel.text = "\(formattedCurrentPahseTime)"
-        }
+        let formattedCurrentPahseTime = String(format:"%.1f", currentPahseTime)
+        progressLabel.text = "\(formattedCurrentPahseTime) sec."
     }
 }
 

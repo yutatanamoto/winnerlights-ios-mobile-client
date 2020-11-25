@@ -10,13 +10,6 @@ import UIKit
 class AvairableExercisesViewController: UIViewController {
     let numberOfColumns: CGFloat = 2
     let marginWidth: CGFloat = 20
-    let cornerRadius: CGFloat = 20
-    let shadowOpacity: Float = 0.2
-    let shadowOffset: CGSize = CGSize(width: 4, height: 4)
-    let topMarginWidth: CGFloat = 10
-    let bottomMarginWidth: CGFloat = 10
-    let buttonHeight: CGFloat = 60
-    var backButtonTappedAt: Float = 0
     
     // Initialization closures
     fileprivate lazy var exerciseCollectionView: UICollectionView = {
@@ -30,45 +23,19 @@ class AvairableExercisesViewController: UIViewController {
         return collectionView
     }()
     
-    fileprivate lazy var addButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.setTitle("+ Create New Exercise", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-//        button.addTarget(self, action: #selector(someFunc), for: .touchUpInside)
-        return button
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "Avairable Exercises"
         self.view.addSubview(exerciseCollectionView)
-        self.view.addSubview(addButton)
-        setupConstraint()
-    }
-    
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
         setupConstraint()
     }
     
     func setupConstraint() {
-        let guide = view.safeAreaLayoutGuide
         exerciseCollectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         exerciseCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         exerciseCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         exerciseCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        addButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -20).isActive = true
-        addButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -20).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
 }
 
