@@ -219,8 +219,8 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Back", for: .normal)
-        button.addTarget(self, action: #selector(moveToPrevPhase), for: .touchUpInside)
+        button.setTitle("Reset", for: .normal)
+        button.addTarget(self, action: #selector(moveToBeginning), for: .touchUpInside)
         return button
     }()
     
@@ -346,12 +346,8 @@ class ExerciseExecutionViewController: UIViewController {
         }
     }
     
-    @objc func moveToPrevPhase() {
-        if currentPhaseIndex > 0 {
-            currentTime = exercise.phases[0 ..< currentPhaseIndex-1].reduce(0.0, {$0 + $1.duration})
-        } else {
+    @objc func moveToBeginning() {
             currentTime = 0
-        }
     }
 }
 
