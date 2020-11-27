@@ -379,7 +379,7 @@ class CircularProgressView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
+        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2.5, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
