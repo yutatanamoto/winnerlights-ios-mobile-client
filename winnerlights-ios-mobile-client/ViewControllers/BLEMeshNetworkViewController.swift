@@ -9,7 +9,6 @@ import UIKit
 
 class BLEMeshNetworkViewController: UIViewController, ProvisioningViewDelegate, MeshNetworkDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource {
     func provisionerDidProvisionNewDevice(_ node: Node) {
-//        performSegue(withIdentifier: "configure", sender: node)
         let vc = ConfigurationViewController()
         vc.node = node
         self.navigationController?.pushViewController(vc, animated: true)
