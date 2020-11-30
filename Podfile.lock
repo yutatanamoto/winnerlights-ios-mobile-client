@@ -1,0 +1,22 @@
+PODS:
+  - nRFMeshProvision (2.2.3):
+    - OpenSSL-Universal (= 1.0.2.19)
+  - OpenSSL-Universal (1.0.2.19):
+    - OpenSSL-Universal/Static (= 1.0.2.19)
+  - OpenSSL-Universal/Static (1.0.2.19)
+
+DEPENDENCIES:
+  - nRFMeshProvision
+
+SPEC REPOS:
+  trunk:
+    - nRFMeshProvision
+    - OpenSSL-Universal
+
+SPEC CHECKSUMS:
+  nRFMeshProvision: ecb20ce595bb421f2350e539f05d7391dd507724
+  OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
+
+PODFILE CHECKSUM: aedc571b624e94574b1352e6c0e1e59df327983a
+
+COCOAPODS: 1.9.3
