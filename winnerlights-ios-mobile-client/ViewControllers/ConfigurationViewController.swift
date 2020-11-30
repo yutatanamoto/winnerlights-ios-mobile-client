@@ -72,12 +72,6 @@ class ConfigurationViewController: ProgressViewController, UITableViewDelegate, 
         self.view.backgroundColor = .white
         self.title = node.name ?? "Unknown device"
         self.navigationItem.rightBarButtonItem = refreshButton
-        print("node: elements", node.elements[0].models)
-//        let meshNetwork = MeshNetworkManager.instance.meshNetwork!
-//        keys = meshNetwork.applicationKeys.notKnownTo(node: node).filter {
-//            node.knows(networkKey: $0.boundNetworkKey)
-//        }
-//        print(keys)
         models = node.elements[0].models
         
         view.addSubview(modelTableView)
