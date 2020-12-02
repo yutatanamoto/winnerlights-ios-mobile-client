@@ -197,6 +197,20 @@ class ExerciseExecutionViewController: UIViewController {
         return view
     }()
     
+    fileprivate lazy var teamuniformA: UIImageView = {
+        let uniformA = UIImageView(image: UIImage(named: "shirt-outline")?.withRenderingMode(.alwaysTemplate))
+        uniformA.translatesAutoresizingMaskIntoConstraints = false
+        uniformA.tintColor = .systemRed
+        return uniformA
+    }()
+    
+    fileprivate lazy var teamuniformB: UIImageView = {
+        let uniformB = UIImageView(image: UIImage(named: "shirt-outline")?.withRenderingMode(.alwaysTemplate))
+        uniformB.translatesAutoresizingMaskIntoConstraints = false
+        uniformB.tintColor = .systemBlue
+        return uniformB
+    }()
+    
     fileprivate lazy var startAndPauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -251,6 +265,8 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(currentTimeLabel)
         currentStateDisplayCard.addSubview(currentRemainingTimeLabel)
         currentStateDisplayCard.addSubview(circularProgressView)
+        currentStateDisplayCard.addSubview(teamuniformA)
+        currentStateDisplayCard.addSubview(teamuniformB)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
@@ -300,10 +316,25 @@ class ExerciseExecutionViewController: UIViewController {
         currentRemainingTimeLabel.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
         
         circularProgressView.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth).isActive = true
-        circularProgressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
-        circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        //circularProgressView.leadingAnchor.constraint(equalTo: teamuniformA.leadingAnchor, constant: marginWidth/4).isActive = true
+        //circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         circularProgressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
         circularProgressView.heightAnchor.constraint(equalToConstant: 160).isActive = true
+        circularProgressView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+        circularProgressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        teamuniformA.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
+        teamuniformA.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        teamuniformA.trailingAnchor.constraint(equalTo: circularProgressView.leadingAnchor, constant: -marginWidth).isActive = true
+        teamuniformA.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3).isActive = true
+        teamuniformA.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
+        
+        teamuniformB.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
+        teamuniformB.leadingAnchor.constraint(equalTo: circularProgressView.trailingAnchor, constant: marginWidth).isActive = true
+        teamuniformB.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        teamuniformB.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3).isActive = true
+        teamuniformB.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
+        
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
         backButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
