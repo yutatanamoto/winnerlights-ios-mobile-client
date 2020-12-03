@@ -230,43 +230,49 @@ class ExerciseExecutionViewController: UIViewController {
     }()
     
     fileprivate lazy var startAndPauseButton: UIButton = {
+        let startImage = UIImage(systemName: "play.fill")
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Start", for: .normal)
+        button.setImage(startImage, for: .normal)
         button.addTarget(self, action: #selector(startAndPauseExercise), for: .touchUpInside)
         return button
     }()
     
     fileprivate lazy var backButton: UIButton = {
+        let restartImage = UIImage(systemName: "backward.end.fill")!
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Reset", for: .normal)
+        button.setImage(restartImage, for: .normal)
         button.addTarget(self, action: #selector(moveToBeginning), for: .touchUpInside)
         return button
     }()
     
     fileprivate lazy var nextButton: UIButton = {
+        let nextImage = UIImage(systemName: "forward.fill")!
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Next", for: .normal)
+        button.setImage(nextImage, for: .normal)
         button.addTarget(self, action: #selector(moveToNextPhase), for: .touchUpInside)
         return button
     }()
@@ -389,11 +395,13 @@ class ExerciseExecutionViewController: UIViewController {
     }
     
     @objc func startAndPauseExercise() {
+        let pauseImage = UIImage(systemName: "pause.fill")!
+        let startImage = UIImage(systemName: "play.fill")!
         if !isExerciseRunning {
-            startAndPauseButton.setTitle("Pause", for: .normal)
+            startAndPauseButton.setImage(pauseImage, for: .normal)
             isExerciseRunning = true
         }else{
-            startAndPauseButton.setTitle("Start", for: .normal)
+            startAndPauseButton.setImage(startImage, for: .normal)
             isExerciseRunning = false
         }
     }
