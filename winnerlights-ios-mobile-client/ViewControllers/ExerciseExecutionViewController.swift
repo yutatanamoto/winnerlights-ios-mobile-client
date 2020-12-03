@@ -211,6 +211,24 @@ class ExerciseExecutionViewController: UIViewController {
         return imageview
     }()
     
+    fileprivate lazy var teamnameA: UILabel = {
+        let label = UILabel()
+        label.text = String("A")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate lazy var teamnameB: UILabel = {
+        let label = UILabel()
+        label.text = String("B")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
     fileprivate lazy var startAndPauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -267,6 +285,8 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(circularProgressView)
         currentStateDisplayCard.addSubview(teamuniformA)
         currentStateDisplayCard.addSubview(teamuniformB)
+        currentStateDisplayCard.addSubview(teamnameA)
+        currentStateDisplayCard.addSubview(teamnameB)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
@@ -334,6 +354,12 @@ class ExerciseExecutionViewController: UIViewController {
         teamuniformB.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         teamuniformB.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3).isActive = true
         teamuniformB.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
+        
+        teamnameA.centerXAnchor.constraint(equalTo: teamuniformA.centerXAnchor).isActive = true
+        teamnameA.centerYAnchor.constraint(equalTo: teamuniformA.centerYAnchor).isActive = true
+        
+        teamnameB.centerXAnchor.constraint(equalTo: teamuniformB.centerXAnchor).isActive = true
+        teamnameB.centerYAnchor.constraint(equalTo: teamuniformB.centerYAnchor).isActive = true
         
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
