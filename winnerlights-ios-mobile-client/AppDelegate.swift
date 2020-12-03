@@ -80,10 +80,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Set up local Elements on the phone.
         let element0 = Element(name: "Primary Element", location: .first, models: [
             // 4 generic models defined by Bluetooth SIG:
-            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
-            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+//            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+//            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
             Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
-            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericOnOffClientDelegate()),
+//            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate()),
             // A simple vendor model:
             Model(vendorModelId: 0x0001, companyId: 0x0059, delegate: SimpleOnOffClientDelegate())
         ])
@@ -93,7 +94,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
             Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
         ])
-        meshNetworkManager.localElements = [element0, element1]
+        let element2 = Element(name: "Red LED Controller", location: .third, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        let element3 = Element(name: "Green LED Controller", location: .fourth, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        let element4 = Element(name: "Blue LED Controller", location: .fifth, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        let element5 = Element(name: "Red LED Controller", location: .sixth, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        let element6 = Element(name: "Green LED Controller", location: .seventh, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        let element7 = Element(name: "Blue LED Controller", location: .eighth, models: [
+            Model(sigModelId: 0x1000, delegate: GenericOnOffServerDelegate()),
+            Model(sigModelId: 0x1002, delegate: GenericLevelServerDelegate()),
+            Model(sigModelId: 0x1001, delegate: GenericOnOffClientDelegate()),
+            Model(sigModelId: 0x1003, delegate: GenericLevelClientDelegate())
+        ])
+        meshNetworkManager.localElements = [element0, element1, element2, element3, element4, element5, element6, element7]
         
         connection = NetworkConnection(to: meshNetwork)
         connection!.dataDelegate = meshNetworkManager

@@ -17,7 +17,7 @@ class ConfigurationViewController: ProgressViewController, UITableViewDelegate, 
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
           ?? UITableViewCell(style: .default, reuseIdentifier: "Cell")
         let model = models[indexPath.row]
-        cell.textLabel?.text = model.name
+        cell.textLabel?.text = model.name ?? "model name" + String(model.parentElement?.index ?? 0) as! String
         return cell
     }
     
@@ -72,7 +72,11 @@ class ConfigurationViewController: ProgressViewController, UITableViewDelegate, 
         self.view.backgroundColor = .white
         self.title = node.name ?? "Unknown device"
         self.navigationItem.rightBarButtonItem = refreshButton
-        models = node.elements[0].models
+        node.elements.forEach{ element in
+            if let model = element.models.first(where: { $0.name == "Generic OnOff Server" }) {
+                models.append(model)
+            }
+        }
         
         view.addSubview(modelTableView)
         view.addSubview(addAppKeyButton)
@@ -102,6 +106,7 @@ class ConfigurationViewController: ProgressViewController, UITableViewDelegate, 
     }
     
     @objc func getCompositionData() {
+        print("getCompositionData called")
         start("Requesting Composition Data...") {
             let message = ConfigCompositionDataGet()
             return try MeshNetworkManager.instance.send(message, to: self.node)
@@ -109,6 +114,7 @@ class ConfigurationViewController: ProgressViewController, UITableViewDelegate, 
     }
     
     func getTtl() {
+        print("getTtl called")
         start("Requesting default TTL...") {
             let message = ConfigDefaultTtlGet()
             return try MeshNetworkManager.instance.send(message, to: self.node)
@@ -186,9 +192,11 @@ extension ConfigurationViewController: MeshNetworkDelegate {
             }
         
         case is ConfigCompositionDataStatus:
+            print("ConfigCompositionDataStatus -> received")
             self.getTtl()
             
         case is ConfigDefaultTtlStatus:
+            print("ConfigDefaultTtlStatus -> received")
             done()
             
         case is ConfigNodeResetStatus:

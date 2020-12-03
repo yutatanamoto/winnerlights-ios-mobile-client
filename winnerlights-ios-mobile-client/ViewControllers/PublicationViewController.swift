@@ -8,11 +8,6 @@
 import UIKit
 import nRFMeshProvision
 
-protocol PublicationDelegate {
-    /// This method is called when the publication has changed.
-    func publicationChanged()
-}
-
 class PublicationViewController: ProgressViewController {
     
     var model: Model!
@@ -31,20 +26,6 @@ class PublicationViewController: ProgressViewController {
     let shadowOpacity: Float = 0.2
     let marginWidth: CGFloat = 20
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
-    
-    fileprivate lazy var publicationButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.setTitle("Set Publication", for: .normal)
-        button.addTarget(self, action: #selector(setPublication), for: .touchUpInside)
-        return button
-    }()
     
     fileprivate lazy var publishOnButton: UIButton = {
         let button = UIButton(type: .system)
@@ -96,7 +77,6 @@ class PublicationViewController: ProgressViewController {
         
         view.addSubview(publishOnButton)
         view.addSubview(publishOffButton)
-        view.addSubview(publicationButton)
         
         publishOnButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
         publishOnButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
@@ -106,36 +86,8 @@ class PublicationViewController: ProgressViewController {
         
         publishOffButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
         publishOffButton.leadingAnchor.constraint(equalTo: publishOnButton.trailingAnchor, constant: marginWidth).isActive = true
-        publishOffButton.trailingAnchor.constraint(equalTo: publicationButton.leadingAnchor, constant: -marginWidth).isActive = true
         publishOffButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
         publishOffButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publicationButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
-        publicationButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
-        publicationButton.leadingAnchor.constraint(equalTo: publishOffButton.trailingAnchor, constant: marginWidth).isActive = true
-        publicationButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    }
-    
-    @objc func setPublication() {
-        guard let message = ConfigModelPublicationSet(disablePublicationFor: model) else {
-            return
-        }
-        send(message, description: "Removing Publication...")
-        
-        guard let destination = destination, let applicationKey = applicationKey else {
-            return
-        }
-        start("Setting Model Publication...") {
-            let publish = Publish(to: destination, using: applicationKey,
-                                  usingFriendshipMaterial: false, ttl: self.ttl,
-                                  periodSteps: self.periodSteps, periodResolution: self.periodResolution,
-                                  retransmit: Publish.Retransmit(publishRetransmitCount: self.retransmissionCount,
-                                                                 intervalSteps: self.retransmissionIntervalSteps))
-            let message: ConfigMessage =
-                ConfigModelPublicationSet(publish, to: self.model) ??
-                ConfigModelPublicationVirtualAddressSet(publish, to: self.model)!
-            return try MeshNetworkManager.instance.send(message, to: self.model)
-        }
     }
     
     @objc func publishGenericOnMessage(turnOn: Bool=false) {
@@ -166,7 +118,6 @@ extension PublicationViewController: ModelViewCellDelegate {
     var isRefreshing: Bool {
         return false
     }
-    
 }
 
 extension PublicationViewController: MeshNetworkDelegate {
@@ -225,10 +176,6 @@ extension PublicationViewController: MeshNetworkDelegate {
         }
     }
     
-}
-
-protocol ModelControlDelegate: class {
-    func publish(_ message: MeshMessage, description: String, fromModel model: Model)
 }
 
 extension PublicationViewController: ModelControlDelegate {

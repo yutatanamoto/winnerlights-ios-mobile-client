@@ -30,7 +30,6 @@ class ProvisioningViewController: UIViewController, ProvisioningDelegate, Bearer
     }()
 
     override func viewDidLoad() {
-        print("delegate @ ProvisioningViewController:viewDidLoad", self.delegate)
         super.viewDidLoad()
         view.backgroundColor = .white
         self.title = unprovisionedDevice.name
@@ -57,7 +56,7 @@ class ProvisioningViewController: UIViewController, ProvisioningDelegate, Bearer
     }
     
     @objc func provision() {
-        print("provisionButton tapped")
+        print("privision called -> ...")
         guard bearer.isOpen else {
             openBearer()
             return
@@ -153,33 +152,44 @@ class ProvisioningViewController: UIViewController, ProvisioningDelegate, Bearer
     }
     
     func startProvisioning() {
-        print("Start Provisioning")
+        print("startProvisioning called -> ...")
         guard let capabilities = provisioningManager.provisioningCapabilities else {
             return
         }
         
         // If the device's Public Key is available OOB, it should be read.
-        let publicKeyNotAvailable = capabilities.publicKeyType.isEmpty
-        guard publicKeyNotAvailable || publicKey != nil else {
-            presentOobPublicKeyDialog(for: unprovisionedDevice) { publicKey in
-                self.publicKey = publicKey
-                self.startProvisioning()
-            }
-            return
-        }
+//        let publicKeyNotAvailable = capabilities.publicKeyType.isEmpty
+//        print("\tpublicKeyNotAvailable -> ", publicKeyNotAvailable)
+//        print("\tpublicKey -> ", publicKey)
+        // If publicKey is available and publicKey have value, go into else branch
+//        guard publicKeyNotAvailable || publicKey != nil else {
+//            print("\tpresentOobPublicKeyDialog will be called -> ...")
+//            presentOobPublicKeyDialog(for: unprovisionedDevice) { publicKey in
+//                self.publicKey = publicKey
+//                self.startProvisioning()
+//            }
+//            return
+//        }
         publicKey = publicKey ?? .noOobPublicKey
         
         // If any of OOB methods is supported, if should be chosen.
-        let staticOobNotSupported = capabilities.staticOobType.isEmpty
-        let outputOobNotSupported = capabilities.outputOobActions.isEmpty
-        let inputOobNotSupported  = capabilities.inputOobActions.isEmpty
-        guard (staticOobNotSupported && outputOobNotSupported && inputOobNotSupported) || authenticationMethod != nil else {
-            presentOobOptionsDialog(for: provisioningManager, from: provisionButton) { method in
-                self.authenticationMethod = method
-                self.startProvisioning()
-            }
-            return
-        }
+//        let staticOobNotSupported = capabilities.staticOobType.isEmpty
+//        let outputOobNotSupported = capabilities.outputOobActions.isEmpty
+//        let inputOobNotSupported  = capabilities.inputOobActions.isEmpty
+//        print("\tstaticOobNotSupported -> ", staticOobNotSupported)
+//        print("\toutputOobNotSupported -> ", outputOobNotSupported)
+//        print("\tinputOobNotSupported -> ", inputOobNotSupported)
+//        print("\tauthenticationMethod -> ", authenticationMethod)
+//        // If one or more of staticOob, outputOob and inputOob is supported and authenticationMethod has value, got into else branch
+//        guard (staticOobNotSupported && outputOobNotSupported && inputOobNotSupported) || authenticationMethod != nil else {
+//            print("\tpresentOobOptionsDialog will be called -> ...")
+//            presentOobOptionsDialog(for: provisioningManager, from: provisionButton) { method in
+//                self.authenticationMethod = method
+//                self.startProvisioning()
+//            }
+//            return
+//        }
+        
         // If none of OOB methods are supported, select the only option left.
         if authenticationMethod == nil {
             authenticationMethod = .noOob
@@ -212,15 +222,6 @@ class ProvisioningViewController: UIViewController, ProvisioningDelegate, Bearer
                 self.presentStatusDialog(message: "Identifying...")
                 
             case .capabilitiesReceived(let capabilities):
-                print("capabilities", capabilities)
-//                self.elementsCountLabel.text = "\(capabilities.numberOfElements)"
-//                self.supportedAlgorithmsLabel.text = "\(capabilities.algorithms)"
-//                self.publicKeyTypeLabel.text = "\(capabilities.publicKeyType)"
-//                self.staticOobTypeLabel.text = "\(capabilities.staticOobType)"
-//                self.outputOobSizeLabel.text = "\(capabilities.outputOobSize)"
-//                self.supportedOutputOobActionsLabel.text = "\(capabilities.outputOobActions)"
-//                self.inputOobSizeLabel.text = "\(capabilities.inputOobSize)"
-//                self.supportedInputOobActionsLabel.text = "\(capabilities.inputOobActions)"
                 
                 // If the Unicast Address was set to automatic (nil), it should be
                 // set to the correct value by now, as we know the number of elements.

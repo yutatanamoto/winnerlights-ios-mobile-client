@@ -76,6 +76,7 @@ class ModelViewController: ProgressViewController {
             print("subscribing", group.address)
         }
         print("model.publish", model.publish)
+        print("node.isProvisioner -> ", model.parentElement?.parentNode?.isProvisioner)
     }
 
     @objc func bindAppKey() {

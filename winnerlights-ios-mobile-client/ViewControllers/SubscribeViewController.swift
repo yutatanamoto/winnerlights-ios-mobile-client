@@ -51,11 +51,12 @@ private extension SubscribeViewController {
     
     func addSubscription() {
         let alreadySubscribedGroups = model.subscriptions
+        print("alreadySubscribedGroups -> " , alreadySubscribedGroups)
         alreadySubscribedGroups.forEach{ group in
             let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: self.model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: self.model)!
             send(message, description: "Unsubscribing...")
         }
-        print("alreadySubscribedGroups", alreadySubscribedGroups)
+        print("guard let", alreadySubscribedGroups)
         guard let selectedIndexPath = selectedIndexPath else {
             return
         }
