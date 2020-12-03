@@ -550,219 +550,160 @@ class PitchView: UIView {
     }
     
     func drawPlayer1() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.225, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.275, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.22, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.28, y: self.frame.height*0.325))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer2() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.31, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.36, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.325))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer3() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.14, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.19, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.325))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
+        
     }
     
     func drawPlayer4() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.225, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.275, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.25, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.22, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.28, y: self.frame.height*0.65))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer5() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.31, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.36, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.65))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer6() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.14, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.19, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.65))
         body.close()
         UIColor.systemPink.setFill()
-        UIColor.systemPink.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer7() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.725, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.775, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.72, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.78, y: self.frame.height*0.325))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer8() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.81, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.86, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.325))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer9() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.275), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.425))
-        body.addLine(to: CGPoint(x: self.frame.width*0.64, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.69, y: self.frame.height*0.325))
+        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.445))
+        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.325))
+        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.325))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer10() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.725, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.775, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.75, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.72, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.78, y: self.frame.height*0.65))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer11() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.81, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.86, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.65))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawPlayer12() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.6), radius: self.frame.width*0.025, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
         head.fill()
-        head.stroke()
         let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.75))
-        body.addLine(to: CGPoint(x: self.frame.width*0.64, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.69, y: self.frame.height*0.65))
+        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.77))
+        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.65))
+        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.65))
         body.close()
         UIColor.systemBlue.setFill()
-        UIColor.systemBlue.setStroke()
-        body.lineWidth = 4
         body.fill()
-        body.stroke()
     }
     
     func drawCenterVerticalLine() {
