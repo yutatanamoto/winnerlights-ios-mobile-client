@@ -240,6 +240,10 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
         button.setImage(startImage, for: .normal)
         button.addTarget(self, action: #selector(startAndPauseExercise), for: .touchUpInside)
         return button
@@ -256,6 +260,10 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
         button.setImage(restartImage, for: .normal)
         button.addTarget(self, action: #selector(moveToBeginning), for: .touchUpInside)
         return button
@@ -272,6 +280,10 @@ class ExerciseExecutionViewController: UIViewController {
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
         button.setImage(nextImage, for: .normal)
         button.addTarget(self, action: #selector(moveToNextPhase), for: .touchUpInside)
         return button
