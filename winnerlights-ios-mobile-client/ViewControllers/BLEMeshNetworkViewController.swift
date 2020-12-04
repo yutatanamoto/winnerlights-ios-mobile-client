@@ -19,7 +19,6 @@ protocol PublicationDelegate {
 
 struct LEDColor {
     var color: UIColor
-    var tag: Int
     var redIsOn: Bool
     var greenIsOn: Bool
     var blueIsOn: Bool
@@ -28,12 +27,12 @@ struct LEDColor {
 class BLEMeshNetworkViewController: ProgressViewController, UINavigationControllerDelegate {
     
     var ledColors: [LEDColor] = [
-        LEDColor(color: .systemRed, tag: 0, redIsOn: true, greenIsOn: false, blueIsOn: false),
-        LEDColor(color: .systemGreen, tag: 1, redIsOn: false, greenIsOn: true, blueIsOn: false),
-        LEDColor(color: .systemBlue, tag: 2, redIsOn: false, greenIsOn: false, blueIsOn: true),
-        LEDColor(color: .systemYellow, tag: 3, redIsOn: true, greenIsOn: true, blueIsOn: false),
-        LEDColor(color: .systemPurple, tag: 4, redIsOn: true, greenIsOn: false, blueIsOn: true),
-        LEDColor(color: UIColor(red: 0, green: 255, blue: 255, alpha: 1), tag: 5, redIsOn: false, greenIsOn: true, blueIsOn: true)
+        LEDColor(color: .systemRed, redIsOn: true, greenIsOn: false, blueIsOn: false),
+        LEDColor(color: .systemGreen, redIsOn: false, greenIsOn: true, blueIsOn: false),
+        LEDColor(color: .systemBlue, redIsOn: false, greenIsOn: false, blueIsOn: true),
+        LEDColor(color: .systemYellow, redIsOn: true, greenIsOn: true, blueIsOn: false),
+        LEDColor(color: .systemPurple, redIsOn: true, greenIsOn: false, blueIsOn: true),
+        LEDColor(color: UIColor(red: 0, green: 255, blue: 255, alpha: 1), redIsOn: false, greenIsOn: true, blueIsOn: true)
     ]
 
     let cornerRadius: CGFloat = 20
@@ -108,10 +107,10 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
     }
     
-//    fileprivate lazy var refreshButton: UIBarButtonItem = {
-//        let button = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(refresh))
-//        return button
-//    }()
+    fileprivate lazy var refreshButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Refresh", style: .plain, target: self, action: #selector(refresh))
+        return button
+    }()
     fileprivate lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(showAvairablePeripherals))
         return button
@@ -286,7 +285,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         super.viewDidLoad()
         self.view.backgroundColor = .white
         self.title = "BLE Mesh Sample"
-//        self.navigationItem.leftBarButtonItem = refreshButton
+        self.navigationItem.leftBarButtonItem = refreshButton
         self.navigationItem.rightBarButtonItem = addButton
         
         view.addSubview(nodeTableView)
@@ -454,12 +453,12 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         self.navigationController?.present(NavigationController(rootViewController: vc), animated: true)
     }
     
-//    @objc func refresh() {
-//        if let network = MeshNetworkManager.instance.meshNetwork {
-//            nodes = network.nodes
-//            nodeTableView.reloadData()
-//        }
-//    }
+    @objc func refresh() {
+        if let network = MeshNetworkManager.instance.meshNetwork {
+            nodes = network.nodes
+            nodeTableView.reloadData()
+        }
+    }
     
     func CreateAndSaveApplicationKey() {
         let network = MeshNetworkManager.instance.meshNetwork!
@@ -606,8 +605,9 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
                 }
             }
             
-        case _ as GenericOnOffStatus:
+        case let status as GenericOnOffStatus:
             done() {
+//                if status
                 self.presentAlert(title: "Succes", message: "success foooooo!!")
             }
         

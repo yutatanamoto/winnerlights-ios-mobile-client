@@ -196,8 +196,9 @@ extension ConfigurationViewController: MeshNetworkDelegate {
             self.getTtl()
             
         case is ConfigDefaultTtlStatus:
-            print("ConfigDefaultTtlStatus -> received")
-            done()
+            done() {
+                self.presentAlert(title: "Succes", message: "ConfigDefaultTtlStatus recived")
+            }
             
         case is ConfigNodeResetStatus:
             done() {
