@@ -39,8 +39,6 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     let shadowOpacity: Float = 0.2
     let marginWidth: CGFloat = 50
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
-//    var destinationGroupAddress1: MeshAddress? = MeshAddress(0xC000)
-//    var destinationGroupAddress2: MeshAddress? = MeshAddress(0xC001)
     
     var genericOnOffRedClientModel1: Model!
     var genericOnOffGreenClientModel1: Model!
@@ -100,11 +98,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     }
     var defaultName: String {
         let network = MeshNetworkManager.instance.meshNetwork!
-        if isApplicationKey {
-            return "App Key \((network.nextAvailableApplicationKeyIndex ?? 0xFFF) + 1)"
-        } else {
-            return "Network Key \((network.nextAvailableNetworkKeyIndex ?? 0xFFF) + 1)"
-        }
+        return "App Key \((network.nextAvailableApplicationKeyIndex ?? 0xFFF) + 1)"
     }
     
     fileprivate lazy var refreshButton: UIBarButtonItem = {
@@ -608,7 +602,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
         case let status as GenericOnOffStatus:
             done() {
 //                if status
-                self.presentAlert(title: "Succes", message: "success foooooo!!")
+                self.presentAlert(title: "Succes", message: "Message you sent was succesfully received!!")
             }
         
         case is ConfigNodeReset:
@@ -623,9 +617,9 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
     
     func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
         print("message@didSendMessage    -> ", message)
-//        done() {
-//            self.presentAlert(title: "Succes", message: "success foooooo!!")
-//        }
+        done() {
+            self.presentAlert(title: "Succes", message: "Message was succesfully sent!!")
+        }
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager,

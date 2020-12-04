@@ -130,7 +130,7 @@ class AvairablePeripheralViewController: UIViewController, UITableViewDelegate, 
                         rssi RSSI: NSNumber) {
         // check whether discovered peripheral is contained by discoveredPeripherals
         if let index = discoveredPeripherals.firstIndex(where: { $0.peripheral == peripheral }) {
-            print("no new peripheral discovered", index)
+            print("No new peripheral discovered", index)
         } else {
             if let unprovisionedDevice = UnprovisionedDevice(advertisementData: advertisementData) {
                 discoveredPeripherals.append((unprovisionedDevice, peripheral, RSSI.intValue))
@@ -141,19 +141,12 @@ class AvairablePeripheralViewController: UIViewController, UITableViewDelegate, 
     
     func startProvisioning() {
         print("startProvisioning called -> ...")
-        
-        print("bearer.isOpen -> ", bearer.isOpen)
         if !bearer.isOpen {
             presentStatusDialog(message: "Connecting...") {
                 self.bearer.open()
             }
         }
         
-        guard let capabilities = provisioningManager.provisioningCapabilities else {
-            print("provisioningManager -> ", provisioningManager)
-            print("capabilities -> ", provisioningManager.provisioningCapabilities)
-            return
-        }
         let publicKey: PublicKey = .noOobPublicKey
         
         // If none of OOB methods are supported, select the only option left.
@@ -242,8 +235,6 @@ extension AvairablePeripheralViewController: ProvisioningDelegate {
                 if !addressValid {
                    self.provisioningManager.unicastAddress = nil
                 }
-//                self.unicastAddressLabel.text = self.provisioningManager.unicastAddress?.asString() ?? "No address available"
-//                self.actionProvision.isEnabled = addressValid
                 
                 let capabilitiesWereAlreadyReceived = self.capabilitiesReceived
                 self.capabilitiesReceived = true
@@ -252,21 +243,6 @@ extension AvairablePeripheralViewController: ProvisioningDelegate {
                 
                 self.dismissStatusDialog() {
                     self.startProvisioning()
-//                    if deviceSupported && addressValid {
-//                        // If the device got disconnected after the capabilities were received
-//                        // the first time, the app had to send invitation again.
-//                        // This time we can just directly proceed with provisioning.
-//                        if capabilitiesWereAlreadyReceived {
-//                            self.startProvisioning()
-//                        }
-//                    } else {
-//                        if !deviceSupported {
-//                            self.presentAlert(title: "Error", message: "Selected device is not supported.")
-////                            self.actionProvision.isEnabled = false
-//                        } else if !addressValid {
-//                            self.presentAlert(title: "Error", message: "No available Unicast Address in Provisioner's range.")
-//                        }
-//                    }
                 }
                 
             case .complete:
@@ -372,16 +348,6 @@ extension AvairablePeripheralViewController: GattBearerDelegate {
         }
     }
 }
-
-//extension AvairablePeripheralViewController: ProvisioningViewDelegate{
-//    func provisionerDidProvisionNewDevice(_ node: Node) {
-//        print("provisionerDidProvisionNewDevice called")
-//        let vc = ConfigurationViewController()
-//        vc.node = node
-//        self.navigationController?.pushViewController(vc, animated: true)
-//    }
-//
-//}
 
 protocol EditKeyDelegate {
     /// Notifies the delegate that the Key was added to the mesh network.
