@@ -8,6 +8,11 @@
 import UIKit
 import nRFMeshProvision
 
+protocol AppKeyDelegate {
+    /// This method is called when a new Application Key has been added to the Node.
+    func keyAdded()
+}
+
 class ConfigurationViewController: ProgressViewController, UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models.count

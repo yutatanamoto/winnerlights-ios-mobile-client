@@ -19,6 +19,7 @@ class AvairablePeripheralViewController: UIViewController, UITableViewDelegate, 
     // MARK: - Properties
     var centralManager: CBCentralManager!
     var bearer: ProvisioningBearer!
+    static let attentionTimer: UInt8 = 5
     private var discoveredPeripherals: [DiscoveredPeripheral] = []
     private var alert: UIAlertController?
     private var selectedDevice: UnprovisionedDevice?
@@ -326,7 +327,7 @@ extension AvairablePeripheralViewController: GattBearerDelegate {
                 
                 print("provisioningManager.identify will be called -> ...")
                 DispatchQueue.main.async {
-                    try! self.provisioningManager.identify(andAttractFor: ProvisioningViewController.attentionTimer)
+                    try! self.provisioningManager.identify(andAttractFor: AvairablePeripheralViewController.attentionTimer)
                 }
                 self.startProvisioning()
             }

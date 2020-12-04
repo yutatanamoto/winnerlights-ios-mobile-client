@@ -34,10 +34,6 @@ class SubscribeViewController: ProgressViewController {
         view.backgroundColor = .white
         MeshNetworkManager.instance.delegate = self
         let network = MeshNetworkManager.instance.meshNetwork!
-//        let alreadySubscribedGroups = model.subscriptions
-//        groups = network.groups.filter {
-//            !alreadySubscribedGroups.contains($0)
-//        }
         groups = network.groups
         view.addSubview(groupTableView)
         groupTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
