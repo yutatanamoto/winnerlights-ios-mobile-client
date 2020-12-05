@@ -148,6 +148,12 @@ class AvairablePeripheralViewController: UIViewController, UITableViewDelegate, 
             }
         }
         
+        guard let capabilities = provisioningManager.provisioningCapabilities else {
+            print("provisioningManager -> ", provisioningManager)
+            print("capabilities -> ", provisioningManager.provisioningCapabilities)
+            return
+        }
+        
         let publicKey: PublicKey = .noOobPublicKey
         
         // If none of OOB methods are supported, select the only option left.
@@ -244,6 +250,20 @@ extension AvairablePeripheralViewController: ProvisioningDelegate {
                 
                 self.dismissStatusDialog() {
                     self.startProvisioning()
+                    if deviceSupported && addressValid {
+                        // If the device got disconnected after the capabilities were received
+                        // the first time, the app had to send invitation again.
+                        // This time we can just directly proceed with provisioning.
+                        if capabilitiesWereAlreadyReceived {
+                            self.startProvisioning()
+                        }
+                    } else {
+                        if !deviceSupported {
+                            self.presentAlert(title: "Error", message: "Selected device is not supported.")
+                        } else if !addressValid {
+                            self.presentAlert(title: "Error", message: "No available Unicast Address in Provisioner's range.")
+                        }
+                    }
                 }
                 
             case .complete:
@@ -350,6 +370,16 @@ extension AvairablePeripheralViewController: GattBearerDelegate {
     }
 }
 
+extension AvairablePeripheralViewController: ProvisioningViewDelegate{
+    func provisionerDidProvisionNewDevice(_ node: Node) {
+        print("provisionerDidProvisionNewDevice called")
+        let vc = ConfigurationViewController()
+        vc.node = node
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+
+}
+
 protocol EditKeyDelegate {
     /// Notifies the delegate that the Key was added to the mesh network.
     ///
@@ -359,15 +389,6 @@ protocol EditKeyDelegate {
     ///
     /// - parameter key: The Key that has been modified.
     func keyWasModified(_ key: Key)
-}
-
-extension BLEMeshNetworkViewController: ModelControlDelegate {
-    
-    func publish(_ message: MeshMessage, description: String, fromModel model: Model) {
-        start(description) {
-            return MeshNetworkManager.instance.publish(message, fromModel: model)
-        }
-    }
 }
 
 

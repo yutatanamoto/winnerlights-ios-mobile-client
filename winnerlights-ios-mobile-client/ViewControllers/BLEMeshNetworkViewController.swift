@@ -631,3 +631,12 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
         }
     }
 }
+
+extension BLEMeshNetworkViewController: ModelControlDelegate {
+    
+    func publish(_ message: MeshMessage, description: String, fromModel model: Model) {
+        start(description) {
+            return MeshNetworkManager.instance.publish(message, fromModel: model)
+        }
+    }
+}
