@@ -198,14 +198,14 @@ class ExerciseExecutionViewController: UIViewController {
     }()
     
     fileprivate lazy var teamuniformA: UIImageView = {
-        let imageview = UIImageView(image: UIImage(named: "shirt")?.withRenderingMode(.alwaysTemplate))
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
         imageview.translatesAutoresizingMaskIntoConstraints = false
         imageview.tintColor = .systemPink
         return imageview
     }()
     
     fileprivate lazy var teamuniformB: UIImageView = {
-        let imageview = UIImageView(image: UIImage(named: "shirt")?.withRenderingMode(.alwaysTemplate))
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
         imageview.translatesAutoresizingMaskIntoConstraints = false
         imageview.tintColor = .systemBlue
         return imageview
@@ -364,13 +364,13 @@ class ExerciseExecutionViewController: UIViewController {
         teamuniformA.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
         teamuniformA.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
         teamuniformA.trailingAnchor.constraint(equalTo: circularProgressView.leadingAnchor, constant: -marginWidth).isActive = true
-        teamuniformA.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3).isActive = true
+        teamuniformA.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3.7).isActive = true
         teamuniformA.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
         
         teamuniformB.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
         teamuniformB.leadingAnchor.constraint(equalTo: circularProgressView.trailingAnchor, constant: marginWidth).isActive = true
         teamuniformB.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
-        teamuniformB.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3).isActive = true
+        teamuniformB.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3.7).isActive = true
         teamuniformB.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
         
         teamnameA.centerXAnchor.constraint(equalTo: teamuniformA.centerXAnchor).isActive = true
