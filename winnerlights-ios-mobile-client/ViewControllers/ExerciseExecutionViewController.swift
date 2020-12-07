@@ -574,127 +574,154 @@ class PitchView: UIView {
                     drawGoal(rect: CGRect(x: self.frame.width - goalWidth, y: self.frame.height - verticalMarginToNearestHorizontalLine - goalHeight, width: goalWidth, height: goalHeight))
             }
         }
-        drawPlayer1()
-        drawPlayer2()
-        drawPlayer3()
-        drawPlayer4()
-        drawPlayer5()
-        drawPlayer6()
-        drawPlayer7()
-        drawPlayer8()
+        self.addSubview(Player1)
+        self.addSubview(Player2)
+        
+        //drawPlayer1()
+//        drawPlayer2()
+//        drawPlayer3()
+//        drawPlayer4()
+//        drawPlayer5()
+//        drawPlayer6()
+//        drawPlayer7()
+//        drawPlayer8()
         drawCenterVerticalLine()
         drawCenterCircle()
+        playerConstraints()
     }
-    
+
+        func playerConstraints() {
+            Player1.topAnchor.constraint(equalTo: self.topAnchor, constant: self.frame.height*0.3).isActive = true
+            Player1.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.frame.width*0.135).isActive = true
+            Player1.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -self.frame.width*0.735).isActive = true
+            Player1.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.frame.height*0.55).isActive = true
+
+
+            Player2.topAnchor.constraint(equalTo: self.topAnchor, constant: self.frame.height*0.3).isActive = true
+            Player2.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 1).isActive = true
+            Player2.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.frame.height*0.55).isActive = true
+        }
+
     func drawGoal(rect: CGRect) {
         let goalRect = UIBezierPath(rect: rect)
         goalRect.fill()
     }
     
-    func drawPlayer1() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemPink.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.445))
-        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.325))
-        body.close()
-        UIColor.systemPink.setFill()
-        body.fill()
-    }
+    fileprivate lazy var Player1: UIImageView = {
+            let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+            imageview.translatesAutoresizingMaskIntoConstraints = false
+            imageview.tintColor = .systemPink
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+    fileprivate lazy var Player2: UIImageView = {
+            let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+            imageview.translatesAutoresizingMaskIntoConstraints = false
+            imageview.tintColor = .systemPink
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
     
-    func drawPlayer2() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemPink.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.445))
-        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.325))
-        body.close()
-        UIColor.systemPink.setFill()
-        body.fill()
-    }
+
+//    func drawPlayer1() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemPink.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.445))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.325))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.325))
+//        body.close()
+//        UIColor.systemPink.setFill()
+//        body.fill()
+//    }
     
-    func drawPlayer3() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemPink.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.77))
-        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.65))
-        body.close()
-        UIColor.systemPink.setFill()
-        body.fill()
-    }
-    
-    func drawPlayer4() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemPink.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.77))
-        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.65))
-        body.close()
-        UIColor.systemPink.setFill()
-        body.fill()
-    }
-    
-    func drawPlayer5() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemBlue.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.445))
-        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.325))
-        body.close()
-        UIColor.systemBlue.setFill()
-        body.fill()
-    }
-    
-    func drawPlayer6() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemBlue.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.445))
-        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.325))
-        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.325))
-        body.close()
-        UIColor.systemBlue.setFill()
-        body.fill()
-    }
-    
-    func drawPlayer7() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemBlue.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.77))
-        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.65))
-        body.close()
-        UIColor.systemBlue.setFill()
-        body.fill()
-    }
-    
-    func drawPlayer8() {
-        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
-        UIColor.systemBlue.setFill()
-        head.fill()
-        let body = UIBezierPath()
-        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.77))
-        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.65))
-        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.65))
-        body.close()
-        UIColor.systemBlue.setFill()
-        body.fill()
-    }
-    
+//    func drawPlayer2() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemPink.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.445))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.325))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.325))
+//        body.close()
+//        UIColor.systemPink.setFill()
+//        body.fill()
+//    }
+//
+//    func drawPlayer3() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemPink.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.165, y: self.frame.height*0.77))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.135, y: self.frame.height*0.65))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.195, y: self.frame.height*0.65))
+//        body.close()
+//        UIColor.systemPink.setFill()
+//        body.fill()
+//    }
+//    func drawPlayer4() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemPink.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.335, y: self.frame.height*0.77))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.305, y: self.frame.height*0.65))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.365, y: self.frame.height*0.65))
+//        body.close()
+//        UIColor.systemPink.setFill()
+//        body.fill()
+//    }
+//    func drawPlayer5() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemBlue.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.445))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.325))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.325))
+//        body.close()
+//        UIColor.systemBlue.setFill()
+//        body.fill()
+//    }
+//    func drawPlayer6() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.275), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemBlue.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.445))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.325))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.325))
+//        body.close()
+//        UIColor.systemBlue.setFill()
+//        body.fill()
+//    }
+//    func drawPlayer7() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemBlue.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.665, y: self.frame.height*0.77))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.635, y: self.frame.height*0.65))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.695, y: self.frame.height*0.65))
+//        body.close()
+//        UIColor.systemBlue.setFill()
+//        body.fill()
+//    }
+//    func drawPlayer8() {
+//        let head = UIBezierPath(arcCenter: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.6), radius: self.frame.height*0.03, startAngle: 0, endAngle: 2 * .pi, clockwise: true)
+//        UIColor.systemBlue.setFill()
+//        head.fill()
+//        let body = UIBezierPath()
+//        body.move(to: CGPoint(x: self.frame.width*0.835, y: self.frame.height*0.77))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.805, y: self.frame.height*0.65))
+//        body.addLine(to: CGPoint(x: self.frame.width*0.865, y: self.frame.height*0.65))
+//        body.close()
+//        UIColor.systemBlue.setFill()
+//        body.fill()
+//    }
+//
     func drawCenterVerticalLine() {
         let line = UIBezierPath()
         line.move(to: CGPoint(x: self.frame.width/2, y: 0))
