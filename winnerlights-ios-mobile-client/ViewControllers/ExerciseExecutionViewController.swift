@@ -37,7 +37,7 @@ class ExerciseExecutionViewController: UIViewController {
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(
-                duration: 65,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -46,7 +46,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 20,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -55,7 +55,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 15,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -64,7 +64,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 30,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
