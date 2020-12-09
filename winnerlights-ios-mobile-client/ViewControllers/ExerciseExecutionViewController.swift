@@ -493,6 +493,7 @@ class CircularProgressView: UIView {
     }
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
+        progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
         if currentPahseTime <= 59 {
             progressLabel.text = String(format:"%.0f", ceil(currentPahseTime))
         } else if currentPahseTime.truncatingRemainder(dividingBy: 60.0) > 59 {
