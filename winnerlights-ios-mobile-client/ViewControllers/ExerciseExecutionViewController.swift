@@ -103,8 +103,10 @@ class ExerciseExecutionViewController: UIViewController {
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
             currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
+            let minite:Int
             if ceil((totalDuration-currentTime).truncatingRemainder(dividingBy: 60.0)) == 60{
-            currentRemainingTimeLabel.text = "1:00"
+                minite = Int((totalDuration-currentTime) / 60)
+                currentRemainingTimeLabel.text = String(minite + 1) + ":00"
             }
             else{
             currentRemainingTimeLabel.text = String(format:"%.0f", ((totalDuration-currentTime)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", ceil((totalDuration-currentTime).truncatingRemainder(dividingBy: 60.0)))
