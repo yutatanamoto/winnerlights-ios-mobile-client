@@ -37,7 +37,7 @@ class ExerciseExecutionViewController: UIViewController {
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(
-                duration: 65,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -46,7 +46,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 20,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -55,7 +55,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 15,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -64,7 +64,7 @@ class ExerciseExecutionViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 30,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -103,6 +103,14 @@ class ExerciseExecutionViewController: UIViewController {
             progressView.setProgress(currentTime/totalDuration, animated: true)
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
             currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
+            let minite:Int
+            if ceil((totalDuration-currentTime).truncatingRemainder(dividingBy: 60.0)) == 60{
+                minite = Int((totalDuration-currentTime) / 60)
+                currentRemainingTimeLabel.text = String(minite + 1) + ":00"
+            }
+            else{
+            currentRemainingTimeLabel.text = String(format:"%.0f", ((totalDuration-currentTime)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", ceil((totalDuration-currentTime).truncatingRemainder(dividingBy: 60.0)))
+            }
         }
     }
     var timer: Timer!
@@ -196,44 +204,94 @@ class ExerciseExecutionViewController: UIViewController {
         return view
     }()
     
+    fileprivate lazy var teamuniformA: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.translatesAutoresizingMaskIntoConstraints = false
+        imageview.tintColor = .systemPink
+        return imageview
+    }()
+    
+    fileprivate lazy var teamuniformB: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.translatesAutoresizingMaskIntoConstraints = false
+        imageview.tintColor = .systemBlue
+        return imageview
+    }()
+    
+    fileprivate lazy var teamnameA: UILabel = {
+        let label = UILabel()
+        label.text = String("A")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    fileprivate lazy var teamnameB: UILabel = {
+        let label = UILabel()
+        label.text = String("B")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
     fileprivate lazy var startAndPauseButton: UIButton = {
+        let startImage = UIImage(systemName: "play.fill")
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Start", for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
+        button.setImage(startImage, for: .normal)
         button.addTarget(self, action: #selector(startAndPauseExercise), for: .touchUpInside)
         return button
     }()
     
     fileprivate lazy var backButton: UIButton = {
+        let restartImage = UIImage(systemName: "backward.end.fill")!
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Back", for: .normal)
-        button.addTarget(self, action: #selector(moveToPrevPhase), for: .touchUpInside)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
+        button.setImage(restartImage, for: .normal)
+        button.addTarget(self, action: #selector(moveToBeginning), for: .touchUpInside)
         return button
     }()
     
     fileprivate lazy var nextButton: UIButton = {
+        let nextImage = UIImage(systemName: "forward.fill")!
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.black
         button.backgroundColor = .white
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("Next", for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 15,left: 15,bottom: 15,right: 15)
+        button.setImage(nextImage, for: .normal)
         button.addTarget(self, action: #selector(moveToNextPhase), for: .touchUpInside)
         return button
     }()
@@ -250,6 +308,10 @@ class ExerciseExecutionViewController: UIViewController {
         currentStateDisplayCard.addSubview(currentTimeLabel)
         currentStateDisplayCard.addSubview(currentRemainingTimeLabel)
         currentStateDisplayCard.addSubview(circularProgressView)
+        currentStateDisplayCard.addSubview(teamuniformA)
+        currentStateDisplayCard.addSubview(teamuniformB)
+        currentStateDisplayCard.addSubview(teamnameA)
+        currentStateDisplayCard.addSubview(teamnameB)
         view.addSubview(currentStateDisplayCard)
         view.addSubview(startAndPauseButton)
         view.addSubview(backButton)
@@ -299,10 +361,31 @@ class ExerciseExecutionViewController: UIViewController {
         currentRemainingTimeLabel.bottomAnchor.constraint(equalTo: circularProgressView.topAnchor, constant: -marginWidth).isActive = true
         
         circularProgressView.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth).isActive = true
-        circularProgressView.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
-        circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        //circularProgressView.leadingAnchor.constraint(equalTo: teamuniformA.leadingAnchor, constant: marginWidth/4).isActive = true
+        //circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         circularProgressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
         circularProgressView.heightAnchor.constraint(equalToConstant: 160).isActive = true
+        circularProgressView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+        circularProgressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        teamuniformA.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
+        teamuniformA.leadingAnchor.constraint(equalTo: currentStateDisplayCard.leadingAnchor, constant: marginWidth).isActive = true
+        teamuniformA.trailingAnchor.constraint(equalTo: circularProgressView.leadingAnchor, constant: -marginWidth).isActive = true
+        teamuniformA.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3.7).isActive = true
+        teamuniformA.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
+        
+        teamuniformB.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
+        teamuniformB.leadingAnchor.constraint(equalTo: circularProgressView.trailingAnchor, constant: marginWidth).isActive = true
+        teamuniformB.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
+        teamuniformB.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth*3.7).isActive = true
+        teamuniformB.centerYAnchor.constraint(equalTo: circularProgressView.centerYAnchor).isActive = true
+        
+        teamnameA.centerXAnchor.constraint(equalTo: teamuniformA.centerXAnchor).isActive = true
+        teamnameA.centerYAnchor.constraint(equalTo: teamuniformA.centerYAnchor).isActive = true
+        
+        teamnameB.centerXAnchor.constraint(equalTo: teamuniformB.centerXAnchor).isActive = true
+        teamnameB.centerYAnchor.constraint(equalTo: teamuniformB.centerYAnchor).isActive = true
+        
         backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
         backButton.trailingAnchor.constraint(equalTo: startAndPauseButton.leadingAnchor, constant: -marginWidth).isActive = true
         backButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
@@ -331,11 +414,13 @@ class ExerciseExecutionViewController: UIViewController {
     }
     
     @objc func startAndPauseExercise() {
+        let pauseImage = UIImage(systemName: "pause.fill")!
+        let startImage = UIImage(systemName: "play.fill")!
         if !isExerciseRunning {
-            startAndPauseButton.setTitle("Pause", for: .normal)
+            startAndPauseButton.setImage(pauseImage, for: .normal)
             isExerciseRunning = true
         }else{
-            startAndPauseButton.setTitle("Start", for: .normal)
+            startAndPauseButton.setImage(startImage, for: .normal)
             isExerciseRunning = false
         }
     }
@@ -346,12 +431,8 @@ class ExerciseExecutionViewController: UIViewController {
         }
     }
     
-    @objc func moveToPrevPhase() {
-        if currentPhaseIndex > 0 {
-            currentTime = exercise.phases[0 ..< currentPhaseIndex-1].reduce(0.0, {$0 + $1.duration})
-        } else {
+    @objc func moveToBeginning() {
             currentTime = 0
-        }
     }
 }
 
@@ -382,7 +463,7 @@ class CircularProgressView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
+        circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: self.frame.size.height/2.5, startAngle: 3 * .pi / 2, endAngle: -.pi / 2, clockwise: false)
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
@@ -412,18 +493,15 @@ class CircularProgressView: UIView {
     }
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
-        progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
-        let formattedCurrentPahseTime = String(format:"%.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        let formattedCurrentPahseTimeMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
-        let formattedCurrentPahseTimeSecond = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        if  currentPahseTime > 60.0{
-        progressLabel.text = "\(formattedCurrentPahseTimeMinute):\(formattedCurrentPahseTimeSecond)"
-        } else if ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)) == 60.0 {
-        let formattedCurrentPahseTimeSpecialMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero)+1)
-        progressLabel.text = "\(formattedCurrentPahseTimeSpecialMinute):00"
-        }
-        else {
-        progressLabel.text = "\(formattedCurrentPahseTime)"
+        if currentPahseTime <= 59 {
+            progressLabel.text = String(format:"%.0f", ceil(currentPahseTime))
+        } else if currentPahseTime.truncatingRemainder(dividingBy: 60.0) > 59 {
+            let minute = String(format:"%.0f", currentPahseTime/60.0)
+            progressLabel.text = "\(minute):00"
+        } else {
+            let minute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
+            let second = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
+            progressLabel.text = "\(minute):\(second)"
         }
     }
 }
@@ -500,14 +578,86 @@ class PitchView: UIView {
                     drawGoal(rect: CGRect(x: self.frame.width - goalWidth, y: self.frame.height - verticalMarginToNearestHorizontalLine - goalHeight, width: goalWidth, height: goalHeight))
             }
         }
+        self.addSubview(Player1)
+        self.addSubview(Player2)
+        self.addSubview(Player3)
+        self.addSubview(Player4)
+        self.addSubview(Player5)
+        self.addSubview(Player6)
+        self.addSubview(Player7)
+        self.addSubview(Player8)
         drawCenterVerticalLine()
         drawCenterCircle()
     }
-    
+
     func drawGoal(rect: CGRect) {
         let goalRect = UIBezierPath(rect: rect)
         goalRect.fill()
     }
+    
+    fileprivate lazy var Player1: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemPink
+        imageview.frame = CGRect(x: self.frame.width*0.075, y: self.frame.height*0.275, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+    
+    fileprivate lazy var Player2: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemPink
+        imageview.frame = CGRect(x: self.frame.width*0.275, y: self.frame.height*0.275, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+    
+    fileprivate lazy var Player3: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemPink
+        imageview.frame = CGRect(x: self.frame.width*0.075, y: self.frame.height*0.6, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+    
+    fileprivate lazy var Player4: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemPink
+        imageview.frame = CGRect(x: self.frame.width*0.275, y: self.frame.height*0.6, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+    
+    fileprivate lazy var Player5: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemBlue
+        imageview.frame = CGRect(x: self.frame.width*0.6, y: self.frame.height*0.275, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+
+    fileprivate lazy var Player6: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemBlue
+        imageview.frame = CGRect(x: self.frame.width*0.8, y: self.frame.height*0.275, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+
+    fileprivate lazy var Player7: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemBlue
+        imageview.frame = CGRect(x: self.frame.width*0.6, y: self.frame.height*0.6, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
+
+    fileprivate lazy var Player8: UIImageView = {
+        let imageview = UIImageView(image: UIImage(named: "t-shirt-black-silhouette")?.withRenderingMode(.alwaysTemplate))
+        imageview.tintColor = .systemBlue
+        imageview.frame = CGRect(x: self.frame.width*0.8, y: self.frame.height*0.6, width: self.frame.width*0.125, height: self.frame.width*0.125)
+        imageview.contentMode = UIView.ContentMode.scaleAspectFit
+            return imageview
+        }()
     
     func drawCenterVerticalLine() {
         let line = UIBezierPath()
