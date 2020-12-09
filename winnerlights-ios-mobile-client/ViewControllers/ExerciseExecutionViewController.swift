@@ -493,18 +493,15 @@ class CircularProgressView: UIView {
     }
     
     func updateProgress(currentPahseTime: Float, currentPhaseProgress: Float) {
-        progressLayer.strokeEnd = CGFloat(currentPhaseProgress)
-        let formattedCurrentPahseTime = String(format:"%.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        let formattedCurrentPahseTimeMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
-        let formattedCurrentPahseTimeSecond = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
-        if  currentPahseTime > 60.0{
-        progressLabel.text = "\(formattedCurrentPahseTimeMinute):\(formattedCurrentPahseTimeSecond)"
-        } else if ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)) == 60.0 {
-        let formattedCurrentPahseTimeSpecialMinute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero)+1)
-        progressLabel.text = "\(formattedCurrentPahseTimeSpecialMinute):00"
-        }
-        else {
-        progressLabel.text = "\(formattedCurrentPahseTime)"
+        if currentPahseTime <= 59 {
+            progressLabel.text = String(format:"%.0f", ceil(currentPahseTime))
+        } else if currentPahseTime.truncatingRemainder(dividingBy: 60.0) > 59 {
+            let minute = String(format:"%.0f", currentPahseTime/60.0)
+            progressLabel.text = "\(minute):00"
+        } else {
+            let minute = String(format:"%.0f", (currentPahseTime/60.0).rounded(.towardZero))
+            let second = String(format:"%02.0f", ceil(currentPahseTime.truncatingRemainder(dividingBy: 60.0)))
+            progressLabel.text = "\(minute):\(second)"
         }
     }
 }
