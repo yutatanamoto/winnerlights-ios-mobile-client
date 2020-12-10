@@ -249,6 +249,16 @@ class ExerciseDetailViewController: UIViewController {
         return label
     }()
     
+    fileprivate lazy var phaseTimeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "phase time"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
     fileprivate lazy var executionButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -279,6 +289,7 @@ class ExerciseDetailViewController: UIViewController {
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
         previewContainerView.addSubview(currentRemainingTimeLabel)
+        view.addSubview(phaseTimeLabel)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
