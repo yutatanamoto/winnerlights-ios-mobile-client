@@ -92,6 +92,25 @@ class ExerciseDetailViewController: UIViewController {
     var timerInterval: Float = 0.1
     var isExerciseRunning: Bool = true
     
+    fileprivate lazy var exerciseTitle: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Switching Goal"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
+    fileprivate lazy var exerciseDescription: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Here comes some description."
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
     fileprivate lazy var pitch: PitchView = {
         let view = PitchView(phase: exercise.phases[currentPhaseIndex])
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -139,24 +158,6 @@ class ExerciseDetailViewController: UIViewController {
         return view
     }()
     
-    fileprivate lazy var exerciseTitle: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Switching Goal"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textAlignment = .center
-        label.textColor = .black
-        return label
-    }()
-    
-    fileprivate lazy var exerciseDescription: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Here comes some description."
-        label.textAlignment = .center
-        label.textColor = .black
-        return label
-    }()
     
     fileprivate lazy var previewContainerView: UIView = {
         let view = UIView()
@@ -195,21 +196,7 @@ class ExerciseDetailViewController: UIViewController {
         let progressLabel = UILabel()
         return view
     }()
-    
-    fileprivate lazy var executionButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.setTitle("Execute Exercise", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
-        return button
-    }()
+
     
     fileprivate lazy var progressView: UIProgressView = {
         let view = UIProgressView()
@@ -262,6 +249,21 @@ class ExerciseDetailViewController: UIViewController {
         return label
     }()
     
+    fileprivate lazy var executionButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("Execute Exercise", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Exercise Detail"
@@ -284,11 +286,6 @@ class ExerciseDetailViewController: UIViewController {
     }
     
     func setupConstraints() {
-        descriptionContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
-        descriptionContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
-        descriptionContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
-        descriptionContainerView.heightAnchor.constraint(equalToConstant: 140).isActive = true
-        
         exerciseTitle.topAnchor.constraint(equalTo: descriptionContainerView.topAnchor, constant: marginWidth).isActive = true
         exerciseTitle.leadingAnchor.constraint(equalTo: descriptionContainerView.leadingAnchor).isActive = true
         exerciseTitle.trailingAnchor.constraint(equalTo: descriptionContainerView.trailingAnchor).isActive = true
@@ -296,10 +293,6 @@ class ExerciseDetailViewController: UIViewController {
         exerciseDescription.topAnchor.constraint(equalTo: exerciseTitle.bottomAnchor, constant: marginWidth).isActive = true
         exerciseDescription.leadingAnchor.constraint(equalTo: descriptionContainerView.leadingAnchor).isActive = true
         exerciseDescription.trailingAnchor.constraint(equalTo: descriptionContainerView.trailingAnchor).isActive = true
-        
-        previewContainerView.topAnchor.constraint(equalTo: descriptionContainerView.bottomAnchor, constant: marginWidth).isActive = true
-        previewContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
-        previewContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
         
         pitch.topAnchor.constraint(equalTo: previewContainerView.topAnchor, constant: marginWidth).isActive = true
         pitch.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
@@ -321,6 +314,15 @@ class ExerciseDetailViewController: UIViewController {
         partitionBarGroupView.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
         partitionBarGroupView.widthAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
         partitionBarGroupView.heightAnchor.constraint(equalToConstant: 10).isActive = true
+        
+        descriptionContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
+        descriptionContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
+        descriptionContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
+        descriptionContainerView.heightAnchor.constraint(equalToConstant: 140).isActive = true
+        
+        previewContainerView.topAnchor.constraint(equalTo: descriptionContainerView.bottomAnchor, constant: marginWidth).isActive = true
+        previewContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
+        previewContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
         
         currentTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentTimeLabel.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
