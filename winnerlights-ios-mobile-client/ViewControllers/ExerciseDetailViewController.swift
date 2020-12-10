@@ -251,9 +251,9 @@ class ExerciseDetailViewController: UIViewController {
     
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "phase time"
+        label.text = "Phase Time"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.font = .systemFont(ofSize: 25, weight: .medium)
         label.textAlignment = .center
         label.textColor = .black
         return label
@@ -289,7 +289,7 @@ class ExerciseDetailViewController: UIViewController {
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
         previewContainerView.addSubview(currentRemainingTimeLabel)
-        view.addSubview(phaseTimeLabel)
+        previewContainerView.addSubview(phaseTimeLabel)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
@@ -308,17 +308,15 @@ class ExerciseDetailViewController: UIViewController {
         pitch.topAnchor.constraint(equalTo: previewContainerView.topAnchor, constant: marginWidth).isActive = true
         pitch.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         pitch.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        pitch.heightAnchor.constraint(equalToConstant: view.frame.width/1.6).isActive = true
+        pitch.bottomAnchor.constraint(equalTo: previewContainerView.centerYAnchor).isActive = true
         
-        phaseCountLabel.topAnchor.constraint(equalTo: pitch.bottomAnchor,constant: marginWidth).isActive = true
-        phaseCountLabel.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
-        phaseCountLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        phaseCountLabel.bottomAnchor.constraint(equalTo: progressView.topAnchor, constant: -marginWidth).isActive = true
+        phaseCountLabel.topAnchor.constraint(equalTo: previewContainerView.centerYAnchor,constant: marginWidth*0.5).isActive = true
+        phaseCountLabel.centerXAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
                 
         progressView.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: -20).isActive = true
-        progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -8).isActive = true
+        progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: -marginWidth*0.5).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -marginWidth).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         partitionBarGroupView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
@@ -340,6 +338,10 @@ class ExerciseDetailViewController: UIViewController {
         
         currentRemainingTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentRemainingTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
+        
+        phaseTimeLabel.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth).isActive = true
+        phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: -marginWidth).isActive = true
+        phaseTimeLabel.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -marginWidth*2).isActive = true
         
         executionButton.topAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: marginWidth).isActive = true
         executionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100).isActive = true
