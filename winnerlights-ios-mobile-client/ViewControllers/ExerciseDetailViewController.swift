@@ -306,9 +306,15 @@ class ExerciseDetailViewController: UIViewController {
         pitch.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         pitch.heightAnchor.constraint(equalToConstant: view.frame.width/1.6).isActive = true
         
+        phaseCountLabel.topAnchor.constraint(equalTo: pitch.bottomAnchor,constant: marginWidth).isActive = true
+        phaseCountLabel.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
+        phaseCountLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
+        phaseCountLabel.bottomAnchor.constraint(equalTo: progressView.topAnchor, constant: -marginWidth).isActive = true
+                
         progressView.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        progressView.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: 20).isActive = true
+        progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: -20).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -8).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         partitionBarGroupView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
