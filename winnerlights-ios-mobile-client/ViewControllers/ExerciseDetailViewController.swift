@@ -76,6 +76,9 @@ class ExerciseDetailViewController: UIViewController {
                 }
             }
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+            
+            phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+            
             currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
             currentRemainingTimeLabel.text = String(format:"%.0f", ((totalDuration - currentTime)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor((totalDuration - currentTime).truncatingRemainder(dividingBy: 60.0)))
             if currentTime == 0 {
@@ -101,6 +104,16 @@ class ExerciseDetailViewController: UIViewController {
         view.layer.shadowOffset = shadowOffset
         return view
     }()
+    
+    fileprivate lazy var phaseCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
 
     fileprivate lazy var descriptionContainerView: UIView = {
         let view = UIView()
@@ -259,6 +272,7 @@ class ExerciseDetailViewController: UIViewController {
         descriptionContainerView.addSubview(exerciseDescription)
         view.addSubview(descriptionContainerView)
         previewContainerView.addSubview(pitch)
+        previewContainerView.addSubview(phaseCountLabel)
         previewContainerView.addSubview(progressView)
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
