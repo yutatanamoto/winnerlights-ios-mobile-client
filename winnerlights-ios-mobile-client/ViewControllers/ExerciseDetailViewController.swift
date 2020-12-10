@@ -198,15 +198,6 @@ class ExerciseDetailViewController: UIViewController {
         return button
     }()
     
-    fileprivate lazy var configurationButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Configure Exercise", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-//        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
-        return button
-    }()
-    
     fileprivate lazy var progressView: UIProgressView = {
         let view = UIProgressView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -272,7 +263,6 @@ class ExerciseDetailViewController: UIViewController {
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
         previewContainerView.addSubview(currentRemainingTimeLabel)
-        previewContainerView.addSubview(configurationButton)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
@@ -317,11 +307,6 @@ class ExerciseDetailViewController: UIViewController {
         
         currentRemainingTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentRemainingTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        
-        configurationButton.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        configurationButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        configurationButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        configurationButton.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -10).isActive = true
         
         executionButton.topAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: marginWidth).isActive = true
         executionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100).isActive = true
