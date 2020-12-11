@@ -81,7 +81,6 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
             
             currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
-            currentRemainingTimeLabel.text = String(format:"%.0f", ((totalDuration - currentTime)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor((totalDuration - currentTime).truncatingRemainder(dividingBy: 60.0)))
             if currentTime == 0 {
                 progressView.setProgress(currentTime/totalDuration, animated: false)
             } else {
@@ -239,7 +238,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         return label
     }()
     
-    fileprivate lazy var currentRemainingTimeLabel: UILabel = {
+    fileprivate lazy var totalDurationTimeLabel: UILabel = {
         let label = UILabel()
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
         label.text = String(format:"%.0f", (totalDuration/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(totalDuration.truncatingRemainder(dividingBy: 60.0)))
@@ -354,7 +353,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         previewContainerView.addSubview(progressView)
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
-        previewContainerView.addSubview(currentRemainingTimeLabel)
+        previewContainerView.addSubview(totalDurationTimeLabel)
         previewContainerView.addSubview(phaseTimeLabel)
         previewContainerView.addSubview(phaseTimeButton)
         previewContainerView.addSubview(phaseTimeRoll)
@@ -404,8 +403,8 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         currentTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentTimeLabel.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         
-        currentRemainingTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
-        currentRemainingTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
+        totalDurationTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
+        totalDurationTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         
         phaseTimeLabel.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
         phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
