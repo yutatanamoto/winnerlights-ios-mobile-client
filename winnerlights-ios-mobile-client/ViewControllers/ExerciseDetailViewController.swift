@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ExerciseDetailViewController: UIViewController {
+class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -16,6 +16,7 @@ class ExerciseDetailViewController: UIViewController {
     let topMarginWidth: CGFloat = 10
     let bottomMarginWidth: CGFloat = 10
     let buttonHeight: CGFloat = 60
+    let dataSource:[Int] = ([Int])(1...59)
     var backButtonTappedAt: Float = 0
     var exercise: Exercise = Exercise(
         title: "Basic",
@@ -249,6 +250,59 @@ class ExerciseDetailViewController: UIViewController {
         return label
     }()
     
+    fileprivate lazy var phaseTimeRoll: UIPickerView = {
+            let pickerView = UIPickerView()
+            pickerView.translatesAutoresizingMaskIntoConstraints = false
+            pickerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300)
+            pickerView.backgroundColor = .clear
+            pickerView.isHidden = true
+            pickerView.delegate   = self
+            pickerView.dataSource = self
+            return pickerView
+        }()
+        
+        fileprivate lazy var phaseTimeButton: UIButton = {
+            let button = UIButton()
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.backgroundColor = .white
+            button.layer.cornerRadius = cornerRadius
+            button.layer.shadowOpacity = shadowOpacity
+            button.layer.shadowRadius = cornerRadius
+            button.layer.shadowColor = UIColor.black.cgColor
+            button.layer.shadowOffset = shadowOffset
+            button.setTitle("30", for: .normal)
+            button.setTitleColor(.black, for: .normal)
+            button.addTarget(self, action: #selector(pickerViewDisplay), for: .touchUpInside)
+            return button
+        }()
+        
+        @objc func pickerViewDisplay() {
+            phaseTimeButton.isHidden = true
+            phaseTimeRoll.isHidden = false
+        }
+        
+        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?  {
+            return String(dataSource[row])
+            }
+
+        func numberOfComponents(in pickerView: UIPickerView) -> Int {
+                return 1
+            }
+        
+        func rowSize(in pickerView: UIPickerView) -> Int {
+                return 1
+            }
+
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+                return dataSource.count
+            }
+        
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            phaseTimeButton.setTitle(String(dataSource[row]), for: .normal)
+            phaseTimeRoll.isHidden = true
+            phaseTimeButton.isHidden = false
+            }
+    
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "Phase Time"
@@ -290,6 +344,8 @@ class ExerciseDetailViewController: UIViewController {
         previewContainerView.addSubview(currentTimeLabel)
         previewContainerView.addSubview(currentRemainingTimeLabel)
         previewContainerView.addSubview(phaseTimeLabel)
+        previewContainerView.addSubview(phaseTimeButton)
+        previewContainerView.addSubview(phaseTimeRoll)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
