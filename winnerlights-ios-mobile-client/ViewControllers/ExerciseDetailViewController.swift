@@ -89,7 +89,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         }
     }
     var timer: Timer!
-    var timerInterval: Float = 0.1
+    var timerInterval: Float = 0.0
     var isExerciseRunning: Bool = true
     
     fileprivate lazy var exerciseTitle: UILabel = {
@@ -360,7 +360,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
-        timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.1*timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.75), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
     
     func setupConstraints() {
@@ -428,8 +428,12 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     @objc func updateCurrentTime() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-            if currentTime + timerInterval < totalDuration {
+            timerInterval = totalDuration / Float(exercise.phases.count * 2)
+            if currentTime + timerInterval <= totalDuration {
                 currentTime = currentTime + timerInterval
+                if currentTime == totalDuration{
+                    phaseCountLabel.text = "Phase End"
+                }
             }else{
                 currentTime = 0.0
             }
