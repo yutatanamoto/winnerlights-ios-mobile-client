@@ -23,7 +23,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(
-                duration: 65,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -32,7 +32,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
                 ]
             ),
             Phase(
-                duration: 20,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -41,7 +41,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
                 ]
             ),
             Phase(
-                duration: 15,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -50,7 +50,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
                 ]
             ),
             Phase(
-                duration: 30,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -303,6 +303,17 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             phaseTimeRoll.isHidden = true
             phaseTimeButton.isHidden = false
             }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+            let cellLabel = UILabel()
+            cellLabel.frame = CGRect(x: 0, y: 0, width: pickerView.rowSize(forComponent: 0).width, height: pickerView.rowSize(forComponent: 0).height)
+            cellLabel.textAlignment = .center
+            cellLabel.font = UIFont.boldSystemFont(ofSize: 25)
+            cellLabel.backgroundColor = .clear
+            cellLabel.textColor = .black
+            cellLabel.text = String(dataSource[row])
+            return cellLabel
+        }
     
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
