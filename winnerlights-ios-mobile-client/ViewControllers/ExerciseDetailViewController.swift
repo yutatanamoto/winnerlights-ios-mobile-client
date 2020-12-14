@@ -16,7 +16,8 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     let topMarginWidth: CGFloat = 10
     let bottomMarginWidth: CGFloat = 10
     let buttonHeight: CGFloat = 60
-    let dataSource:[Int] = ([Int])(1...60)
+    let dataSourceSecond:[Int] = ([Int])(0...59)
+    let dataSourceMinute:[Int] = ([Int])(0...10)
     var backButtonTappedAt: Float = 0
     var exercise: Exercise = Exercise(
         title: "Basic",
@@ -249,70 +250,121 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         return label
     }()
     
-    fileprivate lazy var phaseTimeRoll: UIPickerView = {
-            let pickerView = UIPickerView()
-            pickerView.translatesAutoresizingMaskIntoConstraints = false
-            //pickerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 300)
-            pickerView.backgroundColor = .clear
-            pickerView.isHidden = true
-            pickerView.delegate   = self
-            pickerView.dataSource = self
-            return pickerView
-        }()
+    fileprivate lazy var phaseTimeRollSecond: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.backgroundColor = .clear
+        pickerView.tag = 1
+        pickerView.isHidden = true
+        pickerView.delegate   = self
+        pickerView.dataSource = self
+        return pickerView
+    }()
+    
+    fileprivate lazy var phaseTimeRollMinute: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.backgroundColor = .clear
+        pickerView.tag = 2
+        pickerView.isHidden = true
+        pickerView.delegate   = self
+        pickerView.dataSource = self
+        return pickerView
+    }()
         
-        fileprivate lazy var phaseTimeButton: UIButton = {
-            let button = UIButton()
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.backgroundColor = .white
-            button.layer.cornerRadius = cornerRadius
-            button.layer.shadowOpacity = shadowOpacity
-            button.layer.shadowRadius = cornerRadius
-            button.layer.shadowColor = UIColor.black.cgColor
-            button.layer.shadowOffset = shadowOffset
-            button.setTitle("30", for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
-            button.setTitleColor(.black, for: .normal)
-            button.addTarget(self, action: #selector(pickerViewDisplay), for: .touchUpInside)
-            return button
-        }()
+    fileprivate lazy var phaseTimeButtonSecond: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("30", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(pickerViewDisplaySecond), for: .touchUpInside)
+        return button
+    }()
         
-        @objc func pickerViewDisplay() {
-            phaseTimeButton.isHidden = true
-            phaseTimeRoll.isHidden = false
+    @objc func pickerViewDisplaySecond() {
+        phaseTimeButtonSecond.isHidden = true
+        phaseTimeRollSecond.isHidden = false
+    }
+    
+    fileprivate lazy var phaseTimeButtonMinute: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("30", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(pickerViewDisplayMinute), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func pickerViewDisplayMinute() {
+        phaseTimeButtonMinute.isHidden = true
+        phaseTimeRollMinute.isHidden = false
+    }
+        
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?  {
+        if pickerView.tag ==  1{
+            return String(dataSourceSecond[row])
+        }else{
+            return String(dataSourceMinute[row])
         }
-        
-        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?  {
-            return String(dataSource[row])
-            }
+    }
 
-        func numberOfComponents(in pickerView: UIPickerView) -> Int {
-                return 1
-            }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
         
-        func rowSize(in pickerView: UIPickerView) -> Int {
-                return 1
-            }
+    func rowSize(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
 
-        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-                return dataSource.count
-            }
-        
-        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-            phaseTimeButton.setTitle(String(dataSource[row]), for: .normal)
-            phaseTimeRoll.isHidden = true
-            phaseTimeButton.isHidden = false
-            }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if pickerView.tag ==  1{
+            return dataSourceSecond.count
+        }else{
+            return dataSourceMinute.count
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if pickerView.tag == 1{
+            phaseTimeButtonSecond.setTitle(String(dataSourceSecond[row]), for: .normal)
+            phaseTimeRollSecond.isHidden = true
+            phaseTimeButtonSecond.isHidden = false
+        }else{
+            phaseTimeButtonMinute.setTitle(String(dataSourceMinute[row]), for: .normal)
+            phaseTimeRollMinute.isHidden = true
+            phaseTimeButtonMinute.isHidden = false
+        }
+    }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-            let cellLabel = UILabel()
-            cellLabel.frame = CGRect(x: 0, y: 0, width: pickerView.rowSize(forComponent: 0).width, height: pickerView.rowSize(forComponent: 0).height)
-            cellLabel.textAlignment = .center
-            cellLabel.font = UIFont.boldSystemFont(ofSize: 25)
-            cellLabel.backgroundColor = .clear
-            cellLabel.textColor = .black
-            cellLabel.text = String(dataSource[row])
+        let cellLabel = UILabel()
+        cellLabel.frame = CGRect(x: 0, y: 0, width: pickerView.rowSize(forComponent: 0).width, height: pickerView.rowSize(forComponent: 0).height)
+        cellLabel.textAlignment = .center
+        cellLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        cellLabel.backgroundColor = .clear
+        cellLabel.textColor = .black
+        if pickerView.tag == 1{
+            cellLabel.text = String(dataSourceSecond[row])
+            return cellLabel
+        }else{
+            cellLabel.text = String(dataSourceMinute[row])
             return cellLabel
         }
+    }
     
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
@@ -355,8 +407,10 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         previewContainerView.addSubview(currentTimeLabel)
         previewContainerView.addSubview(totalDurationTimeLabel)
         previewContainerView.addSubview(phaseTimeLabel)
-        previewContainerView.addSubview(phaseTimeButton)
-        previewContainerView.addSubview(phaseTimeRoll)
+        previewContainerView.addSubview(phaseTimeButtonSecond)
+        previewContainerView.addSubview(phaseTimeRollSecond)
+        previewContainerView.addSubview(phaseTimeButtonMinute)
+        previewContainerView.addSubview(phaseTimeRollMinute)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
@@ -410,13 +464,13 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
         phaseTimeLabel.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -marginWidth*2).isActive = true
         
-        phaseTimeButton.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth*2).isActive = true
-        phaseTimeButton.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+        phaseTimeButtonSecond.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth*2).isActive = true
+        phaseTimeButtonSecond.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
         
-        phaseTimeRoll.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth).isActive = true
-        phaseTimeRoll.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        phaseTimeRoll.centerXAnchor.constraint(equalTo: phaseTimeButton.centerXAnchor).isActive = true
-        phaseTimeRoll.centerYAnchor.constraint(equalTo: phaseTimeButton.centerYAnchor).isActive = true
+        phaseTimeRollSecond.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth).isActive = true
+        phaseTimeRollSecond.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
+        phaseTimeRollSecond.centerXAnchor.constraint(equalTo: phaseTimeButtonSecond.centerXAnchor).isActive = true
+        phaseTimeRollSecond.centerYAnchor.constraint(equalTo: phaseTimeButtonSecond.centerYAnchor).isActive = true
         
         executionButton.topAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: marginWidth).isActive = true
         executionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100).isActive = true
