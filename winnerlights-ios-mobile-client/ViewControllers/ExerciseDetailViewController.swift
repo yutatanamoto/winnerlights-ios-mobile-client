@@ -376,6 +376,16 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         return label
     }()
     
+    fileprivate lazy var colonLabel: UILabel = {
+        let label = UILabel()
+        label.text = ":"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 25, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
     fileprivate lazy var executionButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -409,6 +419,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         previewContainerView.addSubview(phaseTimeLabel)
         previewContainerView.addSubview(phaseTimeButtonSecond)
         previewContainerView.addSubview(phaseTimeRollSecond)
+        previewContainerView.addSubview(colonLabel)
         previewContainerView.addSubview(phaseTimeButtonMinute)
         previewContainerView.addSubview(phaseTimeRollMinute)
         view.addSubview(previewContainerView)
@@ -461,16 +472,28 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         totalDurationTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         
         phaseTimeLabel.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
-        phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
+        phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor,constant: -marginWidth).isActive = true
         phaseTimeLabel.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -marginWidth*2).isActive = true
         
-        phaseTimeButtonSecond.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth*2).isActive = true
+        phaseTimeButtonMinute.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth*2).isActive = true
+        phaseTimeButtonMinute.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+        
+        
+        phaseTimeRollMinute.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth).isActive = true
+        phaseTimeRollMinute.trailingAnchor.constraint(equalTo: colonLabel.leadingAnchor, constant: -marginWidth).isActive = true
+        phaseTimeRollMinute.centerXAnchor.constraint(equalTo: phaseTimeButtonMinute.centerXAnchor).isActive = true
+        phaseTimeRollMinute.centerYAnchor.constraint(equalTo: phaseTimeButtonMinute.centerYAnchor).isActive = true
+        
+        
+        colonLabel.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+        
         phaseTimeButtonSecond.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
         
-        phaseTimeRollSecond.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: marginWidth).isActive = true
+        phaseTimeRollSecond.leadingAnchor.constraint(equalTo: colonLabel.trailingAnchor, constant: marginWidth).isActive = true
         phaseTimeRollSecond.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         phaseTimeRollSecond.centerXAnchor.constraint(equalTo: phaseTimeButtonSecond.centerXAnchor).isActive = true
         phaseTimeRollSecond.centerYAnchor.constraint(equalTo: phaseTimeButtonSecond.centerYAnchor).isActive = true
+
         
         executionButton.topAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: marginWidth).isActive = true
         executionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100).isActive = true
