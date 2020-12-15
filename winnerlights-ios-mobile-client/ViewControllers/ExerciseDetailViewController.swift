@@ -20,8 +20,8 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     let dataSourceMinute:[Int] = ([Int])(0...10)
     var backButtonTappedAt: Float = 0
     var exercise: Exercise = Exercise(
-        title: "Basic",
-        description: "Basic exercise. There are 2 goals and 4 players on each team.",
+        title: "Counter attack",
+        description: "There are four goals on the pitch. The game direction changes in the modified amount of time. So two goals are enlightened in the same colour. The teams stay the same.",
         phases: [
             Phase(
                 duration: 60,
@@ -96,19 +96,23 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     fileprivate lazy var exerciseTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Switching Goal"
+        label.text = exercise.title
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         label.textColor = .black
+        label.numberOfLines = 0
         return label
     }()
     
     fileprivate lazy var exerciseDescription: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Here comes some description."
+        label.text = exercise.description
         label.textAlignment = .center
         label.textColor = .black
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = false
         return label
     }()
     
@@ -281,7 +285,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("30", for: .normal)
+        button.setTitle("0", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
         button.setTitleColor(.black, for: .normal)
         button.addTarget(self, action: #selector(pickerViewDisplaySecond), for: .touchUpInside)
@@ -302,7 +306,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.setTitle("30", for: .normal)
+        button.setTitle("1", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
         button.setTitleColor(.black, for: .normal)
         button.addTarget(self, action: #selector(pickerViewDisplayMinute), for: .touchUpInside)

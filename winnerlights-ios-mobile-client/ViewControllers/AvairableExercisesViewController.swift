@@ -48,7 +48,7 @@ class AvairableExercisesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.title = "Avairable Exercises"
+        self.title = "Available Exercises"
         self.view.addSubview(exerciseCollectionView)
         //self.view.addSubview(addButton)
         setupConstraint()
@@ -74,7 +74,7 @@ class AvairableExercisesViewController: UIViewController {
 
 extension AvairableExercisesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

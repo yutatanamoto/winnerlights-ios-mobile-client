@@ -17,7 +17,7 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
     let buttonHeight: CGFloat = 60
     var backButtonTappedAt: Float = 0
     var exercise: Exercise = Exercise(
-        title: "Basic",
+        title: "Counter attack",
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(
@@ -99,22 +99,22 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    fileprivate let titleLabel: UILabel = {
+    fileprivate lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
-        label.text = "Exercise Title"
+        label.text = exercise.title
         label.textColor = .black
         return label
     }()
     
-    fileprivate let descritionLabel: UILabel = {
+    fileprivate lazy var descritionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 8, weight: .medium)
-        label.text = "Exercise Description"
+        label.text = "Phase\t"+String(exercise.phases.count)
         label.textColor = .black
         return label
     }()
