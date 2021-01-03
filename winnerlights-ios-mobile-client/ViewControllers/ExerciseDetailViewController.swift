@@ -19,48 +19,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     let dataSourceSecond:[Int] = ([Int])(0...59)
     let dataSourceMinute:[Int] = ([Int])(0...10)
     var backButtonTappedAt: Float = 0
-    var exercise: Exercise = Exercise(
-        title: "Counter attack",
-        description: "There are four goals on the pitch. The game direction changes in the modified amount of time. So two goals are enlightened in the same colour. The teams stay the same.",
-        phases: [
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            )
-        ]
-    )
+    var exercise: Exercise!
     var currentPhaseIndex: Int = 0 {
         didSet {
             if currentPhaseIndex != oldValue  {
@@ -230,6 +189,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     @objc func navigateToExecutionView() {
         let vc = ExerciseExecutionViewController()
+        vc.exercise = exercise
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
