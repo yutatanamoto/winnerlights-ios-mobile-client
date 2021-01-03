@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ExerciseDetailViewController: UIViewController {
+class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -16,13 +16,15 @@ class ExerciseDetailViewController: UIViewController {
     let topMarginWidth: CGFloat = 10
     let bottomMarginWidth: CGFloat = 10
     let buttonHeight: CGFloat = 60
+    let dataSourceSecond:[Int] = ([Int])(0...59)
+    let dataSourceMinute:[Int] = ([Int])(0...10)
     var backButtonTappedAt: Float = 0
     var exercise: Exercise = Exercise(
-        title: "Basic",
-        description: "Basic exercise. There are 2 goals and 4 players on each team.",
+        title: "Counter attack",
+        description: "There are four goals on the pitch. The game direction changes in the modified amount of time. So two goals are enlightened in the same colour. The teams stay the same.",
         phases: [
             Phase(
-                duration: 65,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -31,7 +33,7 @@ class ExerciseDetailViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 20,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -40,7 +42,7 @@ class ExerciseDetailViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 15,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .pink),
                     Goal(position: .lowerLeft, color: .pink),
@@ -49,7 +51,7 @@ class ExerciseDetailViewController: UIViewController {
                 ]
             ),
             Phase(
-                duration: 30,
+                duration: 60,
                 goals: [
                     Goal(position: .upperLeft, color: .blue),
                     Goal(position: .lowerLeft, color: .blue),
@@ -76,8 +78,10 @@ class ExerciseDetailViewController: UIViewController {
                 }
             }
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
+            
+            phaseCountLabel.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+            
             currentTimeLabel.text = String(format:"%.0f", (currentTime/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(currentTime.truncatingRemainder(dividingBy: 60.0)))
-            currentRemainingTimeLabel.text = String(format:"%.0f", ((totalDuration - currentTime)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor((totalDuration - currentTime).truncatingRemainder(dividingBy: 60.0)))
             if currentTime == 0 {
                 progressView.setProgress(currentTime/totalDuration, animated: false)
             } else {
@@ -86,8 +90,31 @@ class ExerciseDetailViewController: UIViewController {
         }
     }
     var timer: Timer!
-    var timerInterval: Float = 0.1
+    var timerInterval: Float = 0.0
     var isExerciseRunning: Bool = true
+    
+    fileprivate lazy var exerciseTitle: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = exercise.title
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    fileprivate lazy var exerciseDescription: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = exercise.description
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.adjustsFontSizeToFitWidth = false
+        return label
+    }()
     
     fileprivate lazy var pitch: PitchView = {
         let view = PitchView(phase: exercise.phases[currentPhaseIndex])
@@ -101,6 +128,16 @@ class ExerciseDetailViewController: UIViewController {
         view.layer.shadowOffset = shadowOffset
         return view
     }()
+    
+    fileprivate lazy var phaseCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Phase" + " " + "\(String(currentPhaseIndex+1))/\(String(exercise.phases.count))"
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
 
     fileprivate lazy var descriptionContainerView: UIView = {
         let view = UIView()
@@ -126,24 +163,6 @@ class ExerciseDetailViewController: UIViewController {
         return view
     }()
     
-    fileprivate lazy var exerciseTitle: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Switching Goal"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textAlignment = .center
-        label.textColor = .black
-        return label
-    }()
-    
-    fileprivate lazy var exerciseDescription: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Here comes some description."
-        label.textAlignment = .center
-        label.textColor = .black
-        return label
-    }()
     
     fileprivate lazy var previewContainerView: UIView = {
         let view = UIView()
@@ -182,30 +201,7 @@ class ExerciseDetailViewController: UIViewController {
         let progressLabel = UILabel()
         return view
     }()
-    
-    fileprivate lazy var executionButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .white
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.setTitle("Execute Exercise", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
-        return button
-    }()
-    
-    fileprivate lazy var configurationButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Configure Exercise", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-//        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
-        return button
-    }()
+
     
     fileprivate lazy var progressView: UIProgressView = {
         let view = UIProgressView()
@@ -247,7 +243,7 @@ class ExerciseDetailViewController: UIViewController {
         return label
     }()
     
-    fileprivate lazy var currentRemainingTimeLabel: UILabel = {
+    fileprivate lazy var totalDurationTimeLabel: UILabel = {
         let label = UILabel()
         let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
         label.text = String(format:"%.0f", (totalDuration/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", floor(totalDuration.truncatingRemainder(dividingBy: 60.0)))
@@ -256,6 +252,157 @@ class ExerciseDetailViewController: UIViewController {
         label.textAlignment = .center
         label.textColor = .black
         return label
+    }()
+    
+    fileprivate lazy var phaseTimeRollSecond: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.backgroundColor = .clear
+        pickerView.tag = 1
+        pickerView.isHidden = true
+        pickerView.delegate   = self
+        pickerView.dataSource = self
+        return pickerView
+    }()
+    
+    fileprivate lazy var phaseTimeRollMinute: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.backgroundColor = .clear
+        pickerView.tag = 2
+        pickerView.isHidden = true
+        pickerView.delegate   = self
+        pickerView.dataSource = self
+        return pickerView
+    }()
+        
+    fileprivate lazy var phaseTimeButtonSecond: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("0", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(pickerViewDisplaySecond), for: .touchUpInside)
+        return button
+    }()
+        
+    @objc func pickerViewDisplaySecond() {
+        phaseTimeButtonSecond.isHidden = true
+        phaseTimeRollSecond.isHidden = false
+    }
+    
+    fileprivate lazy var phaseTimeButtonMinute: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("1", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(pickerViewDisplayMinute), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func pickerViewDisplayMinute() {
+        phaseTimeButtonMinute.isHidden = true
+        phaseTimeRollMinute.isHidden = false
+    }
+        
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?  {
+        if pickerView.tag ==  1{
+            return String(dataSourceSecond[row])
+        }else{
+            return String(dataSourceMinute[row])
+        }
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+        
+    func rowSize(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if pickerView.tag ==  1{
+            return dataSourceSecond.count
+        }else{
+            return dataSourceMinute.count
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if pickerView.tag == 1{
+            phaseTimeButtonSecond.setTitle(String(dataSourceSecond[row]), for: .normal)
+            phaseTimeRollSecond.isHidden = true
+            phaseTimeButtonSecond.isHidden = false
+        }else{
+            phaseTimeButtonMinute.setTitle(String(dataSourceMinute[row]), for: .normal)
+            phaseTimeRollMinute.isHidden = true
+            phaseTimeButtonMinute.isHidden = false
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let cellLabel = UILabel()
+        cellLabel.frame = CGRect(x: 0, y: 0, width: pickerView.rowSize(forComponent: 0).width, height: pickerView.rowSize(forComponent: 0).height)
+        cellLabel.textAlignment = .center
+        cellLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        cellLabel.backgroundColor = .clear
+        cellLabel.textColor = .black
+        if pickerView.tag == 1{
+            cellLabel.text = String(dataSourceSecond[row])
+            return cellLabel
+        }else{
+            cellLabel.text = String(dataSourceMinute[row])
+            return cellLabel
+        }
+    }
+    
+    fileprivate lazy var phaseTimeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Phase Time"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 25, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
+    fileprivate lazy var colonLabel: UILabel = {
+        let label = UILabel()
+        label.text = ":"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 25, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }()
+    
+    fileprivate lazy var executionButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .white
+        button.layer.cornerRadius = cornerRadius
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = cornerRadius
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = shadowOffset
+        button.setTitle("Execute Exercise", for: .normal)
+        button.setTitleColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(navigateToExecutionView), for: .touchUpInside)
+        return button
     }()
     
     override func viewDidLoad() {
@@ -268,23 +415,24 @@ class ExerciseDetailViewController: UIViewController {
         descriptionContainerView.addSubview(exerciseDescription)
         view.addSubview(descriptionContainerView)
         previewContainerView.addSubview(pitch)
+        previewContainerView.addSubview(phaseCountLabel)
         previewContainerView.addSubview(progressView)
         previewContainerView.addSubview(partitionBarGroupView)
         previewContainerView.addSubview(currentTimeLabel)
-        previewContainerView.addSubview(currentRemainingTimeLabel)
-        previewContainerView.addSubview(configurationButton)
+        previewContainerView.addSubview(totalDurationTimeLabel)
+        previewContainerView.addSubview(phaseTimeLabel)
+        previewContainerView.addSubview(phaseTimeButtonSecond)
+        previewContainerView.addSubview(phaseTimeRollSecond)
+        previewContainerView.addSubview(colonLabel)
+        previewContainerView.addSubview(phaseTimeButtonMinute)
+        previewContainerView.addSubview(phaseTimeRollMinute)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
         setupConstraints()
-        timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.1*timerInterval), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.75), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
     
     func setupConstraints() {
-        descriptionContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
-        descriptionContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
-        descriptionContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
-        descriptionContainerView.heightAnchor.constraint(equalToConstant: 140).isActive = true
-        
         exerciseTitle.topAnchor.constraint(equalTo: descriptionContainerView.topAnchor, constant: marginWidth).isActive = true
         exerciseTitle.leadingAnchor.constraint(equalTo: descriptionContainerView.leadingAnchor).isActive = true
         exerciseTitle.trailingAnchor.constraint(equalTo: descriptionContainerView.trailingAnchor).isActive = true
@@ -293,18 +441,18 @@ class ExerciseDetailViewController: UIViewController {
         exerciseDescription.leadingAnchor.constraint(equalTo: descriptionContainerView.leadingAnchor).isActive = true
         exerciseDescription.trailingAnchor.constraint(equalTo: descriptionContainerView.trailingAnchor).isActive = true
         
-        previewContainerView.topAnchor.constraint(equalTo: descriptionContainerView.bottomAnchor, constant: marginWidth).isActive = true
-        previewContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
-        previewContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
-        
         pitch.topAnchor.constraint(equalTo: previewContainerView.topAnchor, constant: marginWidth).isActive = true
         pitch.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         pitch.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        pitch.heightAnchor.constraint(equalToConstant: view.frame.width/1.6).isActive = true
+        pitch.bottomAnchor.constraint(equalTo: previewContainerView.centerYAnchor).isActive = true
         
+        phaseCountLabel.topAnchor.constraint(equalTo: previewContainerView.centerYAnchor,constant: marginWidth*0.5).isActive = true
+        phaseCountLabel.centerXAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
+                
         progressView.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         progressView.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        progressView.topAnchor.constraint(equalTo: pitch.bottomAnchor, constant: 20).isActive = true
+        progressView.topAnchor.constraint(equalTo: phaseCountLabel.bottomAnchor, constant: -marginWidth*0.5).isActive = true
+        progressView.bottomAnchor.constraint(equalTo: currentTimeLabel.topAnchor, constant: -marginWidth).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
         partitionBarGroupView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
@@ -312,16 +460,47 @@ class ExerciseDetailViewController: UIViewController {
         partitionBarGroupView.widthAnchor.constraint(equalTo: progressView.widthAnchor).isActive = true
         partitionBarGroupView.heightAnchor.constraint(equalToConstant: 10).isActive = true
         
+        descriptionContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: marginWidth).isActive = true
+        descriptionContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
+        descriptionContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
+        descriptionContainerView.heightAnchor.constraint(equalToConstant: 140).isActive = true
+        
+        previewContainerView.topAnchor.constraint(equalTo: descriptionContainerView.bottomAnchor, constant: marginWidth).isActive = true
+        previewContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: marginWidth).isActive = true
+        previewContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -marginWidth).isActive = true
+        
         currentTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
         currentTimeLabel.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
         
-        currentRemainingTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
-        currentRemainingTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
+        totalDurationTimeLabel.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 8).isActive = true
+        totalDurationTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         
-        configurationButton.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
-        configurationButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        configurationButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        configurationButton.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -10).isActive = true
+        phaseTimeLabel.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
+        phaseTimeLabel.trailingAnchor.constraint(equalTo: previewContainerView.centerXAnchor,constant: -marginWidth).isActive = true
+        phaseTimeLabel.bottomAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: -marginWidth*2).isActive = true
+        
+        phaseTimeButtonMinute.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: view.frame.width*0.05).isActive = true
+        phaseTimeButtonMinute.trailingAnchor.constraint(equalTo: colonLabel.leadingAnchor, constant: -view.frame.width*0.02).isActive = true
+        phaseTimeButtonMinute.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+
+
+        phaseTimeRollMinute.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: view.frame.width*0.05).isActive = true
+        phaseTimeRollMinute.trailingAnchor.constraint(equalTo: colonLabel.leadingAnchor, constant: -view.frame.width*0.02).isActive = true
+        phaseTimeRollMinute.centerXAnchor.constraint(equalTo: phaseTimeButtonMinute.centerXAnchor).isActive = true
+        phaseTimeRollMinute.centerYAnchor.constraint(equalTo: phaseTimeButtonMinute.centerYAnchor).isActive = true
+        
+        //colonLabel.leadingAnchor.constraint(equalTo: previewContainerView.centerXAnchor, constant: view.frame.width*0.22).isActive = true
+        colonLabel.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -view.frame.width*0.22).isActive = true
+        colonLabel.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+        
+        phaseTimeButtonSecond.leadingAnchor.constraint(equalTo: colonLabel.trailingAnchor, constant: view.frame.width*0.02).isActive = true
+        phaseTimeButtonSecond.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -view.frame.width*0.05).isActive = true
+        phaseTimeButtonSecond.centerYAnchor.constraint(equalTo: phaseTimeLabel.centerYAnchor).isActive = true
+
+        phaseTimeRollSecond.leadingAnchor.constraint(equalTo: colonLabel.trailingAnchor, constant: view.frame.width*0.02).isActive = true
+        phaseTimeRollSecond.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -view.frame.width*0.05).isActive = true
+        phaseTimeRollSecond.centerXAnchor.constraint(equalTo: phaseTimeButtonSecond.centerXAnchor).isActive = true
+        phaseTimeRollSecond.centerYAnchor.constraint(equalTo: phaseTimeButtonSecond.centerYAnchor).isActive = true
         
         executionButton.topAnchor.constraint(equalTo: previewContainerView.bottomAnchor, constant: marginWidth).isActive = true
         executionButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 100).isActive = true
@@ -333,8 +512,12 @@ class ExerciseDetailViewController: UIViewController {
     @objc func updateCurrentTime() {
         if isExerciseRunning{
             let totalDuration: Float = exercise.phases.reduce(0.0, {$0 + $1.duration})
-            if currentTime + timerInterval < totalDuration {
+            timerInterval = totalDuration / Float(exercise.phases.count * 2)
+            if currentTime + timerInterval <= totalDuration {
                 currentTime = currentTime + timerInterval
+                if currentTime == totalDuration{
+                    phaseCountLabel.text = "Phase End"
+                }
             }else{
                 currentTime = 0.0
             }

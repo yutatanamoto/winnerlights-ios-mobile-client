@@ -33,7 +33,7 @@ struct Exercise {
 
 class ExerciseExecutionViewController: UIViewController {
     var exercise: Exercise = Exercise(
-        title: "Basic",
+        title: "Counter attack",
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
         phases: [
             Phase(

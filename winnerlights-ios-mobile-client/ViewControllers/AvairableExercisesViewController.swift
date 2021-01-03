@@ -48,9 +48,9 @@ class AvairableExercisesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.title = "Avairable Exercises"
+        self.title = "Available Exercises"
         self.view.addSubview(exerciseCollectionView)
-        self.view.addSubview(addButton)
+        //self.view.addSubview(addButton)
         setupConstraint()
     }
     
@@ -65,16 +65,16 @@ class AvairableExercisesViewController: UIViewController {
         exerciseCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         exerciseCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         exerciseCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        addButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -20).isActive = true
-        addButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -20).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+//        addButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor, constant: -20).isActive = true
+//        addButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -20).isActive = true
+//        addButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        addButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
     }
 }
 
 extension AvairableExercisesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
