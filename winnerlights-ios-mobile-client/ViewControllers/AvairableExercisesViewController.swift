@@ -17,6 +17,50 @@ class AvairableExercisesViewController: UIViewController {
     let bottomMarginWidth: CGFloat = 10
     let buttonHeight: CGFloat = 60
     var backButtonTappedAt: Float = 0
+    var exercises: [Exercise] = [
+            Exercise(
+            title: "Counter attack",
+            description: "Basic exercise. There are 2 goals and 4 players on each team.",
+            phases: [
+                Phase(
+                    duration: 65,
+                    goals: [
+                        Goal(position: .upperLeft, color: .pink),
+                        Goal(position: .lowerLeft, color: .pink),
+                        Goal(position: .upperRight, color: .blue),
+                        Goal(position: .lowerRight, color: .blue),
+                    ]
+                ),
+                Phase(
+                    duration: 20,
+                    goals: [
+                        Goal(position: .upperLeft, color: .blue),
+                        Goal(position: .lowerLeft, color: .blue),
+                        Goal(position: .upperRight, color: .pink),
+                        Goal(position: .lowerRight, color: .pink),
+                    ]
+                ),
+                Phase(
+                    duration: 15,
+                    goals: [
+                        Goal(position: .upperLeft, color: .pink),
+                        Goal(position: .lowerLeft, color: .pink),
+                        Goal(position: .upperRight, color: .blue),
+                        Goal(position: .lowerRight, color: .blue),
+                    ]
+                ),
+                Phase(
+                    duration: 30,
+                    goals: [
+                        Goal(position: .upperLeft, color: .blue),
+                        Goal(position: .lowerLeft, color: .blue),
+                        Goal(position: .upperRight, color: .pink),
+                        Goal(position: .lowerRight, color: .pink),
+                    ]
+                )
+            ]
+        )
+    ]
     
     // Initialization closures
     fileprivate lazy var exerciseCollectionView: UICollectionView = {
@@ -74,11 +118,12 @@ class AvairableExercisesViewController: UIViewController {
 
 extension AvairableExercisesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return exercises.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ExerciseCollectionViewCell
+        cell.exercise = exercises[indexPath.row]
         return cell
     }
     
@@ -91,6 +136,7 @@ extension AvairableExercisesViewController: UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print(indexPath)
         let vc = ExerciseDetailViewController()
+        vc.exercise = exercises[indexPath.row]
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

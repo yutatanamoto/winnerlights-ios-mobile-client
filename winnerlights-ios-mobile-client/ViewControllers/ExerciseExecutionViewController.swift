@@ -32,48 +32,7 @@ struct Exercise {
 }
 
 class ExerciseExecutionViewController: UIViewController {
-    var exercise: Exercise = Exercise(
-        title: "Counter attack",
-        description: "Basic exercise. There are 2 goals and 4 players on each team.",
-        phases: [
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .pink),
-                    Goal(position: .lowerLeft, color: .pink),
-                    Goal(position: .upperRight, color: .blue),
-                    Goal(position: .lowerRight, color: .blue),
-                ]
-            ),
-            Phase(
-                duration: 60,
-                goals: [
-                    Goal(position: .upperLeft, color: .blue),
-                    Goal(position: .lowerLeft, color: .blue),
-                    Goal(position: .upperRight, color: .pink),
-                    Goal(position: .lowerRight, color: .pink),
-                ]
-            )
-        ]
-    )
+    var exercise: Exercise!
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
     let marginWidth: CGFloat = 16
