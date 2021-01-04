@@ -22,7 +22,7 @@ enum GoalColor {
     case blue
 }
 struct Phase {
-    let duration: Float
+    var duration: Float
     let goals: [Goal]
 }
 struct Exercise {
