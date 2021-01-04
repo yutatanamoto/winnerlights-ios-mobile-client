@@ -304,10 +304,25 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView.tag == 1{
+            let selectedValue:Float = Float(dataSourceMinute[row])
+            let currentPhaseDuration: Float = exercise.phases[0].duration
+            let newPhaseDuration:Float =  60.0 * floor(currentPhaseDuration/60.0) + selectedValue
+            for i in 0 ..< exercise.phases.count {
+                exercise.phases[i].duration = newPhaseDuration
+            }
+            currentTime = 0
             phaseTimeButtonSecond.setTitle(String(dataSourceSecond[row]), for: .normal)
             phaseTimeRollSecond.isHidden = true
             phaseTimeButtonSecond.isHidden = false
         }else{
+            let selectedValue:Float = Float(dataSourceMinute[row])
+            let currentPhaseDuration: Float = exercise.phases[0].duration
+            let remainder = currentPhaseDuration.truncatingRemainder(dividingBy: 60.0)
+            let newPhaseDuration:Float = selectedValue * 60.0 + remainder
+            for i in 0 ..< exercise.phases.count {
+                exercise.phases[i].duration = newPhaseDuration
+            }
+            currentTime = 0
             phaseTimeButtonMinute.setTitle(String(dataSourceMinute[row]), for: .normal)
             phaseTimeRollMinute.isHidden = true
             phaseTimeButtonMinute.isHidden = false
