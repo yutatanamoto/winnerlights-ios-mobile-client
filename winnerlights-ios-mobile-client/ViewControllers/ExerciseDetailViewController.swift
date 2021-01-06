@@ -46,6 +46,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             } else {
                 progressView.setProgress(currentTime/totalDuration, animated: true)
             }
+            totalDurationTimeLabel.text = String(format:"%.0f", ((totalDuration)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", ceil((totalDuration).truncatingRemainder(dividingBy: 60.0)))
         }
     }
     var timer: Timer!
@@ -304,10 +305,25 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView.tag == 1{
+            let selectedValue:Float = Float(dataSourceSecond[row])
+            let currentPhaseDuration: Float = exercise.phases[0].duration
+            let newPhaseDuration:Float =  60.0 * floor(currentPhaseDuration/60.0) + selectedValue
+            for i in 0 ..< exercise.phases.count {
+                exercise.phases[i].duration = newPhaseDuration
+            }
+            currentTime = 0
             phaseTimeButtonSecond.setTitle(String(dataSourceSecond[row]), for: .normal)
             phaseTimeRollSecond.isHidden = true
             phaseTimeButtonSecond.isHidden = false
         }else{
+            let selectedValue:Float = Float(dataSourceMinute[row])
+            let currentPhaseDuration: Float = exercise.phases[0].duration
+            let remainder = currentPhaseDuration.truncatingRemainder(dividingBy: 60.0)
+            let newPhaseDuration:Float = selectedValue * 60.0 + remainder
+            for i in 0 ..< exercise.phases.count {
+                exercise.phases[i].duration = newPhaseDuration
+            }
+            currentTime = 0
             phaseTimeButtonMinute.setTitle(String(dataSourceMinute[row]), for: .normal)
             phaseTimeRollMinute.isHidden = true
             phaseTimeButtonMinute.isHidden = false
@@ -332,9 +348,9 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "Phase Time"
+        label.text = "Phase Duration"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 25, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         label.textColor = .black
         return label
@@ -388,6 +404,15 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         previewContainerView.addSubview(phaseTimeRollMinute)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
+        let phaseDuration: Float = exercise.phases[0].duration
+        let minute: Int = Int(floor(phaseDuration/60.0))
+        let second: Int = Int(phaseDuration.truncatingRemainder(dividingBy: 60.0))
+        let minuteIndex: Int = dataSourceMinute.firstIndex(of: minute) ?? 0
+        let secondIndex:Int = dataSourceSecond.firstIndex(of: second) ?? 0
+        phaseTimeRollMinute.selectRow(minuteIndex, inComponent: 0, animated: false)
+        phaseTimeButtonMinute.setTitle(String(dataSourceMinute[minuteIndex]), for: .normal)
+        phaseTimeRollSecond.selectRow(secondIndex, inComponent: 0, animated: false)
+        phaseTimeButtonSecond.setTitle(String(dataSourceSecond[secondIndex]), for: .normal)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.75), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
@@ -476,7 +501,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             if currentTime + timerInterval <= totalDuration {
                 currentTime = currentTime + timerInterval
                 if currentTime == totalDuration{
-                    phaseCountLabel.text = "Phase End"
+                    phaseCountLabel.text = "Exercise Finished"
                 }
             }else{
                 currentTime = 0.0
