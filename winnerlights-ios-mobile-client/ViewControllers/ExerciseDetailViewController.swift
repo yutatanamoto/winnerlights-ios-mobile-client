@@ -501,7 +501,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             if currentTime + timerInterval <= totalDuration {
                 currentTime = currentTime + timerInterval
                 if currentTime == totalDuration{
-                    phaseCountLabel.text = "Phase End"
+                    phaseCountLabel.text = "Exercise Finished"
                 }
             }else{
                 currentTime = 0.0
