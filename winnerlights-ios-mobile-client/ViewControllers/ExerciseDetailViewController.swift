@@ -46,6 +46,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
             } else {
                 progressView.setProgress(currentTime/totalDuration, animated: true)
             }
+            totalDurationTimeLabel.text = String(format:"%.0f", ((totalDuration)/60.0).rounded(.towardZero))+":"+String(format:"%02.0f", ceil((totalDuration).truncatingRemainder(dividingBy: 60.0)))
         }
     }
     var timer: Timer!
