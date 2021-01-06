@@ -304,7 +304,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView.tag == 1{
-            let selectedValue:Float = Float(dataSourceMinute[row])
+            let selectedValue:Float = Float(dataSourceSecond[row])
             let currentPhaseDuration: Float = exercise.phases[0].duration
             let newPhaseDuration:Float =  60.0 * floor(currentPhaseDuration/60.0) + selectedValue
             for i in 0 ..< exercise.phases.count {
