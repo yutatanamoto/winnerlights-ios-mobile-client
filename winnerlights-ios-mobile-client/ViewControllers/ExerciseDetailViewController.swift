@@ -404,6 +404,15 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         previewContainerView.addSubview(phaseTimeRollMinute)
         view.addSubview(previewContainerView)
         view.addSubview(executionButton)
+        let phaseDuration: Float = exercise.phases[0].duration
+        let minute: Int = Int(floor(phaseDuration/60.0))
+        let second: Int = Int(phaseDuration.truncatingRemainder(dividingBy: 60.0))
+        let minuteIndex: Int = dataSourceMinute.firstIndex(of: minute) ?? 0
+        let secondIndex:Int = dataSourceSecond.firstIndex(of: second) ?? 0
+        phaseTimeRollMinute.selectRow(minuteIndex, inComponent: 0, animated: false)
+        phaseTimeButtonMinute.setTitle(String(dataSourceMinute[minuteIndex]), for: .normal)
+        phaseTimeRollSecond.selectRow(secondIndex, inComponent: 0, animated: false)
+        phaseTimeButtonSecond.setTitle(String(dataSourceSecond[secondIndex]), for: .normal)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.75), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
     }
