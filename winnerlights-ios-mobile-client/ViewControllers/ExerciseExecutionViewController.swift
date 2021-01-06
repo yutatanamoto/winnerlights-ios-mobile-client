@@ -323,8 +323,8 @@ class ExerciseExecutionViewController: UIViewController {
         //circularProgressView.leadingAnchor.constraint(equalTo: teamuniformA.leadingAnchor, constant: marginWidth/4).isActive = true
         //circularProgressView.trailingAnchor.constraint(equalTo: currentStateDisplayCard.trailingAnchor, constant: -marginWidth).isActive = true
         circularProgressView.bottomAnchor.constraint(equalTo: currentStateDisplayCard.bottomAnchor, constant: -marginWidth).isActive = true
-        circularProgressView.heightAnchor.constraint(equalToConstant: 160).isActive = true
-        circularProgressView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+        circularProgressView.heightAnchor.constraint(equalToConstant: view.frame.width*0.4).isActive = true
+        circularProgressView.widthAnchor.constraint(equalToConstant: view.frame.width*0.4).isActive = true
         circularProgressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         teamuniformA.topAnchor.constraint(equalTo: currentTimeLabel.bottomAnchor, constant: marginWidth*2).isActive = true
