@@ -348,9 +348,9 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
     
     fileprivate lazy var phaseTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "Phase Time"
+        label.text = "Phase Duration"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 25, weight: .medium)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.textAlignment = .center
         label.textColor = .black
         return label
