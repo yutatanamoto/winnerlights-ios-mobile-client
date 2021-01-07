@@ -18,12 +18,16 @@ class ViewController: UITabBarController {
         let firstViewController = NavigationController(rootViewController: AvairableExercisesViewController())
         firstViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "house"), tag: 0)
         
-        let secondViewController = NavigationController(rootViewController: BLEMeshNetworkViewController())
-        secondViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "dot.radiowaves.left.and.right"), tag: 1)
+//        let secondViewController = NavigationController(rootViewController: BLEMeshNetworkViewController())
+//        secondViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "dot.radiowaves.left.and.right"), tag: 1)
+//
+//        let thirdViewController = NavigationController(rootViewController: SettingViewController())
+//        thirdViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "slider.horizontal.3"), tag: 2)
         
-        let thirdViewController = NavigationController(rootViewController: SettingViewController())
-        thirdViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(systemName: "slider.horizontal.3"), tag: 2)
-        
-        self.viewControllers = [firstViewController, secondViewController, thirdViewController]
+        self.viewControllers = [
+            firstViewController,
+//            secondViewController,
+//            thirdViewController
+        ]
     }
 }
