@@ -24,6 +24,12 @@ struct LEDColor {
     var blueIsOn: Bool
 }
 
+struct Job {
+    var clientModel: Model
+    var targetUnicastAddress: Address
+    var targetState: Bool
+}
+
 class BLEMeshNetworkViewController: ProgressViewController, UINavigationControllerDelegate {
     
     var ledColors: [LEDColor] = [
@@ -39,6 +45,10 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     let shadowOpacity: Float = 0.2
     let marginWidth: CGFloat = 50
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
+    
+    var targetElmentIndex:Int = 0
+    var jobs: [Job]!
+    var currentJobIndex: Int!
     
     var genericOnOffRedClientModel1: Model!
     var genericOnOffGreenClientModel1: Model!
@@ -70,7 +80,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     private var ttl: UInt8 = 0xFF
     private var periodSteps: UInt8 = 0
     private var periodResolution: StepResolution = .hundredsOfMilliseconds
-    private var retransmissionCount: UInt8 = 0
+    private var retransmissionCount: UInt8 = 10
     private var retransmissionIntervalSteps: UInt8 = 0
     weak var delegate: ProvisioningViewDelegate?
     var key: Key? {
@@ -354,7 +364,9 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
             genericOnOffBlueClientModel2 = blueLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
         
-        setPublication(clientModel: genericOnOffRedClientModel1, destinationGroupAddress: redGroup1Address)
+//        setPublication(clientModel: genericOnOffRedClientModel1, destinationAddress: redGroup1Address)
+        
+//        publishColorMessage()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -476,7 +488,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
     }
     
-    func setPublication(clientModel: Model, destinationGroupAddress: MeshAddress?) {
+    func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
         // Remove current publication
 //        guard let message = ConfigModelPublicationSet(disablePublicationFor: clientModel) else {
 //            return
@@ -486,7 +498,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
 //        }
         
         // Set new publication
-        guard let destination = destinationGroupAddress, let applicationKey = applicationKey else {
+        guard let destination = destinationAddress, let applicationKey = applicationKey else {
             return
         }
         start("Setting Model Publication...") {
@@ -503,19 +515,60 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     }
     
     @objc func publishColorMessage1(sender:UIButton) {
-        let label = "Setting Color..."
-        let targetLedColor = ledColors[sender.tag]
-        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel1)
-        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel1)
-        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel1)
+//        let label = "Setting Color..."
+//        let targetLedColor = ledColors[sender.tag]
+//        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel1)
+//        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel1)
+//        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel1)
+        targetElmentIndex = 2
+        currentJobIndex = 0
+        setJops(targetState: true)
+        setPublication()
     }
     
     @objc func publishColorMessage2(sender:UIButton) {
-        let label = "Setting Color..."
-        let targetLedColor = ledColors[sender.tag]
-        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel2)
-        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel2)
-        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel2)
+//        let label = "Setting Color..."
+//        let targetLedColor = ledColors[sender.tag]
+//        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel2)
+//        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel2)
+//        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel2)
+        targetElmentIndex = 2
+        currentJobIndex = 0
+        setJops(targetState: false)
+        setPublication()
+    }
+    
+    func setJops(targetState: Bool) {
+        jobs = []
+        let network = MeshNetworkManager.instance.meshNetwork!
+        nodes = network.nodes
+        for node in nodes {
+            if !node.isProvisioner {
+                for element in node.elements {
+                    if element.index == targetElmentIndex {
+                        let job: Job = Job(clientModel: genericOnOffRedClientModel1, targetUnicastAddress: element.unicastAddress, targetState: targetState)
+                        jobs.append(job)
+                    }
+                }
+            }
+        }
+    }
+    
+    func setPublication() {
+        let job = jobs[currentJobIndex]
+        let clientModel: Model = job.clientModel
+        let targetUnicastAddress: Address = job.targetUnicastAddress
+        print("Ω: set publication from to ", targetUnicastAddress)
+        setPublication(clientModel: clientModel, destinationAddress: MeshAddress(targetUnicastAddress))
+    }
+    
+    func publishColorMessage() {
+        let job = jobs[currentJobIndex]
+        let clientModel: Model = job.clientModel
+        let targetUnicastAddress: Address = job.targetUnicastAddress
+        let targetState: Bool = job.targetState
+        publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
+        print("Ω:publish color message to ", targetUnicastAddress)
     }
 }
 
@@ -554,8 +607,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             didReceiveMessage message: MeshMessage,
                             sentFrom source: Address, to destination: Address) {
-        print("message@didReceiveMessage -> ", message)
-        
+        print("didReceiveMessage", message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             done() {
@@ -575,24 +627,28 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
         switch message {
             
         case let status as ConfigModelPublicationStatus:
+            if status.status == .success {
+                print("Ω: publication set")
+                publishColorMessage()
+            }
             done() {
                 if status.status == .success {
-                    if !self.genericOnOffGreenClientModel1PublicationFinished {
-                        self.setPublication(clientModel: self.genericOnOffGreenClientModel1, destinationGroupAddress: self.greenGroup1Address)
-                        self.genericOnOffGreenClientModel1PublicationFinished = true
-                    } else if !self.genericOnOffBlueClientModel1PublicationFinished {
-                        self.setPublication(clientModel: self.genericOnOffBlueClientModel1, destinationGroupAddress: self.blueGroup1Address)
-                        self.genericOnOffBlueClientModel1PublicationFinished = true
-                    } else if !self.genericOnOffRedClientModel2PublicationFinished {
-                        self.setPublication(clientModel: self.genericOnOffRedClientModel2, destinationGroupAddress: self.redGroup2Address)
-                        self.genericOnOffRedClientModel2PublicationFinished = true
-                    } else if !self.genericOnOffGreenClientModel2PublicationFinished {
-                        self.setPublication(clientModel: self.genericOnOffGreenClientModel2, destinationGroupAddress: self.greenGroup2Address)
-                        self.genericOnOffGreenClientModel2PublicationFinished = true
-                    } else if !self.genericOnOffBlueClientModel2PublicationFinished {
-                        self.setPublication(clientModel: self.genericOnOffBlueClientModel2, destinationGroupAddress: self.blueGroup2Address)
-                        self.genericOnOffBlueClientModel2PublicationFinished = true
-                    }
+//                    if !self.genericOnOffGreenClientModel1PublicationFinished {
+//                        self.setPublication(clientModel: self.genericOnOffGreenClientModel1, destinationAddress: self.greenGroup1Address)
+//                        self.genericOnOffGreenClientModel1PublicationFinished = true
+//                    } else if !self.genericOnOffBlueClientModel1PublicationFinished {
+//                        self.setPublication(clientModel: self.genericOnOffBlueClientModel1, destinationAddress: self.blueGroup1Address)
+//                        self.genericOnOffBlueClientModel1PublicationFinished = true
+//                    } else if !self.genericOnOffRedClientModel2PublicationFinished {
+//                        self.setPublication(clientModel: self.genericOnOffRedClientModel2, destinationAddress: self.redGroup2Address)
+//                        self.genericOnOffRedClientModel2PublicationFinished = true
+//                    } else if !self.genericOnOffGreenClientModel2PublicationFinished {
+//                        self.setPublication(clientModel: self.genericOnOffGreenClientModel2, destinationAddress: self.greenGroup2Address)
+//                        self.genericOnOffGreenClientModel2PublicationFinished = true
+//                    } else if !self.genericOnOffBlueClientModel2PublicationFinished {
+//                        self.setPublication(clientModel: self.genericOnOffBlueClientModel2, destinationAddress: self.blueGroup2Address)
+//                        self.genericOnOffBlueClientModel2PublicationFinished = true
+//                    }
                     self.dismiss(animated: true)
                 } else {
                     self.presentAlert(title: "Error", message: status.message)
@@ -600,26 +656,37 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
             }
             
         case let status as GenericOnOffStatus:
-            done() {
-//                if status
-                self.presentAlert(title: "Succes", message: "Message you sent was succesfully received!!")
+            let job: Job = jobs[currentJobIndex]
+            let targetUnicastAddress: Address = job.targetUnicastAddress
+            let targetState: Bool = job.targetState
+            let actualState: Bool = status.isOn
+            print("Ω: targetState ", targetState)
+            print("Ω: actualState ", actualState)
+            if targetUnicastAddress == source {
+                print("Ω: \(source) received message")
+                if currentJobIndex < jobs.count-1 {
+                    currentJobIndex += 1
+                    setPublication()
+                }
             }
+//            done() {
+//                self.presentAlert(title: "Succes", message: "Message you sent was succesfully received!!")
+//            }
         
         case is ConfigNodeReset:
             // The node has been reset remotely.
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             presentAlert(title: "Reset", message: "The mesh network was reset remotely.")
-            
+        
         default:
             break
         }
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
-        print("message@didSendMessage    -> ", message)
-        done() {
-            self.presentAlert(title: "Succes", message: "Message was succesfully sent!!")
-        }
+//        done() {
+//            self.presentAlert(title: "Succes", message: "Message was succesfully sent!!")
+//        }
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager,
