@@ -24,12 +24,6 @@ struct LEDColor {
     var blueIsOn: Bool
 }
 
-struct Job {
-    var clientModel: Model
-    var targetUnicastAddress: Address
-    var targetState: Bool
-}
-
 class BLEMeshNetworkViewController: ProgressViewController, UINavigationControllerDelegate {
     
     var ledColors: [LEDColor] = [
@@ -546,7 +540,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
             if !node.isProvisioner {
                 for element in node.elements {
                     if element.index == targetElmentIndex {
-                        let job: Job = Job(clientModel: genericOnOffRedClientModel1, targetUnicastAddress: element.unicastAddress, targetState: targetState)
+                        let job: Job = Job(clientModel: genericOnOffRedClientModel1, address: MeshAddress(element.unicastAddress), targetState: targetState)
                         jobs.append(job)
                     }
                 }
@@ -557,7 +551,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     func setPublication() {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.targetUnicastAddress
+        let targetUnicastAddress: Address = job.address.address
         print("Ω: set publication from to ", targetUnicastAddress)
         setPublication(clientModel: clientModel, destinationAddress: MeshAddress(targetUnicastAddress))
     }
@@ -565,9 +559,9 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     func publishColorMessage() {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.targetUnicastAddress
+        let targetUnicastAddress: Address = job.address.address
         let targetState: Bool = job.targetState
-        publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
+        publish(GenericOnOffSet(targetState), description: "Settong Color", fromModel: clientModel)
         print("Ω:publish color message to ", targetUnicastAddress)
     }
 }
@@ -657,7 +651,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
             
         case let status as GenericOnOffStatus:
             let job: Job = jobs[currentJobIndex]
-            let targetUnicastAddress: Address = job.targetUnicastAddress
+            let targetUnicastAddress: Address = job.address.address
             let targetState: Bool = job.targetState
             let actualState: Bool = status.isOn
             print("Ω: targetState ", targetState)
