@@ -36,22 +36,19 @@ struct GoalNodeRelation {
     var position: GoalPosition
     var node: Node
 }
-
-class _Job {
-    var targetUnicastAddresses: [Address] = []
+struct Job {
+    var clientModel: Model
+    var address: MeshAddress
     var targetState: Bool
-    
-    init(targetUnicastAddresses: [Address], targetState: Bool) {
-        self.targetUnicastAddresses = targetUnicastAddresses
-        self.targetState = targetState
-    }
-    
-    func finish(targetUnicastAddress: Address) {
-        targetUnicastAddresses = targetUnicastAddresses.filter{ $0 != targetUnicastAddress }
-    }
+}
+struct _Job {
+    var clientModel: Model
+    var address: MeshAddress
+    var targetState: Bool
 }
 
 class ExerciseExecutionViewController: ProgressViewController {
+    var groupAddress: MeshAddress? = MeshAddress(0xC003)
     var exercise: Exercise!
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -83,13 +80,50 @@ class ExerciseExecutionViewController: ProgressViewController {
                         }
                         let node = _relations[0].node
                         let redElement = node.elements[0]
-                        let greenElement = node.elements[1]
+//                        let greenElement = node.elements[1]
                         let blueElement = node.elements[2]
-                        jobs.append(Job(clientModel: clientModel, targetUnicastAddress: redElement.unicastAddress, targetState: !redIsOn))
-                        jobs.append(Job(clientModel: clientModel, targetUnicastAddress: greenElement.unicastAddress, targetState: !greenIsOn))
-                        jobs.append(Job(clientModel: clientModel, targetUnicastAddress: blueElement.unicastAddress, targetState: !blueIsOn))
+                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(redElement.unicastAddress), targetState: !redIsOn))
+//                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(greenElement.unicastAddress), targetState: !greenIsOn))
+                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(blueElement.unicastAddress), targetState: !blueIsOn))
                     }
                 }
+                
+//                let network = MeshNetworkManager.instance.meshNetwork!
+//                print("Ω", network.groups)
+//                let blueGroup = network.groups[0]
+//                let redGroup = network.groups[1]
+//                for goal in phase.goals {
+//                    let position: GoalPosition = goal.position
+//                    let filteredRelations = relations.filter{$0.position == position}
+//                    if filteredRelations.count != 0 {
+//                        let goalColor = goal.color
+//                        var redIsOn: Bool!
+//                        var greenIsOn: Bool!
+//                        var blueIsOn: Bool!
+//                        let node = filteredRelations[0].node
+//                        let redElement = node.elements[0]
+//                        let redModel = redElement.models.first(where: { $0.name == "Generic OnOff Server" })!
+//                        let greenElement = node.elements[1]
+//                        let greenModel = greenElement.models.first(where: { $0.name == "Generic OnOff Server" })!
+//                        let blueElement = node.elements[2]
+//                        let blueModel = blueElement.models.first(where: { $0.name == "Generic OnOff Server" })!
+//                        switch goalColor {
+//                        case .blue:
+//                            redIsOn = false
+//                            greenIsOn = false
+//                            blueIsOn = true
+//                            addSubscription(model: blueModel, group: blueGroup)
+//                        case .pink:
+//                            redIsOn = true
+//                            greenIsOn = false
+//                            blueIsOn = false
+//                            addSubscription(model: redModel, group: redGroup)
+//                        }
+//                        jobs.append(Job(clientModel: clientModel, address: redGroup.address, targetState: !redIsOn))
+//                        jobs.append(Job(clientModel: clientModel, address: blueGroup.address, targetState: !blueIsOn))
+//                    }
+//                }
+                
                 currentJobIndex = 0
                 setPublication()
                 pitch.phase = phase
@@ -137,13 +171,16 @@ class ExerciseExecutionViewController: ProgressViewController {
     var currentJobIndex: Int!
     var relations: [GoalNodeRelation] = []
     
+    var _jobs: [_Job]!
+    var _currentJobIndex: Int!
+    
     var nodes: [Node] = []
     var applicationKey: ApplicationKey!
     private var newName: String!
     private var newKey: Data! = Data.random128BitKey()
     private var keyIndex: KeyIndex!
     private var newBoundNetworkKeyIndex: KeyIndex?
-    private var ttl: UInt8 = 0xFF
+    private var ttl: UInt8 = 0000
     private var periodSteps: UInt8 = 0
     private var periodResolution: StepResolution = .hundredsOfMilliseconds
     private var retransmissionCount: UInt8 = 10
@@ -516,50 +553,42 @@ class ExerciseExecutionViewController: ProgressViewController {
         if currentPhaseIndex < 4 {
             currentTime = exercise.phases[0 ..< currentPhaseIndex+1].reduce(0.0, {$0 + $1.duration})
         }
-//        targetElmentIndex = 2
-//        currentJobIndex = 0
-//        targetState = !targetState
-//        setJops(targetState: targetState)
-//        setPublication()
     }
     
     @objc func moveToBeginning() {
             currentTime = 0
     }
     
-    
-    func setJops(targetState: Bool) {
-        jobs = []
-        let network = MeshNetworkManager.instance.meshNetwork!
-        nodes = network.nodes
-        for node in nodes {
-            if !node.isProvisioner {
-                for element in node.elements {
-                    if element.index != 0 {
-                        let job: Job = Job(clientModel: clientModel, targetUnicastAddress: element.unicastAddress, targetState: targetState)
-                        jobs.append(job)
-                    }
-                }
-            }
+    func addSubscription(model: Model, group: Group) {
+        let alreadySubscribedGroups = model.subscriptions
+        print("Ω alreadySubscribedGroups -> " , alreadySubscribedGroups)
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
         }
+        let network = MeshNetworkManager.instance.meshNetwork!
+        let message: ConfigMessage =
+            ConfigModelSubscriptionAdd(group: group, to: model) ??
+            ConfigModelSubscriptionVirtualAddressAdd(group: group, to: model)!
+        try! MeshNetworkManager.instance.send(message, to: model)
     }
     
     func setPublication() {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.targetUnicastAddress
-        print("Ω: set publication from to ", targetUnicastAddress)
-        setPublication(clientModel: clientModel, destinationAddress: MeshAddress(targetUnicastAddress))
+        let address: MeshAddress = job.address
+        print("Ω: set publication from to ", address)
+        setPublication(clientModel: clientModel, destinationAddress: address)
     }
     
     func publishColorMessage() {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.targetUnicastAddress
+        let address: MeshAddress = job.address
         let targetState: Bool = job.targetState
 //        publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
         let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), fromModel: clientModel)
-        print("Ω:publish color message to ", targetUnicastAddress)
+        print("Ω:publish color message to ", address)
     }
     func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
         // Set new publication
@@ -863,14 +892,17 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
                 }
             }
             
+        case let status as ConfigModelSubscriptionStatus:
+            print("Ωstatus", status)
+            
         case let status as GenericOnOffStatus:
             let job: Job = jobs[currentJobIndex]
-            let targetUnicastAddress: Address = job.targetUnicastAddress
+            let address: MeshAddress = job.address
             let targetState: Bool = job.targetState
             let actualState: Bool = status.isOn
             print("Ω: targetState ", targetState)
             print("Ω: actualState ", actualState)
-            if targetUnicastAddress == source {
+            if address.address == source {
                 print("Ω: \(source) received message")
                 if currentJobIndex < jobs.count-1 {
                     currentJobIndex += 1
