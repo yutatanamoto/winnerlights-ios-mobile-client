@@ -36,7 +36,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
     let isSubscriptionSupported: Bool = true
     
     /// Model state.
-    private var state = GenericState<Bool>(false) {
+    private var state = GenericState<UInt8>(0x00) {
         didSet {
             if let transition = state.transition {
                 if transition.remainingTime > 0 {
@@ -45,7 +45,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
                             // If the state has not change since it was set,
                             // remove the Transition.
                             if self.state.transition?.start == transition.start {
-                                self.state = GenericState<Bool>(self.state.transition?.targetValue ?? self.state.value)
+                                self.state = GenericState<UInt8>(self.state.transition?.targetValue ?? self.state.value)
                             }
                         }
                     }
@@ -62,7 +62,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
     /// The last transaction details.
     private var lastTransaction: (source: Address, destination: MeshAddress, tid: UInt8, timestamp: Date)?
     /// The state observer.
-    private var observer: ((GenericState<Bool>) -> ())?
+    private var observer: ((GenericState<UInt8>) -> ())?
     
     init() {
         let types: [GenericMessage.Type] = [
@@ -91,11 +91,11 @@ class GenericOnOffServerDelegate: ModelDelegate {
             
             if let transitionTime = request.transitionTime,
                let delay = request.delay {
-                state = GenericState<Bool>(transitionFrom: state, to: request.isOn,
+                state = GenericState<UInt8>(transitionFrom: state, to: (request.color),
                                            delay: TimeInterval(delay) * 0.005,
                                            duration: transitionTime.interval)
             } else {
-                state = GenericState<Bool>(request.isOn)
+                state = GenericState<UInt8>((request.color))
             }
             
         default:
@@ -105,11 +105,11 @@ class GenericOnOffServerDelegate: ModelDelegate {
         
         // Reply with GenericOnOffStatus.
         if let transition = state.transition, transition.remainingTime > 0 {
-            return GenericOnOffStatus(state.value,
-                                      targetState: transition.targetValue,
+            return GenericOnOffStatus(0x00,
+                                      targetState: 0x00,
                                       remainingTime: TransitionTime(transition.remainingTime))
         } else {
-            return GenericOnOffStatus(state.value)
+            return GenericOnOffStatus(0x00)
         }
     }
     
@@ -129,11 +129,11 @@ class GenericOnOffServerDelegate: ModelDelegate {
             
             if let transitionTime = request.transitionTime,
                let delay = request.delay {
-                state = GenericState<Bool>(transitionFrom: state, to: request.isOn,
+                state = GenericState<UInt8>(transitionFrom: state, to: request.color,
                                            delay: TimeInterval(delay) * 0.005,
                                            duration: transitionTime.interval)
             } else {
-                state = GenericState<Bool>(request.isOn)
+                state = GenericState<UInt8>(request.color)
             }
             
         default:
@@ -152,7 +152,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
     ///
     /// - parameter observer: The observer that will be informed about
     ///                       state changes.
-    func observe(_ observer: @escaping (GenericState<Bool>) -> ()) {
+    func observe(_ observer: @escaping (GenericState<UInt8>) -> ()) {
         self.observer = observer
         observer(state)
     }

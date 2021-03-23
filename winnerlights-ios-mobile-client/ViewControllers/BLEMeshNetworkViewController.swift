@@ -35,10 +35,17 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         LEDColor(color: UIColor(red: 0, green: 255, blue: 255, alpha: 1), redIsOn: false, greenIsOn: true, blueIsOn: true)
     ]
 
-    let cornerRadius: CGFloat = 20
-    let shadowOpacity: Float = 0.2
+    let cornerRadius: CGFloat = 100
+    let buttonHeight: CGFloat = 200
+    let buttonWidth: CGFloat = 200
+    let buttonBorderWidth: CGFloat = 5
+    let shadowOpacity: Float = 0.5
     let marginWidth: CGFloat = 50
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
+    
+    var clientModel: Model!
+    var LEDGroup: Group!
+    var LEDGroupAddress: MeshAddress? = MeshAddress(0xC000)
     
     var targetElmentIndex:Int = 0
     var jobs: [Job]!
@@ -121,7 +128,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         tableView.dataSource = self
         return tableView
     }()
-    fileprivate lazy var publishRedButton1: UIButton = {
+    fileprivate lazy var publishRedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = cornerRadius
@@ -129,12 +136,14 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.tag = 0
+        button.layer.borderWidth = buttonBorderWidth
+        button.layer.borderColor = UIColor.white.cgColor
+        button.tag = 2
         button.backgroundColor = .red
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
+        button.addTarget(self, action: #selector(publishColorMessage), for: .touchUpInside)
         return button
     }()
-    fileprivate lazy var publishGreenButton1: UIButton = {
+    fileprivate lazy var publishGreenButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .green
@@ -143,139 +152,23 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         button.layer.shadowRadius = cornerRadius
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = shadowOffset
-        button.tag = 1
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
+        button.layer.borderWidth = buttonBorderWidth
+        button.layer.borderColor = UIColor.white.cgColor
+        button.tag = 3
+        button.addTarget(self, action: #selector(publishColorMessage), for: .touchUpInside)
         return button
     }()
-    fileprivate lazy var publishBlueButton1: UIButton = {
+    fileprivate lazy var publishBlueButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .blue
         button.layer.cornerRadius = cornerRadius
         button.layer.shadowOpacity = shadowOpacity
         button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 2
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishYellowButton1: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemYellow
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 3
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishPurpleButton1: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemPurple
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
+        button.layer.borderWidth = buttonBorderWidth
+        button.layer.borderColor = UIColor.white.cgColor
         button.tag = 4
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishBlueGreenButton1: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 1)
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 5
-        button.addTarget(self, action: #selector(publishColorMessage1), for: .touchUpInside)
-        return button
-    }()
-    
-    fileprivate lazy var publishRedButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 0
-        button.backgroundColor = .red
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishGreenButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .green
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 1
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishBlueButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .blue
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 2
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishYellowButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemYellow
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 3
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishPurpleButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .systemPurple
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 4
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
-        return button
-    }()
-    fileprivate lazy var publishBlueGreenButton2: UIButton = {
-        let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = UIColor(red: 0, green: 255, blue: 255, alpha: 1)
-        button.layer.cornerRadius = cornerRadius
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = cornerRadius
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = shadowOffset
-        button.tag = 5
-        button.addTarget(self, action: #selector(publishColorMessage2), for: .touchUpInside)
+        button.addTarget(self, action: #selector(publishColorMessage), for: .touchUpInside)
         return button
     }()
 
@@ -287,18 +180,9 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         self.navigationItem.rightBarButtonItem = addButton
         
         view.addSubview(nodeTableView)
-        view.addSubview(publishRedButton1)
-        view.addSubview(publishGreenButton1)
-        view.addSubview(publishBlueButton1)
-        view.addSubview(publishYellowButton1)
-        view.addSubview(publishPurpleButton1)
-        view.addSubview(publishBlueGreenButton1)
-        view.addSubview(publishRedButton2)
-        view.addSubview(publishGreenButton2)
-        view.addSubview(publishBlueButton2)
-        view.addSubview(publishYellowButton2)
-        view.addSubview(publishPurpleButton2)
-        view.addSubview(publishBlueGreenButton2)
+        view.addSubview(publishRedButton)
+        view.addSubview(publishGreenButton)
+        view.addSubview(publishBlueButton)
         
         setupConstraints()
         MeshNetworkManager.instance.delegate = self
@@ -307,60 +191,34 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         groups = network.groups
         // Create 1 application key
         if network.applicationKeys.count == 0 {
-            CreateAndSaveApplicationKey()
+            createAndSaveApplicationKey()
         }
         applicationKey = network.applicationKeys[0]
         // Create groups
         if groups.count == 0 {
-            createAndSaveNewGroup(name: "redGroup1", address: redGroup1Address!)
-            createAndSaveNewGroup(name: "greenGroup1", address: greenGroup1Address!)
-            createAndSaveNewGroup(name: "blueGroup1", address: blueGroup1Address!)
-            createAndSaveNewGroup(name: "redGroup2", address: redGroup2Address!)
-            createAndSaveNewGroup(name: "greenGroup2", address: greenGroup2Address!)
-            createAndSaveNewGroup(name: "blueGroup2", address: blueGroup2Address!)
+            createAndSaveNewGroup(name: "LEDGroup", address: LEDGroupAddress!)
         }
         
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let redLedElement = provisionersNode.elements.first(where: { $0.location == .third }),
-           let _ = redLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            genericOnOffRedClientModel1 = redLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let greenLedElement = provisionersNode.elements.first(where: { $0.location == .fourth }),
-           let _ = greenLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            genericOnOffGreenClientModel1 = greenLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let blueLedElement = provisionersNode.elements.first(where: { $0.location == .fifth }),
-           let _ = blueLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            genericOnOffBlueClientModel1 = blueLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
+        LEDGroup = groups.first(where: { $0.name == "LEDGroup" })!
         
         if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let redLedElement = provisionersNode.elements.first(where: { $0.location == .sixth }),
-           let _ = redLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
+           let primaryElement = provisionersNode.elements.first(where: { $0.location == .first }),
+           let _ = primaryElement.models.first(where: { $0.name == "Generic OnOff Client" })
            {
-            genericOnOffRedClientModel2 = redLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let greenLedElement = provisionersNode.elements.first(where: { $0.location == .seventh }),
-           let _ = greenLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            genericOnOffGreenClientModel2 = greenLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let blueLedElement = provisionersNode.elements.first(where: { $0.location == .eighth }),
-           let _ = blueLedElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            genericOnOffBlueClientModel2 = blueLedElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+            clientModel = primaryElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
         
-//        setPublication(clientModel: genericOnOffRedClientModel1, destinationAddress: redGroup1Address)
+        setPublication(clientModel: clientModel, destinationAddress: LEDGroupAddress)
         
-//        publishColorMessage()
+        for node in nodes.filter({ !$0.isProvisioner }) {
+            if let _ = node.elements[0].models.first(where: { $0.name == "Generic OnOff Server" })
+               {
+                let LEDModel = node.elements[0].models.first(where: { $0.name == "Generic OnOff Server" })!
+                print("Ω addSubscription called")
+                print("Ω model name", LEDModel.name)
+                addSubscription(model: LEDModel)
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -372,79 +230,28 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         nodeTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         nodeTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         nodeTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        nodeTableView.heightAnchor.constraint(equalToConstant: 400).isActive = true
+        nodeTableView.heightAnchor.constraint(equalToConstant: view.frame.height*0.3).isActive = true
         
-        publishRedButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishRedButton1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-        publishRedButton1.trailingAnchor.constraint(equalTo: publishGreenButton1.leadingAnchor, constant: 0).isActive = true
-        publishRedButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishRedButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        publishRedButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
+        publishRedButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.width*0.15).isActive = true
+        publishRedButton.trailingAnchor.constraint(equalTo: publishGreenButton.leadingAnchor, constant: -view.frame.width*0.05).isActive = true
+        publishRedButton.widthAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishRedButton.heightAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishRedButton.layer.cornerRadius = view.frame.width*0.1
         
-        publishGreenButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishGreenButton1.leadingAnchor.constraint(equalTo: publishRedButton2.trailingAnchor, constant: 0).isActive = true
-        publishGreenButton1.trailingAnchor.constraint(equalTo: publishBlueButton1.leadingAnchor, constant: 0).isActive = true
-        publishGreenButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishGreenButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        publishGreenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
+        publishGreenButton.leadingAnchor.constraint(equalTo: publishRedButton.trailingAnchor, constant: view.frame.width*0.05).isActive = true
+        publishGreenButton.trailingAnchor.constraint(equalTo: publishBlueButton.leadingAnchor, constant: -view.frame.width*0.05).isActive = true
+        publishGreenButton.widthAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishGreenButton.heightAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishGreenButton.layer.cornerRadius = view.frame.width*0.1
         
-        publishBlueButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishBlueButton1.leadingAnchor.constraint(equalTo: publishGreenButton2.trailingAnchor, constant: 0).isActive = true
-        publishBlueButton1.trailingAnchor.constraint(equalTo: publishYellowButton1.leadingAnchor, constant: 0).isActive = true
-        publishBlueButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishBlueButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishYellowButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishYellowButton1.leadingAnchor.constraint(equalTo: publishBlueButton2.trailingAnchor, constant: 0).isActive = true
-        publishYellowButton1.trailingAnchor.constraint(equalTo: publishPurpleButton1.leadingAnchor, constant: 0).isActive = true
-        publishYellowButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishYellowButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishPurpleButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishPurpleButton1.leadingAnchor.constraint(equalTo: publishYellowButton2.trailingAnchor, constant: 0).isActive = true
-        publishPurpleButton1.trailingAnchor.constraint(equalTo: publishBlueGreenButton1.leadingAnchor, constant: 0).isActive = true
-        publishPurpleButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishPurpleButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishBlueGreenButton1.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
-        publishBlueGreenButton1.leadingAnchor.constraint(equalTo: publishPurpleButton1.trailingAnchor, constant: 0).isActive = true
-        publishBlueGreenButton1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
-        publishBlueGreenButton1.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishBlueGreenButton1.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishRedButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishRedButton2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
-        publishRedButton2.trailingAnchor.constraint(equalTo: publishGreenButton1.leadingAnchor, constant: 0).isActive = true
-        publishRedButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishRedButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishGreenButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishGreenButton2.leadingAnchor.constraint(equalTo: publishRedButton1.trailingAnchor, constant: 0).isActive = true
-        publishGreenButton2.trailingAnchor.constraint(equalTo: publishBlueButton1.leadingAnchor, constant: 0).isActive = true
-        publishGreenButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishGreenButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishBlueButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishBlueButton2.leadingAnchor.constraint(equalTo: publishGreenButton1.trailingAnchor, constant: 0).isActive = true
-        publishBlueButton2.trailingAnchor.constraint(equalTo: publishYellowButton1.leadingAnchor, constant: 0).isActive = true
-        publishBlueButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishBlueButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishYellowButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishYellowButton2.leadingAnchor.constraint(equalTo: publishBlueButton1.trailingAnchor, constant: 0).isActive = true
-        publishYellowButton2.trailingAnchor.constraint(equalTo: publishPurpleButton1.leadingAnchor, constant: 0).isActive = true
-        publishYellowButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishYellowButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishPurpleButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishPurpleButton2.leadingAnchor.constraint(equalTo: publishYellowButton1.trailingAnchor, constant: 0).isActive = true
-        publishPurpleButton2.trailingAnchor.constraint(equalTo: publishBlueGreenButton1.leadingAnchor, constant: 0).isActive = true
-        publishPurpleButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishPurpleButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        publishBlueGreenButton2.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100).isActive = true
-        publishBlueGreenButton2.leadingAnchor.constraint(equalTo: publishPurpleButton2.trailingAnchor, constant: 0).isActive = true
-        publishBlueGreenButton2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
-        publishBlueGreenButton2.widthAnchor.constraint(equalTo: publishBlueGreenButton2.widthAnchor).isActive = true
-        publishBlueGreenButton2.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        publishBlueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -200).isActive = true
+        publishBlueButton.leadingAnchor.constraint(equalTo: publishGreenButton.trailingAnchor, constant: view.frame.width*0.05).isActive = true
+        publishBlueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -view.frame.width*0.15).isActive = true
+        publishBlueButton.widthAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishBlueButton.heightAnchor.constraint(equalToConstant: view.frame.width*0.2).isActive = true
+        publishBlueButton.layer.cornerRadius = view.frame.width*0.1
     }
     
     @objc func showAvairablePeripherals() {
@@ -460,7 +267,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
     }
     
-    func CreateAndSaveApplicationKey() {
+    func createAndSaveApplicationKey() {
         let network = MeshNetworkManager.instance.meshNetwork!
         newName = "New Application Key"
         key = try! network.add(applicationKey: newKey, name: newName)
@@ -473,8 +280,8 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     func createAndSaveNewGroup(name: String, address: MeshAddress) {
         let network = MeshNetworkManager.instance.meshNetwork!
         // Try assigning next available Group Address.
-        let group = try! Group(name: name, address: address)
-        try! network.add(group: group)
+        LEDGroup = try! Group(name: name, address: address)
+        try! network.add(group: LEDGroup)
         if MeshNetworkManager.instance.save() {
             presentAlert(title: "Group Succesfully Saved", message: "New group saved.")
         } else {
@@ -482,87 +289,38 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
     }
     
+    @objc func publishColorMessage(sender:UIButton) {
+        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(UInt8(sender.tag), transitionTime: TransitionTime(0.0), delay: 0), fromModel: clientModel)
+    }
+    
     func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
-        // Remove current publication
-//        guard let message = ConfigModelPublicationSet(disablePublicationFor: clientModel) else {
-//            return
-//        }
-//        start(description) {
-//            return try MeshNetworkManager.instance.send(message, to: clientModel)
-//        }
-        
         // Set new publication
         guard let destination = destinationAddress, let applicationKey = applicationKey else {
             return
         }
-        start("Setting Model Publication...") {
-            let publish = Publish(to: destination, using: applicationKey,
-                                  usingFriendshipMaterial: false, ttl: self.ttl,
-                                  periodSteps: self.periodSteps, periodResolution: self.periodResolution,
-                                  retransmit: Publish.Retransmit(publishRetransmitCount: self.retransmissionCount,
-                                                                 intervalSteps: self.retransmissionIntervalSteps))
+        let publish = Publish(to: destination, using: applicationKey,
+                              usingFriendshipMaterial: false, ttl: self.ttl,
+                              periodSteps: self.periodSteps, periodResolution: self.periodResolution,
+                              retransmit: Publish.Retransmit(publishRetransmitCount: self.retransmissionCount,
+                                                             intervalSteps: self.retransmissionIntervalSteps))
+        let message: ConfigMessage =
+            ConfigModelPublicationSet(publish, to: clientModel) ??
+            ConfigModelPublicationVirtualAddressSet(publish, to: clientModel)!
+        try! MeshNetworkManager.instance.send(message, to: clientModel)
+    }
+    
+    func addSubscription(model: Model) {
+        let alreadySubscribedGroups = model.subscriptions
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+        }
+        start("Subscribing...") { [self] in
             let message: ConfigMessage =
-                ConfigModelPublicationSet(publish, to: clientModel) ??
-                ConfigModelPublicationVirtualAddressSet(publish, to: clientModel)!
-            return try MeshNetworkManager.instance.send(message, to: clientModel)
+                ConfigModelSubscriptionAdd(group: self.LEDGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.LEDGroup, to: model)!
+            return try MeshNetworkManager.instance.send(message, to: model)
         }
-    }
-    
-    @objc func publishColorMessage1(sender:UIButton) {
-//        let label = "Setting Color..."
-//        let targetLedColor = ledColors[sender.tag]
-//        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel1)
-//        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel1)
-//        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel1)
-        targetElmentIndex = 2
-        currentJobIndex = 0
-        setJops(targetState: true)
-        setPublication()
-    }
-    
-    @objc func publishColorMessage2(sender:UIButton) {
-//        let label = "Setting Color..."
-//        let targetLedColor = ledColors[sender.tag]
-//        publish(GenericOnOffSet(!targetLedColor.redIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffRedClientModel2)
-//        publish(GenericOnOffSet(!targetLedColor.greenIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffGreenClientModel2)
-//        publish(GenericOnOffSet(!targetLedColor.blueIsOn, transitionTime: TransitionTime(0.0), delay: 20), description: label, fromModel: genericOnOffBlueClientModel2)
-        targetElmentIndex = 2
-        currentJobIndex = 0
-        setJops(targetState: false)
-        setPublication()
-    }
-    
-    func setJops(targetState: Bool) {
-        jobs = []
-        let network = MeshNetworkManager.instance.meshNetwork!
-        nodes = network.nodes
-        for node in nodes {
-            if !node.isProvisioner {
-                for element in node.elements {
-                    if element.index == targetElmentIndex {
-                        let job: Job = Job(clientModel: genericOnOffRedClientModel1, address: MeshAddress(element.unicastAddress), targetState: targetState)
-                        jobs.append(job)
-                    }
-                }
-            }
-        }
-    }
-    
-    func setPublication() {
-        let job = jobs[currentJobIndex]
-        let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.address.address
-        print("Ω: set publication from to ", targetUnicastAddress)
-        setPublication(clientModel: clientModel, destinationAddress: MeshAddress(targetUnicastAddress))
-    }
-    
-    func publishColorMessage() {
-        let job = jobs[currentJobIndex]
-        let clientModel: Model = job.clientModel
-        let targetUnicastAddress: Address = job.address.address
-        let targetState: Bool = job.targetState
-        publish(GenericOnOffSet(targetState), description: "Settong Color", fromModel: clientModel)
-        print("Ω:publish color message to ", targetUnicastAddress)
     }
 }
 
@@ -601,7 +359,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             didReceiveMessage message: MeshMessage,
                             sentFrom source: Address, to destination: Address) {
-        print("didReceiveMessage", message)
+        print("≈didReceiveMessage", message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             done() {
@@ -622,27 +380,9 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
             
         case let status as ConfigModelPublicationStatus:
             if status.status == .success {
-                print("Ω: publication set")
-                publishColorMessage()
             }
             done() {
                 if status.status == .success {
-//                    if !self.genericOnOffGreenClientModel1PublicationFinished {
-//                        self.setPublication(clientModel: self.genericOnOffGreenClientModel1, destinationAddress: self.greenGroup1Address)
-//                        self.genericOnOffGreenClientModel1PublicationFinished = true
-//                    } else if !self.genericOnOffBlueClientModel1PublicationFinished {
-//                        self.setPublication(clientModel: self.genericOnOffBlueClientModel1, destinationAddress: self.blueGroup1Address)
-//                        self.genericOnOffBlueClientModel1PublicationFinished = true
-//                    } else if !self.genericOnOffRedClientModel2PublicationFinished {
-//                        self.setPublication(clientModel: self.genericOnOffRedClientModel2, destinationAddress: self.redGroup2Address)
-//                        self.genericOnOffRedClientModel2PublicationFinished = true
-//                    } else if !self.genericOnOffGreenClientModel2PublicationFinished {
-//                        self.setPublication(clientModel: self.genericOnOffGreenClientModel2, destinationAddress: self.greenGroup2Address)
-//                        self.genericOnOffGreenClientModel2PublicationFinished = true
-//                    } else if !self.genericOnOffBlueClientModel2PublicationFinished {
-//                        self.setPublication(clientModel: self.genericOnOffBlueClientModel2, destinationAddress: self.blueGroup2Address)
-//                        self.genericOnOffBlueClientModel2PublicationFinished = true
-//                    }
                     self.dismiss(animated: true)
                 } else {
                     self.presentAlert(title: "Error", message: status.message)
@@ -650,22 +390,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
             }
             
         case let status as GenericOnOffStatus:
-            let job: Job = jobs[currentJobIndex]
-            let targetUnicastAddress: Address = job.address.address
-            let targetState: Bool = job.targetState
-            let actualState: Bool = status.isOn
-            print("Ω: targetState ", targetState)
-            print("Ω: actualState ", actualState)
-            if targetUnicastAddress == source {
-                print("Ω: \(source) received message")
-                if currentJobIndex < jobs.count-1 {
-                    currentJobIndex += 1
-                    setPublication()
-                }
-            }
-//            done() {
-//                self.presentAlert(title: "Succes", message: "Message you sent was succesfully received!!")
-//            }
+            print(status)
         
         case is ConfigNodeReset:
             // The node has been reset remotely.
@@ -678,7 +403,8 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
-//        done() {
+        print("≈", message)
+        //        done() {
 //            self.presentAlert(title: "Succes", message: "Message was succesfully sent!!")
 //        }
     }

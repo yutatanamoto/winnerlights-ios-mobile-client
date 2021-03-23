@@ -40,6 +40,7 @@ struct Job {
     var clientModel: Model
     var address: MeshAddress
     var targetState: Bool
+    var colorCode: UInt8
 }
 struct _Job {
     var clientModel: Model
@@ -68,23 +69,26 @@ class ExerciseExecutionViewController: ProgressViewController {
                         var redIsOn: Bool!
                         var greenIsOn: Bool!
                         var blueIsOn: Bool!
+                        var colorCode: UInt8!
                         switch goalColor {
                         case .blue:
                             redIsOn = false
                             greenIsOn = false
                             blueIsOn = true
+                            colorCode = 4
                         case .pink:
                             redIsOn = true
                             greenIsOn = false
                             blueIsOn = false
+                            colorCode = 2
                         }
                         let node = _relations[0].node
                         let redElement = node.elements[0]
 //                        let greenElement = node.elements[1]
-                        let blueElement = node.elements[2]
-                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(redElement.unicastAddress), targetState: !redIsOn))
+//                        let blueElement = node.elements[2]
+                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(redElement.unicastAddress), targetState: !redIsOn, colorCode: colorCode))
 //                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(greenElement.unicastAddress), targetState: !greenIsOn))
-                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(blueElement.unicastAddress), targetState: !blueIsOn))
+//                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(blueElement.unicastAddress), targetState: !blueIsOn))
                     }
                 }
                 
@@ -166,6 +170,7 @@ class ExerciseExecutionViewController: ProgressViewController {
     var targetState: Bool = false
     
     var clientModel: Model!
+    var _clientModel: Model!
     var targetElmentIndex:Int = 0
     var jobs: [Job]!
     var currentJobIndex: Int!
@@ -446,6 +451,12 @@ class ExerciseExecutionViewController: ProgressViewController {
            {
             clientModel = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
+        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
+           let secondElement = provisionersNode.elements.first(where: { $0.location == .second }),
+           let _ = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })
+           {
+            _clientModel = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+        }
     }
     
     func setupConstraints() {
@@ -577,7 +588,7 @@ class ExerciseExecutionViewController: ProgressViewController {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
         let address: MeshAddress = job.address
-        print("Ω: set publication from to ", address)
+        print("≈Set publication from to ", address)
         setPublication(clientModel: clientModel, destinationAddress: address)
     }
     
@@ -586,9 +597,10 @@ class ExerciseExecutionViewController: ProgressViewController {
         let clientModel: Model = job.clientModel
         let address: MeshAddress = job.address
         let targetState: Bool = job.targetState
+        let colorCode: UInt8 = job.colorCode
 //        publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
-        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), fromModel: clientModel)
-        print("Ω:publish color message to ", address)
+        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(colorCode, transitionTime: TransitionTime(0.0), delay: 1), fromModel: clientModel)
+        print("\n\n\n\n\n\n\nΩ:publish color message to ", address)
     }
     func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
         // Set new publication
@@ -861,6 +873,10 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             didReceiveMessage message: MeshMessage,
                             sentFrom source: Address, to destination: Address) {
+        print("≈\n\n")
+        print("≈source", source)
+        print("≈destination", destination)
+        print("≈didReceiveMessage", message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             done() {
@@ -881,7 +897,6 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
             
         case let status as ConfigModelPublicationStatus:
             if status.status == .success {
-                print("Ω: publication set")
                 publishColorMessage()
             }
             done() {
@@ -892,18 +907,15 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
                 }
             }
             
-        case let status as ConfigModelSubscriptionStatus:
-            print("Ωstatus", status)
+//        case let status as ConfigModelSubscriptionStatus:
             
         case let status as GenericOnOffStatus:
             let job: Job = jobs[currentJobIndex]
             let address: MeshAddress = job.address
             let targetState: Bool = job.targetState
-            let actualState: Bool = status.isOn
-            print("Ω: targetState ", targetState)
-            print("Ω: actualState ", actualState)
+            let actualState: UInt8 = status.color
             if address.address == source {
-                print("Ω: \(source) received message")
+//                print("≈\(source) received message")
                 if currentJobIndex < jobs.count-1 {
                     currentJobIndex += 1
                     setPublication()
@@ -921,12 +933,21 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
+        print("≈\n\ndidSendMessage")
+        print("≈source", localElement)
+        print("≈destination", destination)
+        print("≈message", message)
+        print("≈parameters", message.parameters![1])
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             failedToSendMessage message: MeshMessage,
                             from localElement: Element, to destination: Address,
                             error: Error) {
+        print("≈\n\n")
+        print("≈source", localElement)
+        print("≈destination", destination)
+        print("≈failedToSendMessage", message)
         done() {
             self.presentAlert(title: "Error", message: error.localizedDescription)
         }
