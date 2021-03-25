@@ -23,37 +23,37 @@ class AvairableExercisesViewController: UIViewController {
             description: "Basic exercise. There are 2 goals and 4 players on each team.",
             phases: [
                 Phase(
-                    duration: 20,
+                    duration: 5,
                     goals: [
-                        Goal(position: .upperLeft, color: .pink),
+                        Goal(position: .upperLeft, color: .blue),
                         Goal(position: .lowerLeft, color: .pink),
                         Goal(position: .upperRight, color: .blue),
                         Goal(position: .lowerRight, color: .blue),
                     ]
                 ),
                 Phase(
-                    duration: 20,
+                    duration: 5,
                     goals: [
-                        Goal(position: .upperLeft, color: .blue),
-                        Goal(position: .lowerLeft, color: .blue),
-                        Goal(position: .upperRight, color: .pink),
+                        Goal(position: .upperLeft, color: .pink),
+                        Goal(position: .lowerLeft, color: .pink),
+                        Goal(position: .upperRight, color: .blue),
                         Goal(position: .lowerRight, color: .pink),
                     ]
                 ),
                 Phase(
-                    duration: 20,
+                    duration: 5,
                     goals: [
-                        Goal(position: .upperLeft, color: .pink),
+                        Goal(position: .upperLeft, color: .blue),
                         Goal(position: .lowerLeft, color: .pink),
                         Goal(position: .upperRight, color: .blue),
                         Goal(position: .lowerRight, color: .blue),
                     ]
                 ),
                 Phase(
-                    duration: 20,
+                    duration: 5,
                     goals: [
                         Goal(position: .upperLeft, color: .blue),
-                        Goal(position: .lowerLeft, color: .blue),
+                        Goal(position: .lowerLeft, color: .pink),
                         Goal(position: .upperRight, color: .pink),
                         Goal(position: .lowerRight, color: .pink),
                     ]

@@ -45,7 +45,7 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     
     var clientModel: Model!
     var LEDGroup: Group!
-    var LEDGroupAddress: MeshAddress? = MeshAddress(0xC000)
+    var LEDGroupAddress: MeshAddress? = MeshAddress(0xC007)
     
     var targetElmentIndex:Int = 0
     var jobs: [Job]!
@@ -195,11 +195,15 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
         applicationKey = network.applicationKeys[0]
         // Create groups
-        if groups.count == 0 {
+        for group in groups {
+            print("Ω", group.name)
+        }
+        if let _ = groups.first(where: { $0.name == "LEDGroup" }) {
+            LEDGroup = groups.first(where: { $0.name == "LEDGroup" })!
+        } else {
             createAndSaveNewGroup(name: "LEDGroup", address: LEDGroupAddress!)
         }
-        
-        LEDGroup = groups.first(where: { $0.name == "LEDGroup" })!
+    
         
         if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
            let primaryElement = provisionersNode.elements.first(where: { $0.location == .first }),
@@ -359,7 +363,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             didReceiveMessage message: MeshMessage,
                             sentFrom source: Address, to destination: Address) {
-        print("≈didReceiveMessage", message)
+        print("≈didReceiveMessage", "from", source, "to", destination, message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             done() {
@@ -390,7 +394,7 @@ extension BLEMeshNetworkViewController: MeshNetworkDelegate{
             }
             
         case let status as GenericOnOffStatus:
-            print(status)
+            print("Ω", status)
         
         case is ConfigNodeReset:
             // The node has been reset remotely.

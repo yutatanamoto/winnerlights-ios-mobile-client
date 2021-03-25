@@ -436,6 +436,7 @@ class ExerciseExecutionViewController: ProgressViewController {
             .lowerRight
         ]
         for (i, node) in nodes.filter({ !$0.isProvisioner }).enumerated() {
+            print(i)
             relations.append(GoalNodeRelation(position: positions[i], node: node))
         }
         print("Ω: ", relations)
