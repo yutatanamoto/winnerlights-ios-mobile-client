@@ -49,7 +49,8 @@ struct _Job {
 }
 
 class ExerciseExecutionViewController: ProgressViewController {
-    var groupAddress: MeshAddress? = MeshAddress(0xC003)
+    var red1Group: Group!
+    var redGroup1Address: MeshAddress? = MeshAddress(0xC000)
     var exercise: Exercise!
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -61,75 +62,163 @@ class ExerciseExecutionViewController: ProgressViewController {
             if currentPhaseIndex != oldValue  {
                 jobs = []
                 let phase: Phase = exercise.phases[currentPhaseIndex]
+//                for goal in phase.goals {
+//                    let position: GoalPosition = goal.position
+//                    let _relations = relations.filter{$0.position == position}
+//                    if _relations.count != 0 {
+//                        let goalColor = goal.color
+//                        var redIsOn: Bool!
+//                        var greenIsOn: Bool!
+//                        var blueIsOn: Bool!
+//                        var colorCode: UInt8!
+//                        let node = _relations[0].node
+//                        let Element = node.elements[0]
+//                        print("Ω node name",node.name)
+//                        switch goalColor {
+//                        case .pink:
+//                            redIsOn = false
+//                            greenIsOn = false
+//                            blueIsOn = true
+//                            colorCode = 2
+//                            jobs.append(Job(clientModel: clientModel, address: MeshAddress(Element.unicastAddress), targetState: !redIsOn, colorCode: colorCode))
+////                            setPublication(clientModel: _clientModel, destinationAddress: MeshAddress(Element.unicastAddress))
+////                            publishColorMessage(clientModel: clientModel, colorCode: 2)
+//                        case .blue:
+//                            redIsOn = true
+//                            greenIsOn = false
+//                            blueIsOn = false
+//                            colorCode = 4
+//                            jobs.append(Job(clientModel: _clientModel, address: MeshAddress(Element.unicastAddress), targetState: !redIsOn, colorCode: colorCode))
+////                            setPublication(clientModel: _clientModel, destinationAddress: MeshAddress(Element.unicastAddress))
+////                            publishColorMessage(clientModel: _clientModel, colorCode: 4)
+//                        }
+////                        let greenElement = node.elements[1]
+////                        let blueElement = node.elements[2]
+////                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(greenElement.unicastAddress), targetState: !greenIsOn))
+////                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(blueElement.unicastAddress), targetState: !blueIsOn))
+//                    }
+//                }
+                
+                let network = MeshNetworkManager.instance.meshNetwork!
+                let red1group = network.groups[0]
+
+                if currentPhaseIndex == 0{
                 for goal in phase.goals {
                     let position: GoalPosition = goal.position
-                    let _relations = relations.filter{$0.position == position}
-                    if _relations.count != 0 {
+                    let filteredRelations = relations.filter{$0.position == position}
+                    if filteredRelations.count != 0 {
                         let goalColor = goal.color
                         var redIsOn: Bool!
                         var greenIsOn: Bool!
                         var blueIsOn: Bool!
                         var colorCode: UInt8!
                         switch goalColor {
-                        case .blue:
-                            redIsOn = false
-                            greenIsOn = false
-                            blueIsOn = true
-                            colorCode = 4
                         case .pink:
                             redIsOn = true
                             greenIsOn = false
                             blueIsOn = false
                             colorCode = 2
+                            jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !redIsOn, colorCode: colorCode))
+                        case .blue:
+                            redIsOn = false
+                            greenIsOn = false
+                            blueIsOn = true
+                            colorCode = 4
+                            jobs.append(Job(clientModel: _clientModel, address: red1group.address, targetState: !blueIsOn, colorCode: colorCode))
                         }
-                        let node = _relations[0].node
-                        let redElement = node.elements[0]
-//                        let greenElement = node.elements[1]
-//                        let blueElement = node.elements[2]
-                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(redElement.unicastAddress), targetState: !redIsOn, colorCode: colorCode))
-//                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(greenElement.unicastAddress), targetState: !greenIsOn))
-//                        jobs.append(Job(clientModel: clientModel, address: MeshAddress(blueElement.unicastAddress), targetState: !blueIsOn))
                     }
                 }
-                
-//                let network = MeshNetworkManager.instance.meshNetwork!
-//                print("Ω", network.groups)
-//                let blueGroup = network.groups[0]
-//                let redGroup = network.groups[1]
-//                for goal in phase.goals {
-//                    let position: GoalPosition = goal.position
-//                    let filteredRelations = relations.filter{$0.position == position}
-//                    if filteredRelations.count != 0 {
-//                        let goalColor = goal.color
-//                        var redIsOn: Bool!
-//                        var greenIsOn: Bool!
-//                        var blueIsOn: Bool!
-//                        let node = filteredRelations[0].node
-//                        let redElement = node.elements[0]
-//                        let redModel = redElement.models.first(where: { $0.name == "Generic OnOff Server" })!
-//                        let greenElement = node.elements[1]
-//                        let greenModel = greenElement.models.first(where: { $0.name == "Generic OnOff Server" })!
-//                        let blueElement = node.elements[2]
-//                        let blueModel = blueElement.models.first(where: { $0.name == "Generic OnOff Server" })!
-//                        switch goalColor {
-//                        case .blue:
-//                            redIsOn = false
-//                            greenIsOn = false
-//                            blueIsOn = true
-//                            addSubscription(model: blueModel, group: blueGroup)
-//                        case .pink:
-//                            redIsOn = true
-//                            greenIsOn = false
-//                            blueIsOn = false
-//                            addSubscription(model: redModel, group: redGroup)
-//                        }
-//                        jobs.append(Job(clientModel: clientModel, address: redGroup.address, targetState: !redIsOn))
-//                        jobs.append(Job(clientModel: clientModel, address: blueGroup.address, targetState: !blueIsOn))
-//                    }
-//                }
-                
+                }
+
+                if currentPhaseIndex == 1{
+                for goal in phase.goals {
+                    let position: GoalPosition = goal.position
+                    let filteredRelations = relations.filter{$0.position == position}
+                    if filteredRelations.count != 0 {
+                        let goalColor = goal.color
+                        var redIsOn: Bool!
+                        var greenIsOn: Bool!
+                        var blueIsOn: Bool!
+                        var colorCode: UInt8!
+                        switch goalColor {
+                        case .pink:
+                            redIsOn = true
+                            greenIsOn = false
+                            blueIsOn = false
+                            colorCode = 2
+                            jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !redIsOn, colorCode: colorCode))
+                        case .blue:
+                            redIsOn = false
+                            greenIsOn = false
+                            blueIsOn = true
+                            colorCode = 4
+                            jobs.append(Job(clientModel: _clientModel, address: red1group.address, targetState: !blueIsOn, colorCode: colorCode))
+                        }
+                    }
+                }
+                }
+
+                    if currentPhaseIndex == 2{
+                    for goal in phase.goals {
+                        let position: GoalPosition = goal.position
+                        let filteredRelations = relations.filter{$0.position == position}
+                        if filteredRelations.count != 0 {
+                            let goalColor = goal.color
+                            var redIsOn: Bool!
+                            var greenIsOn: Bool!
+                            var blueIsOn: Bool!
+                            var colorCode: UInt8!
+                            switch goalColor {
+                            case .pink:
+                                redIsOn = true
+                                greenIsOn = false
+                                blueIsOn = false
+                                colorCode = 2
+                                jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !redIsOn, colorCode: colorCode))
+                            case .blue:
+                                redIsOn = false
+                                greenIsOn = false
+                                blueIsOn = true
+                                colorCode = 4
+                                jobs.append(Job(clientModel: _clientModel, address: red1group.address, targetState: !blueIsOn, colorCode: colorCode))
+                            }
+                        }
+                    }
+                    }
+
+                    if currentPhaseIndex == 3{
+                    for goal in phase.goals {
+                        let position: GoalPosition = goal.position
+                        let filteredRelations = relations.filter{$0.position == position}
+                        if filteredRelations.count != 0 {
+                            let goalColor = goal.color
+                            var redIsOn: Bool!
+                            var greenIsOn: Bool!
+                            var blueIsOn: Bool!
+                            var colorCode: UInt8!
+                            switch goalColor {
+                            case .pink:
+                                redIsOn = true
+                                greenIsOn = false
+                                blueIsOn = false
+                                colorCode = 2
+                                jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !redIsOn, colorCode: colorCode))
+                            case .blue:
+                                redIsOn = false
+                                greenIsOn = false
+                                blueIsOn = true
+                                colorCode = 4
+                                jobs.append(Job(clientModel: _clientModel, address: red1group.address, targetState: !blueIsOn, colorCode: colorCode))
+                            }
+                        }
+                    }
+                    }
                 currentJobIndex = 0
-                setPublication()
+                //setPublication()
+                publishColorMessage(clientModel: clientModel, colorCode: Int(jobs[0].colorCode))
+                publishColorMessage(clientModel: _clientModel, colorCode: Int(jobs[1].colorCode))
+                publishColorMessage(clientModel: __clientModel, colorCode: Int(jobs[2].colorCode))
+                publishColorMessage(clientModel: ___clientModel, colorCode: Int(jobs[3].colorCode))
                 pitch.phase = phase
                 pitch.setNeedsDisplay()
                 print("\n\n")
@@ -171,6 +260,12 @@ class ExerciseExecutionViewController: ProgressViewController {
     
     var clientModel: Model!
     var _clientModel: Model!
+    var __clientModel: Model!
+    var ___clientModel: Model!
+    var ____clientModel: Model!
+    var _____clientModel: Model!
+    var ______clientModel: Model!
+    var _______clientModel: Model!
     var targetElmentIndex:Int = 0
     var jobs: [Job]!
     var currentJobIndex: Int!
@@ -180,6 +275,7 @@ class ExerciseExecutionViewController: ProgressViewController {
     var _currentJobIndex: Int!
     
     var nodes: [Node] = []
+    var groups: [Group] = []
     var applicationKey: ApplicationKey!
     private var newName: String!
     private var newKey: Data! = Data.random128BitKey()
@@ -428,6 +524,8 @@ class ExerciseExecutionViewController: ProgressViewController {
         MeshNetworkManager.instance.delegate = self
         let network = MeshNetworkManager.instance.meshNetwork!
         nodes = network.nodes
+        groups = network.groups
+
         relations = []
         let positions: [GoalPosition] = [
             .upperLeft,
@@ -441,23 +539,54 @@ class ExerciseExecutionViewController: ProgressViewController {
         }
         print("Ω: ", relations)
         
+        if let _ = groups.first(where: { $0.name == "red1Group" }) {
+            red1Group = groups.first(where: { $0.name == "red1Group" })
+        } else {
+            createAndSaveNewGroup(name: "red1Group", address: redGroup1Address!)
+        }
+        
         // Create 1 application key
         if network.applicationKeys.count == 0 {
             createAndSaveApplicationKey()
         }
         applicationKey = network.applicationKeys[0]
+        
         if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
            let thirdElement = provisionersNode.elements.first(where: { $0.location == .third }),
            let _ = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })
            {
             clientModel = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
+        
+        setPublication(clientModel: clientModel, destinationAddress: MeshAddress(nodes[1].unicastAddress))
+        
         if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
            let secondElement = provisionersNode.elements.first(where: { $0.location == .second }),
            let _ = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })
            {
             _clientModel = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
+        
+        setPublication(clientModel: _clientModel, destinationAddress: MeshAddress(nodes[2].unicastAddress))
+        
+        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
+           let fourthElement = provisionersNode.elements.first(where: { $0.location == .fourth }),
+           let _ = fourthElement.models.first(where: { $0.name == "Generic OnOff Client" })
+           {
+            __clientModel = fourthElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+        }
+        
+        setPublication(clientModel: __clientModel, destinationAddress: MeshAddress(nodes[3].unicastAddress))
+
+        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
+           let fifthElement = provisionersNode.elements.first(where: { $0.location == .fifth }),
+           let _ = fifthElement.models.first(where: { $0.name == "Generic OnOff Client" })
+           {
+            ___clientModel = fifthElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+        }
+        
+        setPublication(clientModel: ___clientModel, destinationAddress: MeshAddress(nodes[4].unicastAddress))
+        
     }
     
     func setupConstraints() {
@@ -571,25 +700,37 @@ class ExerciseExecutionViewController: ProgressViewController {
             currentTime = 0
     }
     
-    func addSubscription(model: Model, group: Group) {
+    func createAndSaveNewGroup(name: String, address: MeshAddress) {
+        let network = MeshNetworkManager.instance.meshNetwork!
+        // Try assigning next available Group Address.
+        red1Group = try! Group(name: name, address: address)
+        try! network.add(group: red1Group)
+        if MeshNetworkManager.instance.save() {
+            presentAlert(title: "Group Succesfully Saved", message: "New group saved.")
+        } else {
+            presentAlert(title: "Error", message: "Mesh configuration could not be saved.")
+        }
+    }
+    
+    func addSubscription(model: Model) {
         let alreadySubscribedGroups = model.subscriptions
-        print("Ω alreadySubscribedGroups -> " , alreadySubscribedGroups)
         alreadySubscribedGroups.forEach{ group in
             let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
             try! MeshNetworkManager.instance.send(message, to: model)
         }
-        let network = MeshNetworkManager.instance.meshNetwork!
-        let message: ConfigMessage =
-            ConfigModelSubscriptionAdd(group: group, to: model) ??
-            ConfigModelSubscriptionVirtualAddressAdd(group: group, to: model)!
-        try! MeshNetworkManager.instance.send(message, to: model)
+        start("Subscribing...") { [self] in
+            let message: ConfigMessage =
+                ConfigModelSubscriptionAdd(group: self.red1Group, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.red1Group, to: model)!
+            return try MeshNetworkManager.instance.send(message, to: model)
+        }
     }
     
     func setPublication() {
         let job = jobs[currentJobIndex]
         let clientModel: Model = job.clientModel
         let address: MeshAddress = job.address
-        print("≈Set publication from to ", address)
+        print("Ω Set publication from to ", address)
         setPublication(clientModel: clientModel, destinationAddress: address)
     }
     
@@ -600,11 +741,20 @@ class ExerciseExecutionViewController: ProgressViewController {
         let targetState: Bool = job.targetState
         let colorCode: UInt8 = job.colorCode
 //        publish(GenericOnOffSet(targetState, transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
-        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(colorCode, transitionTime: TransitionTime(0.0), delay: 1), fromModel: clientModel)
+        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(colorCode, transitionTime: TransitionTime(0.0), delay: 0), fromModel: clientModel)
         print("\n\n\n\n\n\n\nΩ:publish color message to ", address)
     }
+    
+    func publishColorMessage(clientModel: Model,colorCode: Int) {
+        let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(UInt8(colorCode), transitionTime: TransitionTime(0.0), delay: 0), fromModel: clientModel)
+//        publish(GenericOnOffSet(UInt8(colorCode), transitionTime: TransitionTime(0.0), delay: 1), description: "Settong Color", fromModel: clientModel)
+        print("\n\n\n\n\n\n\nΩ:publish color message from ",clientModel)
+    }
+    
     func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
         // Set new publication
+        print("Ω setPublication",clientModel)
+        print("Ω setPublication",destinationAddress)
         guard let destination = destinationAddress, let applicationKey = applicationKey else {
             return
         }
@@ -877,7 +1027,7 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
         print("≈\n\n")
         print("≈source", source)
         print("≈destination", destination)
-        print("≈didReceiveMessage", message)
+        print("Ω didReceiveMessage", message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             done() {
@@ -894,11 +1044,52 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
         }
         
         // Handle the message based on its type.
+//        switch message {
+//
+//        case let status as ConfigModelPublicationStatus:
+//            if status.status == .success {
+//                print("Ω status",status)
+//                print("Ω elementAddress",status.elementAddress)
+//                print("¥ function publish",#function)
+//                publishColorMessage()
+//            }
+//            done() {
+//                if status.status == .success {
+//                    self.dismiss(animated: true)
+//                } else {
+//                    self.presentAlert(title: "Error", message: status.message)
+//                }
+//            }
+//
+////        case let status as ConfigModelSubscriptionStatus:
+//
+//        case let status as GenericOnOffStatus:
+//            let job: Job = jobs[currentJobIndex]
+//            let address: MeshAddress = job.address
+//            let targetState: Bool = job.targetState
+//            let actualState: UInt8 = status.color
+//            if address.address == source {
+////                print("≈\(source) received message")
+//                if currentJobIndex < jobs.count-1 {
+//                    currentJobIndex += 1
+//                    print("Ω currentJobIndex",currentJobIndex)
+//                    setPublication()
+//                }
+//            }
+//
+//        case is ConfigNodeReset:
+//            // The node has been reset remotely.
+//            (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
+//            presentAlert(title: "Reset", message: "The mesh network was reset remotely.")
+//
+//        default:
+//            break
+//        }
+        
         switch message {
-            
+
         case let status as ConfigModelPublicationStatus:
             if status.status == .success {
-                publishColorMessage()
             }
             done() {
                 if status.status == .success {
@@ -907,27 +1098,15 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
                     self.presentAlert(title: "Error", message: status.message)
                 }
             }
-            
-//        case let status as ConfigModelSubscriptionStatus:
-            
+
         case let status as GenericOnOffStatus:
-            let job: Job = jobs[currentJobIndex]
-            let address: MeshAddress = job.address
-            let targetState: Bool = job.targetState
-            let actualState: UInt8 = status.color
-            if address.address == source {
-//                print("≈\(source) received message")
-                if currentJobIndex < jobs.count-1 {
-                    currentJobIndex += 1
-                    setPublication()
-                }
-            }
-        
+            print("Ω", status)
+
         case is ConfigNodeReset:
             // The node has been reset remotely.
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
             presentAlert(title: "Reset", message: "The mesh network was reset remotely.")
-        
+
         default:
             break
         }
@@ -937,7 +1116,7 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
         print("≈\n\ndidSendMessage")
         print("≈source", localElement)
         print("≈destination", destination)
-        print("≈message", message)
+        print("message", message)
         print("≈parameters", message.parameters![1])
     }
     
@@ -957,7 +1136,13 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
 
 extension ExerciseExecutionViewController: ModelControlDelegate {
     
+//    func publish(_ message: MeshMessage, description: String, fromModel model: Model) {
+//        MeshNetworkManager.instance.publish(message, fromModel: model)
+//    }
+    
     func publish(_ message: MeshMessage, description: String, fromModel model: Model) {
-        MeshNetworkManager.instance.publish(message, fromModel: model)
+        start(description) {
+            return MeshNetworkManager.instance.publish(message, fromModel: model)
+        }
     }
 }
