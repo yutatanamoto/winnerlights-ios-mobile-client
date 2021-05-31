@@ -8,6 +8,15 @@
 import UIKit
 import nRFMeshProvision
 
+protocol ModelControlDelegate: class {
+    func publish(_ message: MeshMessage, description: String, fromModel model: Model)
+}
+
+protocol PublicationDelegate {
+    /// This method is called when the publication has changed.
+    func publicationChanged()
+}
+
 struct Goal {
     let position: GoalPosition
     let color: GoalColor
@@ -49,8 +58,10 @@ struct _Job {
 }
 
 class ExerciseExecutionViewController: ProgressViewController {
-    var red1Group: Group!
-    var redGroup1Address: MeshAddress? = MeshAddress(0xC000)
+    var LEDGroup: Group!
+    var LEDGroupAddress: MeshAddress? = MeshAddress(0xC007)
+    var j: Int = 0
+    var k: Int = 4
     var exercise: Exercise!
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -60,7 +71,7 @@ class ExerciseExecutionViewController: ProgressViewController {
     var currentPhaseIndex: Int = 0 {
         didSet {
             if currentPhaseIndex != oldValue  {
-                jobs = []
+//                jobs = []
                 let phase: Phase = exercise.phases[currentPhaseIndex]
 //                for goal in phase.goals {
 //                    let position: GoalPosition = goal.position
@@ -215,10 +226,20 @@ class ExerciseExecutionViewController: ProgressViewController {
                     }
                 currentJobIndex = 0
                 //setPublication()
-                publishColorMessage(clientModel: clientModel, colorCode: Int(jobs[0].colorCode))
-                publishColorMessage(clientModel: _clientModel, colorCode: Int(jobs[1].colorCode))
-                publishColorMessage(clientModel: __clientModel, colorCode: Int(jobs[2].colorCode))
-                publishColorMessage(clientModel: ___clientModel, colorCode: Int(jobs[3].colorCode))
+                if Int(jobs[k].colorCode) != Int(jobs[j].colorCode) {
+                    publishColorMessage(clientModel: clientModel, colorCode: Int(jobs[k].colorCode))
+                }
+                if Int(jobs[k+1].colorCode) != Int(jobs[j+1].colorCode) {
+                    publishColorMessage(clientModel: _clientModel, colorCode: Int(jobs[k+1].colorCode))
+                }
+                if Int(jobs[k+2].colorCode) != Int(jobs[j+2].colorCode) {
+                    publishColorMessage(clientModel: __clientModel, colorCode: Int(jobs[k+2].colorCode))
+                }
+                if Int(jobs[k+3].colorCode) != Int(jobs[j+3].colorCode) {
+                    publishColorMessage(clientModel: ___clientModel, colorCode: Int(jobs[k+3].colorCode))
+                }
+                j += 4
+                k += 4
                 pitch.phase = phase
                 pitch.setNeedsDisplay()
                 print("\n\n")
@@ -262,10 +283,10 @@ class ExerciseExecutionViewController: ProgressViewController {
     var _clientModel: Model!
     var __clientModel: Model!
     var ___clientModel: Model!
-    var ____clientModel: Model!
-    var _____clientModel: Model!
-    var ______clientModel: Model!
-    var _______clientModel: Model!
+//    var ____clientModel: Model!
+//    var _____clientModel: Model!
+//    var ______clientModel: Model!
+//    var _______clientModel: Model!
     var targetElmentIndex:Int = 0
     var jobs: [Job]!
     var currentJobIndex: Int!
@@ -525,7 +546,10 @@ class ExerciseExecutionViewController: ProgressViewController {
         let network = MeshNetworkManager.instance.meshNetwork!
         nodes = network.nodes
         groups = network.groups
+        let red1group = network.groups[0]
 
+        jobs = []
+        
         relations = []
         let positions: [GoalPosition] = [
             .upperLeft,
@@ -539,10 +563,10 @@ class ExerciseExecutionViewController: ProgressViewController {
         }
         print("Ω: ", relations)
         
-        if let _ = groups.first(where: { $0.name == "red1Group" }) {
-            red1Group = groups.first(where: { $0.name == "red1Group" })
+        if let _ = groups.first(where: { $0.name == "LEDGroup" }) {
+            LEDGroup = groups.first(where: { $0.name == "LEDGroup" })!
         } else {
-            createAndSaveNewGroup(name: "red1Group", address: redGroup1Address!)
+            createAndSaveNewGroup(name: "LEDGroup", address: LEDGroupAddress!)
         }
         
         // Create 1 application key
@@ -587,6 +611,43 @@ class ExerciseExecutionViewController: ProgressViewController {
         
         setPublication(clientModel: ___clientModel, destinationAddress: MeshAddress(nodes[4].unicastAddress))
         
+        let phase: Phase = exercise.phases[0]
+        for goal in phase.goals {
+            let position: GoalPosition = goal.position
+            let filteredRelations = relations.filter{$0.position == position}
+            if filteredRelations.count != 0 {
+                let goalColor = goal.color
+                var redIsOn: Bool!
+                var greenIsOn: Bool!
+                var blueIsOn: Bool!
+                var colorCode: UInt8!
+                switch goalColor {
+                case .pink:
+                    redIsOn = true
+                    greenIsOn = false
+                    blueIsOn = false
+                    colorCode = 2
+                    jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !redIsOn, colorCode: colorCode))
+                case .blue:
+                    redIsOn = false
+                    greenIsOn = false
+                    blueIsOn = true
+                    colorCode = 4
+                    jobs.append(Job(clientModel: clientModel, address: red1group.address, targetState: !blueIsOn, colorCode: colorCode))
+                }
+            }
+        }
+        
+        publishColorMessage(clientModel: clientModel, colorCode: Int(jobs[0].colorCode))
+        publishColorMessage(clientModel: _clientModel, colorCode: Int(jobs[1].colorCode))
+        publishColorMessage(clientModel: __clientModel, colorCode: Int(jobs[2].colorCode))
+        publishColorMessage(clientModel: ___clientModel, colorCode: Int(jobs[3].colorCode))
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        MeshNetworkManager.instance.delegate = self
     }
     
     func setupConstraints() {
@@ -703,8 +764,8 @@ class ExerciseExecutionViewController: ProgressViewController {
     func createAndSaveNewGroup(name: String, address: MeshAddress) {
         let network = MeshNetworkManager.instance.meshNetwork!
         // Try assigning next available Group Address.
-        red1Group = try! Group(name: name, address: address)
-        try! network.add(group: red1Group)
+        LEDGroup = try! Group(name: name, address: address)
+        try! network.add(group: LEDGroup)
         if MeshNetworkManager.instance.save() {
             presentAlert(title: "Group Succesfully Saved", message: "New group saved.")
         } else {
@@ -720,8 +781,8 @@ class ExerciseExecutionViewController: ProgressViewController {
         }
         start("Subscribing...") { [self] in
             let message: ConfigMessage =
-                ConfigModelSubscriptionAdd(group: self.red1Group, to: model) ??
-                ConfigModelSubscriptionVirtualAddressAdd(group: self.red1Group, to: model)!
+                ConfigModelSubscriptionAdd(group: self.LEDGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.LEDGroup, to: model)!
             return try MeshNetworkManager.instance.send(message, to: model)
         }
     }
@@ -1024,9 +1085,9 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             didReceiveMessage message: MeshMessage,
                             sentFrom source: Address, to destination: Address) {
-        print("≈\n\n")
-        print("≈source", source)
-        print("≈destination", destination)
+//        print("≈\n\n")
+//        print("≈source", source)
+//        print("≈destination", destination)
         print("Ω didReceiveMessage", message)
         guard !(message is ConfigNodeReset) else {
             (UIApplication.shared.delegate as! AppDelegate).meshNetworkDidChange()
@@ -1113,21 +1174,21 @@ extension ExerciseExecutionViewController: MeshNetworkDelegate{
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
-        print("≈\n\ndidSendMessage")
-        print("≈source", localElement)
-        print("≈destination", destination)
-        print("message", message)
-        print("≈parameters", message.parameters![1])
+//        print("≈\n\ndidSendMessage")
+//        print("≈source", localElement)
+//        print("≈destination", destination)
+//        print("message", message)
+//        print("≈parameters", message.parameters![1])
     }
     
     func meshNetworkManager(_ manager: MeshNetworkManager,
                             failedToSendMessage message: MeshMessage,
                             from localElement: Element, to destination: Address,
                             error: Error) {
-        print("≈\n\n")
-        print("≈source", localElement)
-        print("≈destination", destination)
-        print("≈failedToSendMessage", message)
+//        print("≈\n\n")
+//        print("≈source", localElement)
+//        print("≈destination", destination)
+//        print("≈failedToSendMessage", message)
         done() {
             self.presentAlert(title: "Error", message: error.localizedDescription)
         }

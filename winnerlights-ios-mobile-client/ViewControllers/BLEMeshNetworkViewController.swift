@@ -8,14 +8,14 @@
 import UIKit
 import nRFMeshProvision
 
-protocol ModelControlDelegate: class {
-    func publish(_ message: MeshMessage, description: String, fromModel model: Model)
-}
-
-protocol PublicationDelegate {
-    /// This method is called when the publication has changed.
-    func publicationChanged()
-}
+//protocol ModelControlDelegate: class {
+//    func publish(_ message: MeshMessage, description: String, fromModel model: Model)
+//}
+//
+//protocol PublicationDelegate {
+//    /// This method is called when the publication has changed.
+//    func publicationChanged()
+//}
 
 struct LEDColor {
     var color: UIColor
