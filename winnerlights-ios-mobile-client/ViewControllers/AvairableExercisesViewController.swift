@@ -20,15 +20,24 @@ class AvairableExercisesViewController: UIViewController {
     var exercises: [Exercise] = [
             Exercise(
             title: "Counter attack",
-            description: "Basic exercise. There are 2 goals and 4 players on each team.",
+            description: "There are four goals on the pitch. The game direction changes in the modified amount of time. So two goals are enlightened in the same color.The teams stay the same.",
             phases: [
                 Phase(
                     duration: 5,
                     goals: [
-                        Goal(position: .upperLeft, color: .blue),
+                        Goal(position: .upperLeft, color: .pink),
                         Goal(position: .lowerLeft, color: .pink),
                         Goal(position: .upperRight, color: .blue),
                         Goal(position: .lowerRight, color: .blue),
+                    ]
+                ),
+                Phase(
+                    duration: 5,
+                    goals: [
+                        Goal(position: .upperLeft, color: .blue),
+                        Goal(position: .lowerLeft, color: .blue),
+                        Goal(position: .upperRight, color: .pink),
+                        Goal(position: .lowerRight, color: .pink),
                     ]
                 ),
                 Phase(
@@ -37,15 +46,6 @@ class AvairableExercisesViewController: UIViewController {
                         Goal(position: .upperLeft, color: .pink),
                         Goal(position: .lowerLeft, color: .pink),
                         Goal(position: .upperRight, color: .blue),
-                        Goal(position: .lowerRight, color: .pink),
-                    ]
-                ),
-                Phase(
-                    duration: 5,
-                    goals: [
-                        Goal(position: .upperLeft, color: .blue),
-                        Goal(position: .lowerLeft, color: .pink),
-                        Goal(position: .upperRight, color: .blue),
                         Goal(position: .lowerRight, color: .blue),
                     ]
                 ),
@@ -53,13 +53,115 @@ class AvairableExercisesViewController: UIViewController {
                     duration: 5,
                     goals: [
                         Goal(position: .upperLeft, color: .blue),
-                        Goal(position: .lowerLeft, color: .pink),
+                        Goal(position: .lowerLeft, color: .blue),
                         Goal(position: .upperRight, color: .pink),
                         Goal(position: .lowerRight, color: .pink),
                     ]
                 )
             ]
-        )
+        ),
+        Exercise(
+        title: "Diagonal",
+        description: "There are four goals on the pitch. Respectively two goals are enlightened in the same color. These goals diagonally have the same color, so the attacking/ defending change has to be organised diagonally. The teams stay the same.",
+        phases: [
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            )
+          ]
+        ),
+        Exercise(
+        title: "Powerplay",
+        description: "All goals are alternately lighting in the same color. By that, one team has to defend all or attach all goals. The other team has to do the opposite.The teams stay the same.",
+        phases: [
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .blue),
+                    Goal(position: .lowerLeft, color: .blue),
+                    Goal(position: .upperRight, color: .blue),
+                    Goal(position: .lowerRight, color: .blue),
+                ]
+            ),
+            Phase(
+                duration: 5,
+                goals: [
+                    Goal(position: .upperLeft, color: .pink),
+                    Goal(position: .lowerLeft, color: .pink),
+                    Goal(position: .upperRight, color: .pink),
+                    Goal(position: .lowerRight, color: .pink),
+                ]
+            )
+        ]
+      )
     ]
     
     // Initialization closures
