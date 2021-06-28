@@ -6,8 +6,31 @@
 //
 
 import UIKit
+import nRFMeshProvision
 
-class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, MeshNetworkDelegate {
+    func meshNetworkManager(_ manager: MeshNetworkManager, didReceiveMessage message: MeshMessage, sentFrom source: Address, to destination: Address) {
+    }
+    
+    var LeftGroup: Group!
+    var RightGroup: Group!
+    var LeftGroupAddress: MeshAddress? = MeshAddress(0xC001)
+    var RightGroupAddress: MeshAddress? = MeshAddress(0xC002)
+    var clientModelMatrix: [Model] = []
+    var clientModel: Model!
+    var _clientModel: Model!
+    var __clientModel: Model!
+    var ___clientModel: Model!
+    var relations: [GoalNodeRelation] = []
+    var nodes: [Node] = []
+    var groups: [Group] = []
+    var jobs: [Job]!
+    var applicationKey: ApplicationKey!
+    private var ttl: UInt8 = 0000
+    private var periodSteps: UInt8 = 0
+    private var periodResolution: StepResolution = .hundredsOfMilliseconds
+    private var retransmissionCount: UInt8 = 10
+    private var retransmissionIntervalSteps: UInt8 = 0
     
     let cornerRadius: CGFloat = 20
     let shadowOpacity: Float = 0.2
@@ -415,7 +438,84 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         phaseTimeButtonSecond.setTitle(String(dataSourceSecond[secondIndex]), for: .normal)
         setupConstraints()
         timer = Timer.scheduledTimer(timeInterval: TimeInterval(0.75), target:self,selector:#selector(self.updateCurrentTime), userInfo: nil, repeats: true)
+
+//        MeshNetworkManager.instance.delegate = self
+//        let network = MeshNetworkManager.instance.meshNetwork!
+//        nodes = network.nodes
+//        groups = network.groups
+//        applicationKey = network.applicationKeys[0]
+//
+//        for group in groups {
+//            print("Ω", group.name)
+//        }
+//        
+//        if let _ = groups.first(where: { $0.name == "LeftGroup" }) {
+//            LeftGroup = groups.first(where: { $0.name == "LeftGroup" })!
+//        }
+//        
+//        if let _ = groups.first(where: { $0.name == "RightGroup" }) {
+//            RightGroup = groups.first(where: { $0.name == "RightGroup" })!
+//        } 
+        
+//        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
+//           let thirdElement = provisionersNode.elements.first(where: { $0.location == .third }),
+//           let _ = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })
+//           {
+//            clientModel = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+//        }
+//
+//        setPublication(clientModel: clientModel, destinationAddress: LeftGroupAddress)
+//
+//        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
+//           let secondElement = provisionersNode.elements.first(where: { $0.location == .second }),
+//           let _ = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })
+//           {
+//            _clientModel = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+//        }
+//
+//        setPublication(clientModel: _clientModel, destinationAddress: RightGroupAddress)
+
+//        if let _ = nodes[1].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })
+//           {
+//            let LeftModel = nodes[1].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })!
+//            print("Ω addSubscription called")
+//            addSubscriptionLeft(model: LeftModel)
+//        }
+//        
+//        if let _ = nodes[2].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })
+//           {
+//            let LeftModel = nodes[2].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })!
+//            print("Ω addSubscription called")
+//            addSubscriptionLeft(model: LeftModel)
+//        }
+//        
+//        if let _ = nodes[3].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })
+//           {
+//            let RightModel = nodes[3].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })!
+//            print("Ω addSubscription called")
+//            addSubscriptionRight(model: RightModel)
+//        }
+//        
+//        if let _ = nodes[4].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })
+//           {
+//            let RightModel = nodes[4].elements[0].models.first(where: { $0.name == "Generic OnOff Server" })!
+//            print("Ω addSubscription called")
+//            addSubscriptionRight(model: RightModel)
+//        }
+        
+   }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if let workingTimer = timer{
+            workingTimer.invalidate()
+        }
     }
+    
+    deinit {
+            print("Ω ExerciseDetailViewControllerがdeinitされました")
+        }
     
     func setupConstraints() {
         exerciseTitle.topAnchor.constraint(equalTo: descriptionContainerView.topAnchor, constant: marginWidth).isActive = true
@@ -431,7 +531,7 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         pitch.trailingAnchor.constraint(equalTo: previewContainerView.trailingAnchor, constant: -marginWidth).isActive = true
         pitch.bottomAnchor.constraint(equalTo: previewContainerView.centerYAnchor).isActive = true
         
-        phaseCountLabel.topAnchor.constraint(equalTo: previewContainerView.centerYAnchor,constant: marginWidth*0.5).isActive = true
+        phaseCountLabel.topAnchor.constraint(equalTo: previewContainerView.centerYAnchor, constant: marginWidth*0.5).isActive = true
         phaseCountLabel.centerXAnchor.constraint(equalTo: previewContainerView.centerXAnchor).isActive = true
                 
         progressView.leadingAnchor.constraint(equalTo: previewContainerView.leadingAnchor, constant: marginWidth).isActive = true
@@ -492,6 +592,45 @@ class ExerciseDetailViewController: UIViewController, UIPickerViewDelegate, UIPi
         executionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -100).isActive = true
         executionButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -marginWidth).isActive = true
         executionButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
+    func addSubscriptionLeft(model: Model) {
+        let alreadySubscribedGroups = model.subscriptions
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+        }
+            let message: ConfigMessage =
+                ConfigModelSubscriptionAdd(group: self.LeftGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.LeftGroup, to: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+    }
+    
+    func addSubscriptionRight(model: Model) {
+        let alreadySubscribedGroups = model.subscriptions
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+        }
+            let message: ConfigMessage =
+                ConfigModelSubscriptionAdd(group: self.RightGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.RightGroup, to: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+    }
+    
+    func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
+        guard let destination = destinationAddress, let applicationKey = applicationKey else {
+            return
+        }
+        let publish = Publish(to: destination, using: applicationKey,
+                              usingFriendshipMaterial: false, ttl: self.ttl,
+                              periodSteps: self.periodSteps, periodResolution: self.periodResolution,
+                              retransmit: Publish.Retransmit(publishRetransmitCount: self.retransmissionCount,
+                                                             intervalSteps: self.retransmissionIntervalSteps))
+        let message: ConfigMessage =
+            ConfigModelPublicationSet(publish, to: clientModel) ??
+            ConfigModelPublicationVirtualAddressSet(publish, to: clientModel)!
+        try! MeshNetworkManager.instance.send(message, to: clientModel)
     }
     
     @objc func updateCurrentTime() {
