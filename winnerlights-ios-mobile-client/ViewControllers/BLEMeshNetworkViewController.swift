@@ -57,9 +57,10 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
     var genericOnOffRedClientModel1PublicationFinished: Bool = false
     var genericOnOffGreenClientModel1PublicationFinished: Bool = false
     var genericOnOffBlueClientModel1PublicationFinished: Bool = false
-    var redGroup1Address: MeshAddress? = MeshAddress(0xC000)
-    var greenGroup1Address: MeshAddress? = MeshAddress(0xC001)
-    var blueGroup1Address: MeshAddress? = MeshAddress(0xC002)
+    var LeftGroup: Group!
+    var RightGroup: Group!
+    var LeftGroupAddress: MeshAddress? = MeshAddress(0xC001)
+    var RightGroupAddress: MeshAddress? = MeshAddress(0xC002)
     
     var genericOnOffRedClientModel2: Model!
     var genericOnOffGreenClientModel2: Model!
@@ -198,10 +199,23 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         for group in groups {
             print("Ω", group.name)
         }
+        
         if let _ = groups.first(where: { $0.name == "LEDGroup" }) {
             LEDGroup = groups.first(where: { $0.name == "LEDGroup" })!
         } else {
             createAndSaveNewGroup(name: "LEDGroup", address: LEDGroupAddress!)
+        }
+        
+        if let _ = groups.first(where: { $0.name == "LeftGroup" }) {
+            LeftGroup = groups.first(where: { $0.name == "LeftGroup" })!
+        } else {
+            createAndSaveLeftGroup(name: "LeftGroup", address: LeftGroupAddress!)
+        }
+        
+        if let _ = groups.first(where: { $0.name == "RightGroup" }) {
+            RightGroup = groups.first(where: { $0.name == "RightGroup" })!
+        } else {
+            createAndSaveRightGroup(name: "RightGroup", address: RightGroupAddress!)
         }
     
         
@@ -293,6 +307,30 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
         }
     }
     
+    func createAndSaveLeftGroup(name: String, address: MeshAddress) {
+        let network = MeshNetworkManager.instance.meshNetwork!
+        // Try assigning next available Group Address.
+        LeftGroup = try! Group(name: name, address: address)
+        try! network.add(group: LeftGroup)
+        if MeshNetworkManager.instance.save() {
+            presentAlert(title: "Group Succesfully Saved", message: "New group saved.")
+        } else {
+            presentAlert(title: "Error", message: "Mesh configuration could not be saved.")
+        }
+    }
+    
+    func createAndSaveRightGroup(name: String, address: MeshAddress) {
+        let network = MeshNetworkManager.instance.meshNetwork!
+        // Try assigning next available Group Address.
+        RightGroup = try! Group(name: name, address: address)
+        try! network.add(group: RightGroup)
+        if MeshNetworkManager.instance.save() {
+            presentAlert(title: "Group Succesfully Saved", message: "New group saved.")
+        } else {
+            presentAlert(title: "Error", message: "Mesh configuration could not be saved.")
+        }
+    }
+    
     @objc func publishColorMessage(sender:UIButton) {
         let messageHandler = MeshNetworkManager.instance.publish(GenericOnOffSet(UInt8(sender.tag), transitionTime: TransitionTime(0.0), delay: 0), fromModel: clientModel)
     }
@@ -323,6 +361,34 @@ class BLEMeshNetworkViewController: ProgressViewController, UINavigationControll
             let message: ConfigMessage =
                 ConfigModelSubscriptionAdd(group: self.LEDGroup, to: model) ??
                 ConfigModelSubscriptionVirtualAddressAdd(group: self.LEDGroup, to: model)!
+            return try MeshNetworkManager.instance.send(message, to: model)
+        }
+    }
+    
+    func addSubscriptionLeft(model: Model) {
+        let alreadySubscribedGroups = model.subscriptions
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+        }
+        start("Subscribing...") { [self] in
+            let message: ConfigMessage =
+                ConfigModelSubscriptionAdd(group: self.LeftGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.LeftGroup, to: model)!
+            return try MeshNetworkManager.instance.send(message, to: model)
+        }
+    }
+    
+    func addSubscriptionRight(model: Model) {
+        let alreadySubscribedGroups = model.subscriptions
+        alreadySubscribedGroups.forEach{ group in
+            let message: ConfigMessage = ConfigModelSubscriptionDelete(group: group, from: model) ?? ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
+            try! MeshNetworkManager.instance.send(message, to: model)
+        }
+        start("Subscribing...") { [self] in
+            let message: ConfigMessage =
+                ConfigModelSubscriptionAdd(group: self.RightGroup, to: model) ??
+                ConfigModelSubscriptionVirtualAddressAdd(group: self.RightGroup, to: model)!
             return try MeshNetworkManager.instance.send(message, to: model)
         }
     }
