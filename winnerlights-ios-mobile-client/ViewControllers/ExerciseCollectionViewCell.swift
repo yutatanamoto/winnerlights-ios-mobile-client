@@ -16,6 +16,7 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
     let shadowOffset: CGSize = CGSize(width: 4, height: 4)
     let buttonHeight: CGFloat = 60
     var backButtonTappedAt: Float = 0
+//    var exercise: Exercise!
     var exercise: Exercise = Exercise(
         title: "Counter attack",
         description: "Basic exercise. There are 2 goals and 4 players on each team.",
@@ -104,7 +105,7 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
-        label.text = exercise.title
+//        label.text = exercise.title
         label.textColor = .black
         return label
     }()
@@ -114,7 +115,7 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 8, weight: .medium)
-        label.text = "Phase\t"+String(exercise.phases.count)
+//        label.text = "Phase\t"+String(exercise.phases.count)
         label.textColor = .black
         return label
     }()
@@ -160,5 +161,10 @@ class ExerciseCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func exerciseChange(exercise: Exercise){
+        titleLabel.text = exercise.title
+        descritionLabel.text = "Phase\t"+String(exercise.phases.count)
     }
 }

@@ -225,7 +225,9 @@ extension AvairableExercisesViewController: UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ExerciseCollectionViewCell
-        cell.exercise = exercises[indexPath.row]
+//        cell.exercise = exercises[indexPath.row]
+        let cellExercise = exercises[indexPath.row]
+        cell.exerciseChange(exercise: cellExercise)
         return cell
     }
     
