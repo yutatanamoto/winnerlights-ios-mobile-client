@@ -77,48 +77,41 @@ class ExerciseExecutionViewController: ProgressViewController {
             if currentPhaseIndex != oldValue  {
                 let phase: Phase = exercise.phases[currentPhaseIndex]
                 
-                for goal in phase.goals {
-                    let position: GoalPosition = goal.position
-                    let filteredRelations = relations.filter{$0.position == position}
-                    if filteredRelations.count != 0 {
-                        let goalColor = goal.color
-                        var colorCode: UInt8!
-                        switch goalColor {
-                        case .pink:
-                            colorCode = 2
-                            color.append(colorCode)
-                        case .blue:
-                            colorCode = 4
-                            color.append(colorCode)
-                        }
+                switch exercise.title {
+                case "Counter attack":
+                    switch currentPhaseIndex {
+                    case 0, 2:
+                        publishColorMessage(clientModel: clientModel, colorCode: 2)
+                    case 1, 3:
+                        publishColorMessage(clientModel: clientModel, colorCode: 3)
+                    default:
+                        break
                     }
-                }
-                
-//              グループ用
-//                if color[k] != color[j] {
-//                    publishColorMessage(clientModel: clientModel, colorCode: color[k])
-//                }
-//                if color[k+2] != color[j+2] {
-//                    publishColorMessage(clientModel: _clientModel, colorCode: color[k+2])
-//                }
-                
-//              1つずつ用
-                for i in 0..<phase.goals.count{
-                    if color[k+i] != color[j+i] {
-                        publishColorMessage(clientModel: clientModelMatrix[i], colorCode: color[k+i])
+                case "Diagonal":
+                    switch currentPhaseIndex {
+                    case 0:
+                        publishColorMessage(clientModel: clientModel, colorCode: 2)
+                    case 1, 3:
+                        publishColorMessage(clientModel: clientModel, colorCode: 4)
+                    case 2, 4:
+                        publishColorMessage(clientModel: clientModel, colorCode: 5)
+                    default:
+                        break
                     }
+                case "Powerplay":
+                    switch currentPhaseIndex {
+                    case 0:
+                        publishColorMessage(clientModel: clientModel, colorCode: 2)
+                    case 1, 3:
+                        publishColorMessage(clientModel: clientModel, colorCode: 6)
+                    case 2, 4:
+                        publishColorMessage(clientModel: clientModel, colorCode: 7)
+                    default:
+                        break
+                    }
+                default:
+                    break
                 }
-                
-                // 5つの非同期処理を実行
-//            let dispatchQueue = DispatchQueue.global(qos: .userInteractive)
-//
-//            print("Ω color publish")
-//            for i in 0..<phase.goals.count {
-//                dispatchQueue.async { [weak self] in
-//                    self?.publishColorMessage(clientModel: (self?.clientModelMatrix[i])!, colorCode: self!.color[k+i])
-//                    print("Ω ",i)
-//                }
-//            }
                 
                 j += phase.goals.count
                 k += phase.goals.count
@@ -182,10 +175,10 @@ class ExerciseExecutionViewController: ProgressViewController {
     private var newKey: Data! = Data.random128BitKey()
     private var keyIndex: KeyIndex!
     private var newBoundNetworkKeyIndex: KeyIndex?
-    private var ttl: UInt8 = 0xFF
-    private var periodSteps: UInt8 = 0
+    private var ttl: UInt8 = 0x7F
+    private var periodSteps: UInt8 = 1
     private var periodResolution: StepResolution = .hundredsOfMilliseconds
-    private var retransmissionCount: UInt8 = 10
+    private var retransmissionCount: UInt8 = 5
     private var retransmissionIntervalSteps: UInt8 = 0
     weak var delegate: ProvisioningViewDelegate?
     var key: Key? {
@@ -455,49 +448,11 @@ class ExerciseExecutionViewController: ProgressViewController {
             clientModel = primaryElement.models.first(where: { $0.name == "Generic OnOff Client" })!
         }
         
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let secondElement = provisionersNode.elements.first(where: { $0.location == .second }),
-           let _ = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            _clientModel = secondElement.models.first(where: { $0.name == "Generic OnOff Client" })!
+        
+        defer {
+            publishColorMessage(clientModel: clientModel, colorCode: 2)
         }
         
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let thirdElement = provisionersNode.elements.first(where: { $0.location == .third }),
-           let _ = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            __clientModel = thirdElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let fourthElement = provisionersNode.elements.first(where: { $0.location == .fourth }),
-           let _ = fourthElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            ___clientModel = fourthElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-
-        if let provisionersNode = network.nodes.first(where: { $0.isLocalProvisioner }),
-           let fifthElement = provisionersNode.elements.first(where: { $0.location == .fifth }),
-           let _ = fifthElement.models.first(where: { $0.name == "Generic OnOff Client" })
-           {
-            ____clientModel = fifthElement.models.first(where: { $0.name == "Generic OnOff Client" })!
-        }
-
-        clientModelMatrix = [_clientModel, __clientModel, ___clientModel, ____clientModel]
-        
-//      1つずつ用
-        defer {
-            publishColorMessage(clientModel: clientModelMatrix[3], colorCode: 4)
-        }
-        defer {
-            publishColorMessage(clientModel: clientModelMatrix[2], colorCode: 4)
-        }
-        defer {
-            publishColorMessage(clientModel: clientModelMatrix[1], colorCode: 2)
-        }
-        defer {
-            publishColorMessage(clientModel: clientModelMatrix[0], colorCode: 2)
-        }
         
         color = []
         let phase: Phase = exercise.phases[0]
@@ -518,25 +473,7 @@ class ExerciseExecutionViewController: ProgressViewController {
             }
         }
         
-//        グループ用
-//        setPublication(clientModel: clientModel, destinationAddress: LeftGroupAddress)
-//        setPublication(clientModel: _clientModel, destinationAddress: RightGroupAddress)
-        
-//      1つずつ用
-        for i in 0..<4 {
-            setPublication(clientModel: clientModelMatrix[i], destinationAddress: MeshAddress(nodes[i+1].elements[0].unicastAddress))
-        }
-        
-            // 5つの非同期処理を実行
-//        let dispatchQueue = DispatchQueue.global(qos: .userInteractive)
-//
-//        print("Ω color publish")
-//        for i in 1...4 {
-//            dispatchQueue.async { [weak self] in
-//                self?.publishColorMessage(clientModel: (self?.clientModelMatrix[i-1])!, colorCode: self!.color[i-1])
-//                print("Ω ",i)
-//            }
-//        }
+        setPublication(clientModel: clientModel, destinationAddress: LEDGroupAddress)
         
     }
     
@@ -681,7 +618,7 @@ class ExerciseExecutionViewController: ProgressViewController {
     }
     
     func publishColorMessage(clientModel: Model,colorCode: UInt8) {
-        _ = MeshNetworkManager.instance.publish(GenericOnOffSet(colorCode, transitionTime: TransitionTime(0.0), delay: 1), fromModel: clientModel)
+        _ = MeshNetworkManager.instance.publish(GenericOnOffSet(colorCode, transitionTime: TransitionTime(0.0), delay: 0), from: clientModel)
     }
     
     func setPublication(clientModel: Model, destinationAddress: MeshAddress?) {
@@ -1058,7 +995,7 @@ extension ExerciseExecutionViewController: ModelControlDelegate {
     
     func publish(_ message: MeshMessage, description: String, fromModel model: Model) {
         start(description) {
-            return MeshNetworkManager.instance.publish(message, fromModel: model)
+            return MeshNetworkManager.instance.publish(message, from: model)
         }
     }
 }
