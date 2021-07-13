@@ -7,7 +7,25 @@
 		<key>winnerlights-ios-mobile-client.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>5</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>65746388251AE6E10021A60D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6574639E251AE6E20021A60D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>657463A9251AE6E20021A60D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

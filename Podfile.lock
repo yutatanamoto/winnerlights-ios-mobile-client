@@ -6,7 +6,8 @@ PODS:
   - OpenSSL-Universal/Static (1.0.2.19)
 
 DEPENDENCIES:
-  - nRFMeshProvision
+  - nRFMeshProvision (= 2.2.3)
+  - OpenSSL-Universal (= 1.0.2.19)
 
 SPEC REPOS:
   trunk:
@@ -17,6 +18,6 @@ SPEC CHECKSUMS:
   nRFMeshProvision: ecb20ce595bb421f2350e539f05d7391dd507724
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
 
-PODFILE CHECKSUM: 908bd8a0bed807b6c7971b6d0992bca1e432fc28
+PODFILE CHECKSUM: b0fc274e4a20eeeae07fe43f0ed93ca868234743
 
 COCOAPODS: 1.9.3
