@@ -47,6 +47,8 @@ import nRFMeshProvision
 ///
 /// - seeAlso: https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.meshsdk.v3.2.0/md_models_vendor_simple_on_off_README.html?cp=5_2_2_3_1
 class SimpleOnOffClientDelegate: ModelDelegate {
+    var publicationMessageComposer: MessageComposer?
+    
     let messageTypes: [UInt32 : MeshMessage.Type]
     let isSubscriptionSupported: Bool = false
     

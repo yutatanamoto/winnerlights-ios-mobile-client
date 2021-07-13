@@ -32,6 +32,8 @@ import Foundation
 import nRFMeshProvision
 
 class GenericLevelServerDelegate: ModelDelegate {
+    var publicationMessageComposer: MessageComposer?
+    
     let messageTypes: [UInt32 : MeshMessage.Type]
     let isSubscriptionSupported: Bool = true
     
